@@ -5,7 +5,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "eject": "expo eject",
-    "test": "node ./node_modules/jest/bin/jest.js --watchAll"
+    "test": "jest"
   },
   "jest": {
     "preset": "jest-expo"
@@ -18,12 +18,17 @@
     "react": "16.5.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-32.0.0.tar.gz",
     "react-native-calendars": "^1.141.0",
+    "react-native-masonry-list": "^2.10.4",
     "react-native-paper": "^2.15.2",
     "react-navigation": "^3.0.9"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0",
-    "jest-expo": "^32.0.0"
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.13.1",
+    "jest-expo": "^32.0.0",
+    "react-dom": "^16.8.6",
+    "react-test-renderer": "^16.8.6"
   },
   "private": true
 }

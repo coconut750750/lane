@@ -28,12 +28,6 @@ export default class App extends React.Component {
       return (
         <PaperProvider theme={theme}>
             <View style={styles.container}>
-                <StatusBar
-                    barStyle="dark-content"
-                    hidden={false}
-                    backgroundColor={Colors.background}
-                    translucent={false}
-                />
                 <AppNavigator />
             </View>
         </PaperProvider>
@@ -50,9 +44,10 @@ export default class App extends React.Component {
       Font.loadAsync({
         // This is the font that we are using for our tab bar
         ...Icon.Ionicons.font,
-        // We include SpaceMono because we use it in HomeScreen.js. Feel free
-        // to remove this if you are not using it in your app
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+        'roboto': require('./assets/fonts/Roboto-Regular.ttf'),
+        'roboto-light': require('./assets/fonts/Roboto-Light.ttf'),
+        'roboto-medium': require('./assets/fonts/Roboto-Medium.ttf'),
+        'roboto-thin': require('./assets/fonts/Roboto-Thin.ttf'),
       }),
     ]);
   };
@@ -69,18 +64,31 @@ export default class App extends React.Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
 });
 
 const theme = {
-    ...DefaultTheme,
-    roundness: 2,
     colors: {
-        ...DefaultTheme.colors,
         primary: Colors.primary,
         accent: Colors.secondary,
-    }
+        backdrop: Colors.backdrop,
+        background: "#f6f6f6",
+        disabled: "rgba(0, 0, 0, 0.26)",
+        error: "#B00020",
+        notification: "#f50057",
+        placeholder: "rgba(0, 0, 0, 0.54)",
+        surface: "#ffffff",
+        text: "#000000",
+    },
+    fonts: {
+        light: "roboto-light",
+        medium: "roboto-medium",
+        regular: "roboto",
+        thin: "roboto-thin",
+    },
+    dark: false,
+    roundness: 2,
 };

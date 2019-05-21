@@ -1,0 +1,332 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`LaneCalendar render with markings 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <LaneCalendar
+    markings={
+      Object {
+        "2019-05-16": Object {
+          "periods": Array [
+            Object {
+              "color": "#5f9ea0",
+              "endingDay": false,
+              "startingDay": true,
+            },
+            Object {
+              "color": "#ffa500",
+              "endingDay": false,
+              "startingDay": true,
+            },
+          ],
+        },
+        "2019-05-17": Object {
+          "periods": Array [
+            Object {
+              "color": "#5f9ea0",
+              "endingDay": true,
+              "startingDay": false,
+            },
+            Object {
+              "color": "#ffa500",
+              "endingDay": true,
+              "startingDay": false,
+            },
+          ],
+        },
+      }
+    }
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "markedDates": Object {
+        "2019-05-16": Object {
+          "periods": Array [
+            Object {
+              "color": "#5f9ea0",
+              "endingDay": false,
+              "startingDay": true,
+            },
+            Object {
+              "color": "#ffa500",
+              "endingDay": false,
+              "startingDay": true,
+            },
+          ],
+        },
+        "2019-05-17": Object {
+          "periods": Array [
+            Object {
+              "color": "#5f9ea0",
+              "endingDay": true,
+              "startingDay": false,
+            },
+            Object {
+              "color": "#ffa500",
+              "endingDay": true,
+              "startingDay": false,
+            },
+          ],
+        },
+      },
+      "markingType": "multi-period",
+      "monthFormat": "MMMM yyyy",
+      "onDayPress": [Function],
+      "theme": Object {
+        "arrowColor": "#3700b3",
+        "backgroundColor": "#fff",
+        "calendarBackground": "#fff",
+        "dayTextColor": "#888",
+        "dotColor": "#3700b3",
+        "indicatorColor": "#03dac6",
+        "monthTextColor": "#6200ee",
+        "selectedDayBackgroundColor": "#3700b3",
+        "selectedDayTextColor": "white",
+        "selectedDotColor": "#ffffff",
+        "textDayFontFamily": "roboto",
+        "textDayFontSize": 16,
+        "textDayFontWeight": "300",
+        "textDayHeaderFontFamily": "roboto",
+        "textDayHeaderFontSize": 16,
+        "textDayHeaderFontWeight": "300",
+        "textDisabledColor": "#ccc",
+        "textMonthFontFamily": "roboto-medium",
+        "textMonthFontSize": 20,
+        "textMonthFontWeight": "300",
+        "textSectionTitleColor": "#b6c1cd",
+        "todayTextColor": "#6200ee",
+      },
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "markedDates": Object {
+          "2019-05-16": Object {
+            "periods": Array [
+              Object {
+                "color": "#5f9ea0",
+                "endingDay": false,
+                "startingDay": true,
+              },
+              Object {
+                "color": "#ffa500",
+                "endingDay": false,
+                "startingDay": true,
+              },
+            ],
+          },
+          "2019-05-17": Object {
+            "periods": Array [
+              Object {
+                "color": "#5f9ea0",
+                "endingDay": true,
+                "startingDay": false,
+              },
+              Object {
+                "color": "#ffa500",
+                "endingDay": true,
+                "startingDay": false,
+              },
+            ],
+          },
+        },
+        "markingType": "multi-period",
+        "monthFormat": "MMMM yyyy",
+        "onDayPress": [Function],
+        "theme": Object {
+          "arrowColor": "#3700b3",
+          "backgroundColor": "#fff",
+          "calendarBackground": "#fff",
+          "dayTextColor": "#888",
+          "dotColor": "#3700b3",
+          "indicatorColor": "#03dac6",
+          "monthTextColor": "#6200ee",
+          "selectedDayBackgroundColor": "#3700b3",
+          "selectedDayTextColor": "white",
+          "selectedDotColor": "#ffffff",
+          "textDayFontFamily": "roboto",
+          "textDayFontSize": 16,
+          "textDayFontWeight": "300",
+          "textDayHeaderFontFamily": "roboto",
+          "textDayHeaderFontSize": 16,
+          "textDayHeaderFontWeight": "300",
+          "textDisabledColor": "#ccc",
+          "textMonthFontFamily": "roboto-medium",
+          "textMonthFontSize": 20,
+          "textMonthFontWeight": "300",
+          "textSectionTitleColor": "#b6c1cd",
+          "todayTextColor": "#6200ee",
+        },
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": false,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+  Symbol(enzyme.__childContext__): null,
+}
+`;
+
+exports[`LaneCalendar render without markings 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <LaneCalendar
+    markings={Object {}}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "markedDates": Object {},
+      "markingType": "multi-period",
+      "monthFormat": "MMMM yyyy",
+      "onDayPress": [Function],
+      "theme": Object {
+        "arrowColor": "#3700b3",
+        "backgroundColor": "#fff",
+        "calendarBackground": "#fff",
+        "dayTextColor": "#888",
+        "dotColor": "#3700b3",
+        "indicatorColor": "#03dac6",
+        "monthTextColor": "#6200ee",
+        "selectedDayBackgroundColor": "#3700b3",
+        "selectedDayTextColor": "white",
+        "selectedDotColor": "#ffffff",
+        "textDayFontFamily": "roboto",
+        "textDayFontSize": 16,
+        "textDayFontWeight": "300",
+        "textDayHeaderFontFamily": "roboto",
+        "textDayHeaderFontSize": 16,
+        "textDayHeaderFontWeight": "300",
+        "textDisabledColor": "#ccc",
+        "textMonthFontFamily": "roboto-medium",
+        "textMonthFontSize": 20,
+        "textMonthFontWeight": "300",
+        "textSectionTitleColor": "#b6c1cd",
+        "todayTextColor": "#6200ee",
+      },
+    },
+    "ref": null,
+    "rendered": null,
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "markedDates": Object {},
+        "markingType": "multi-period",
+        "monthFormat": "MMMM yyyy",
+        "onDayPress": [Function],
+        "theme": Object {
+          "arrowColor": "#3700b3",
+          "backgroundColor": "#fff",
+          "calendarBackground": "#fff",
+          "dayTextColor": "#888",
+          "dotColor": "#3700b3",
+          "indicatorColor": "#03dac6",
+          "monthTextColor": "#6200ee",
+          "selectedDayBackgroundColor": "#3700b3",
+          "selectedDayTextColor": "white",
+          "selectedDotColor": "#ffffff",
+          "textDayFontFamily": "roboto",
+          "textDayFontSize": 16,
+          "textDayFontWeight": "300",
+          "textDayHeaderFontFamily": "roboto",
+          "textDayHeaderFontSize": 16,
+          "textDayHeaderFontWeight": "300",
+          "textDisabledColor": "#ccc",
+          "textMonthFontFamily": "roboto-medium",
+          "textMonthFontSize": 20,
+          "textMonthFontWeight": "300",
+          "textSectionTitleColor": "#b6c1cd",
+          "todayTextColor": "#6200ee",
+        },
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": false,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+  Symbol(enzyme.__childContext__): null,
+}
+`;

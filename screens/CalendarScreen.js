@@ -1,18 +1,41 @@
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native'
 import firebase from 'firebase'
-import { Agenda } from 'react-native-calendars';
 import { FAB, Portal } from 'react-native-paper';
+var _ = require('lodash');
 
 import Colors from '../constants/Colors'
-import Layout from '../constants/Layout'
+import LaneCalendar from '../components/LaneCalendar';
+import LaneContent from '../components/LaneContent';
 
 export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
+        var markings = {
+                '2019-05-16': {
+                    periods: [
+                        { startingDay: true, endingDay: false, color: '#5f9ea0' },
+                        { startingDay: true, endingDay: false, color: '#ffa500' },
+                    ]
+                },
+                '2019-05-17': {
+                    periods: [
+                        { startingDay: false, endingDay: true, color: '#5f9ea0' },
+                        { startingDay: false, endingDay: true, color: '#ffa500' },
+                        { startingDay: true, endingDay: false, color: '#f0e68c' },
+                    ]
+                },
+                '2019-05-18': {
+                    periods: [
+                        { startingDay: true, endingDay: true, color: '#ffa500' },
+                        { color: 'transparent' },
+                        { startingDay: false, endingDay: false, color: '#f0e68c' },
+                    ]
+                }
+            }
         this.state = {
             view: "Home",
-            items: {},
+            markings: markings,
             open: false,
         };
     }
@@ -34,131 +57,32 @@ export default class CalendarScreen extends Component {
         // />
         return (
             <View style={styles.container}>
-                <Agenda
-                    items={this.state.items}
-                    loadItemsForMonth={this.loadItems.bind(this)}
-                    selected={'2017-05-16'}
-                    renderItem={ (item) => { return (<View style={[styles.item, {height: item.height}]}><Text>{item.name}</Text></View>); } }
-                    renderEmptyDate={ () => { return (<View style={styles.emptyDate}><Text>This is empty date!</Text></View>); } }
-                    rowHasChanged={ (r1, r2) => { return r1.name !== r2.name; } }
-                    // markingType={'period'}
-                    // markedDates={{
-                    //    '2017-05-08': {textColor: '#666'},
-                    //    '2017-05-09': {textColor: '#666'},
-                    //    '2017-05-14': {startingDay: true, endingDay: true, color: 'blue'},
-                    //    '2017-05-21': {startingDay: true, color: 'blue'},
-                    //    '2017-05-22': {endingDay: true, color: 'gray'},
-                    //    '2017-05-24': {startingDay: true, color: 'gray'},
-                    //    '2017-05-25': {color: 'gray'},
-                    //    '2017-05-26': {endingDay: true, color: 'gray'}}}
-                     // monthFormat={'yyyy'}
-                    //renderDay={(day, item) => (<Text>{day ? day.day: 'item'}</Text>)}
-                    theme={{
-                        backgroundColor: Colors.background,
-                        calendarBackground: Colors.background,
-                        textSectionTitleColor: '#b6c1cd',
-                        selectedDayBackgroundColor: Colors.primaryAlt,
-                        selectedDayTextColor: 'white',
-                        todayTextColor: Colors.primary,
-                        dayTextColor: Colors.darkGray,
-                        textDisabledColor: Colors.lightGray,
-                        dotColor: Colors.primaryAlt,
-                        selectedDotColor: '#ffffff',
-                        arrowColor: Colors.primaryAlt,
-                        monthTextColor: Colors.primary,
-                        indicatorColor: Colors.secondary,
-                        textDayFontFamily: 'Roboto',
-                        textMonthFontFamily: 'Roboto',
-                        textDayHeaderFontFamily: 'Roboto',
-                        textDayFontWeight: '300',
-                        textMonthFontWeight: '300',
-                        textDayHeaderFontWeight: '300',
-                        textDayFontSize: 16,
-                        textMonthFontSize: 20,
-                        textDayHeaderFontSize: 16,
-                        agendaDayNumColor: Colors.primary,
-                        agendaDayTextColor: Colors.primaryAlt,
-                        agendaTodayColor: Colors.primary,
-                        agendaKnobColor: Colors.primary,
-                        'stylesheet.calendar.header': {
-                            week: {
-                                marginTop: -5,
-                                paddingTop: 3,
-                                marginBottom: 0,
-                                flexDirection: 'row',
-                                justifyContent: 'space-between'
-                            }
-                        },
-                        'stylesheet.agenda.main': {
-                            knobContainer: {
-                                flex: 1,
-                                position: 'absolute',
-                                left: 0,
-                                right: 0,
-                                height: 24,
-                                bottom: 0,
-                                alignItems: 'center',
-                            }
-                        }
-                    }}
-                    
+                <LaneCalendar
+                    markings={this.state.markings}
                 />
-                <FAB
-                    style={styles.fab}
-                    icon="create"
-                    onPress={() => console.log('Pressed')}
+                <LaneContent
+                />
+                <FAB.Group
+                      open={this.state.open}
+                      icon={this.state.open ? 'add' : 'expand-less'}
+                      actions={[
+                            { icon: 'create', label: 'Edit', onPress: () => console.log('Pressed Edit') },
+                      ]}
+                      onStateChange={({ open }) => this.setState({ open })}
+                      onPress={() => {
+                            if (this.state.open) {
+                                this.props.navigation.navigate('Create');
+                            }
+                      }}
                 />
             </View>
         );
     }
-
-    loadItems(day) {
-        setTimeout(() => {
-            for (let i = -15; i < 85; i++) {
-                const time = day.timestamp + i * 24 * 60 * 60 * 1000;
-                const strTime = this.timeToString(time);
-                if (!this.state.items[strTime]) {
-                    this.state.items[strTime] = [];
-                    const numItems = Math.floor(Math.random() * 5);
-                    for (let j = 0; j < numItems; j++) {
-                        this.state.items[strTime].push({
-                            name: 'Item for ' + strTime,
-                            height: Math.max(50, Math.floor(Math.random() * 150))
-                        });
-                    }
-                }
-            }
-
-            const newItems = {};
-            Object.keys(this.state.items).forEach(key => {newItems[key] = this.state.items[key];});
-            this.setState({
-                items: newItems
-            });
-        }, 1000);
-    }
-
-     timeToString(time) {
-        const date = new Date(time);
-        return date.toISOString().split('T')[0];
-     }
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1
-    },
-    item: {
-        flex: 1,
-        borderRadius: 5,
-        padding: 5,
-        marginRight: 10,
-        marginTop: 25,
-        marginBottom: 5
-    },
-    emptyDate: {
-        flex: 1,
-        height: 15,
-        paddingTop: 30
     },
     fab: {
         position: 'absolute',

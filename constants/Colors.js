@@ -7,4 +7,5 @@ export default {
   error: '#b00020',
   lightGray: '#ccc',
   darkGray: '#888',
+  backdrop: "#ffffffbb",
 };

@@ -30,7 +30,8 @@
       "package": "com.brandon.lane"
     },
     "androidStatusBar": {
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#ffffff",
+      "barStyle": "dark-content"
     }
   }
 }
