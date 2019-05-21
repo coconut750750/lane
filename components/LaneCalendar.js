@@ -7,18 +7,25 @@ import Colors from '../constants/Colors'
 export default class LaneCalendar extends Component {
     constructor(props) {
         super(props);
-        this.periodMark = props.markings;
         this.state = {
-            allMark: props.markings
+            periodMarkings: props.markings,
+            allMarkings: props.markings
         };
+    }
+
+    componentWillReceiveProps(newProps) {
+        this.setState({
+            periodMarkings: newProps.markings,
+            allMarkings: newProps.markings
+        });
     }
 
     onDayPress(day) {
         var selectedMark = {[day.dateString]: {selected: true, disableTouchEvent: true}};
-        var periodMark = _.cloneDeep(this.periodMark);
+        var periodMarkings = _.cloneDeep(this.state.periodMarkings);
         
         this.setState({
-            allMark: _.merge(periodMark, selectedMark)
+            allMarkings: _.merge(periodMarkings, selectedMark)
         });
     }
 
@@ -28,7 +35,7 @@ export default class LaneCalendar extends Component {
                 monthFormat={'MMMM yyyy'}
                 onDayPress={ (day) => { this.onDayPress(day); } }
                 markingType={'multi-period'}
-                markedDates={{...this.state.allMark}}
+                markedDates={{...this.state.allMarkings}}
                 horizontal={true}
                 pagingEnabled={true}
                 theme={{

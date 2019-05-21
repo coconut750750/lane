@@ -51,6 +51,10 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "class",
     "props": Object {
+      "calendarHeight": 360,
+      "calendarWidth": 750,
+      "futureScrollRange": 50,
+      "horizontal": true,
       "markedDates": Object {
         "2019-05-16": Object {
           "periods": Array [
@@ -84,6 +88,15 @@ ShallowWrapper {
       "markingType": "multi-period",
       "monthFormat": "MMMM yyyy",
       "onDayPress": [Function],
+      "pagingEnabled": true,
+      "pastScrollRange": 50,
+      "removeClippedSubviews": true,
+      "scrollEnabled": true,
+      "scrollsToTop": false,
+      "showScrollIndicator": false,
+      "style": Object {
+        "height": 0,
+      },
       "theme": Object {
         "arrowColor": "#3700b3",
         "backgroundColor": "#fff",
@@ -119,6 +132,10 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
+        "calendarHeight": 360,
+        "calendarWidth": 750,
+        "futureScrollRange": 50,
+        "horizontal": true,
         "markedDates": Object {
           "2019-05-16": Object {
             "periods": Array [
@@ -152,6 +169,15 @@ ShallowWrapper {
         "markingType": "multi-period",
         "monthFormat": "MMMM yyyy",
         "onDayPress": [Function],
+        "pagingEnabled": true,
+        "pastScrollRange": 50,
+        "removeClippedSubviews": true,
+        "scrollEnabled": true,
+        "scrollsToTop": false,
+        "showScrollIndicator": false,
+        "style": Object {
+          "height": 0,
+        },
         "theme": Object {
           "arrowColor": "#3700b3",
           "backgroundColor": "#fff",
@@ -230,10 +256,23 @@ ShallowWrapper {
     "key": undefined,
     "nodeType": "class",
     "props": Object {
+      "calendarHeight": 360,
+      "calendarWidth": 750,
+      "futureScrollRange": 50,
+      "horizontal": true,
       "markedDates": Object {},
       "markingType": "multi-period",
       "monthFormat": "MMMM yyyy",
       "onDayPress": [Function],
+      "pagingEnabled": true,
+      "pastScrollRange": 50,
+      "removeClippedSubviews": true,
+      "scrollEnabled": true,
+      "scrollsToTop": false,
+      "showScrollIndicator": false,
+      "style": Object {
+        "height": 0,
+      },
       "theme": Object {
         "arrowColor": "#3700b3",
         "backgroundColor": "#fff",
@@ -269,10 +308,23 @@ ShallowWrapper {
       "key": undefined,
       "nodeType": "class",
       "props": Object {
+        "calendarHeight": 360,
+        "calendarWidth": 750,
+        "futureScrollRange": 50,
+        "horizontal": true,
         "markedDates": Object {},
         "markingType": "multi-period",
         "monthFormat": "MMMM yyyy",
         "onDayPress": [Function],
+        "pagingEnabled": true,
+        "pastScrollRange": 50,
+        "removeClippedSubviews": true,
+        "scrollEnabled": true,
+        "scrollsToTop": false,
+        "showScrollIndicator": false,
+        "style": Object {
+          "height": 0,
+        },
         "theme": Object {
           "arrowColor": "#3700b3",
           "backgroundColor": "#fff",
