@@ -49,7 +49,7 @@ export default class LoginScreen extends Component {
                                     profile: result.additionalUserInfo.profile.picture,
                                     firstname: result.additionalUserInfo.profile.given_name,
                                     lastname: result.additionalUserInfo.profile.family_name
-                                })
+                                });
                         }
                     })
                     .catch(function(error) {

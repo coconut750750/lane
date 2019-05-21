@@ -34,20 +34,9 @@ export default class CalendarScreen extends Component {
                 }
             }
         this.state = {
-            view: "Home",
             markings: markings,
             open: false,
         };
-    }
-
-    componentWillReceiveProps(newProps) {
-        var newView = newProps.navigation.getParam('view');
-
-        if (newView && newView != this.state.view) {
-            this.setState({
-                view: newView
-            });
-        }
     }
 
     render() {
