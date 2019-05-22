@@ -5,7 +5,7 @@ import {
     TextInput,
     StyleSheet,
     TouchableNativeFeedback,
-    TouchableHighlight,
+    ActivityIndicator,
     Modal
 } from 'react-native'
 import { 
@@ -32,8 +32,20 @@ export default class CreateScreen extends Component {
             title: '',
             photos: [],
             imageBrowserOpen: false,
-            colorModalOpen: false
+            colorModalOpen: false,
+            uploading: false
         };
+        this.color = Colors.primary;
+    }
+
+    resetState() {
+        this.setState({
+            title: '',
+            photos: [],
+            imageBrowserOpen: false,
+            colorModalOpen: false,
+            uploading: false
+        });
         this.color = Colors.primary;
     }
 
@@ -53,8 +65,11 @@ export default class CreateScreen extends Component {
     }
 
     async uploadImageAsync(laneid, photo) {
-      // Why are we using XMLHttpRequest? See:
-      // https://github.com/expo/expo/issues/2402#issuecomment-443726662
+        // Why are we using XMLHttpRequest? See:
+        // https://github.com/expo/expo/issues/2402#issuecomment-443726662
+        this.setState({
+            uploading: true
+        })
         const blob = await new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             xhr.onload = function() {
@@ -115,10 +130,6 @@ export default class CreateScreen extends Component {
         var laneid = md5(userid + this.state.title);
         const { start, end } = this.getStartEnd()
 
-        this.state.photos.forEach(photo => {
-            this.uploadImageAsync(laneid, photo)
-        });
-
         firebase.database()
             .ref('lanes')
             .child(laneid)
@@ -135,6 +146,8 @@ export default class CreateScreen extends Component {
             .child(userid)
             .child('lanes')
             .push(laneid);
+
+        await Promise.all(this.state.photos.map(photo => this.uploadImageAsync(laneid, photo)));
 
         this.props.navigation.goBack()
     }
@@ -153,13 +166,22 @@ export default class CreateScreen extends Component {
                         callback={ this.imageBrowserCallback }/>
             );
         }
+        if (this.state.uploading) {
+            return (
+                <ActivityIndicator 
+                    style={{ justifyContent: 'center', alignItems: 'center' }}
+                    size="large"
+                    color={Colors.primary} />
+            );
+        }
         return (
             <View style={ styles.container }>
-                <NavigationEvents onDidFocus={ () => this.setState({ title: '' }) } />
+                <NavigationEvents onDidFocus={ () => this.resetState() } />
 
                 <Modal
                     animationType="slide"
                     transparent={true}
+                    onRequestClose={() => {return;}}
                     visible={ this.state.colorModalOpen }>
 
                     <View style={ styles.colorModalWrapper }>

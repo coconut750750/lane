@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
-import firebase from 'firebase';
+import { NavigationEvents } from 'react-navigation';
 import { FAB, Portal } from 'react-native-paper';
+import firebase from 'firebase';
 var _ = require('lodash');
 
 import Colors from '../constants/Colors'
@@ -108,6 +109,8 @@ export default class CalendarScreen extends Component {
         // />
         return (
             <View style={styles.container}>
+                <NavigationEvents onDidFocus={ () => this.retrieveLanes() } />
+                
                 <LaneCalendar
                     markings={{ ...this.state.markings }}
                     onDayPress={ date => this.getLanes(date) }/>
