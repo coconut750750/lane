@@ -1,11 +1,25 @@
 import React, { Component } from 'react';
-import { View, Button, TextInput, StyleSheet, TouchableNativeFeedback } from 'react-native'
-import { IconButton, Text } from 'react-native-paper'
+import { 
+    View,
+    Button,
+    TextInput,
+    StyleSheet,
+    TouchableNativeFeedback,
+    TouchableHighlight,
+    Modal
+} from 'react-native'
+import { 
+    IconButton,
+    Text,
+    Surface
+} from 'react-native-paper'
 import { NavigationEvents } from 'react-navigation';
 import ImageBrowser from '../image_picker/ImageBrowser';
 import { Permissions } from 'expo';
 import firebase from 'firebase'
 import MasonryList from "react-native-masonry-list";
+import ColorPalette from 'react-native-color-palette'
+
 import md5 from 'md5';
 
 import Colors from '../constants/Colors'
@@ -16,9 +30,11 @@ export default class CreateScreen extends Component {
 
         this.state = {
             title: '',
-            imageBrowserOpen: false,
             photos: [],
+            imageBrowserOpen: false,
+            colorModalOpen: false
         };
+        this.color = Colors.primary;
     }
 
     async handleAddPhotos() {
@@ -110,7 +126,8 @@ export default class CreateScreen extends Component {
                 owner: userid,
                 title: this.state.title,
                 startDate: start,
-                endDate: end
+                endDate: end,
+                color: this.color
         });
 
         firebase.database()
@@ -122,6 +139,13 @@ export default class CreateScreen extends Component {
         this.props.navigation.goBack()
     }
 
+    handleSelectColor(color) {
+        this.color = color;
+        this.setState({
+            colorModalOpen: false
+        });
+    }
+
     render() {
         if (this.state.imageBrowserOpen) {
             return (<ImageBrowser
@@ -130,8 +154,28 @@ export default class CreateScreen extends Component {
             );
         }
         return (
-            <View style={styles.container}>
+            <View style={ styles.container }>
                 <NavigationEvents onDidFocus={ () => this.setState({ title: '' }) } />
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={ this.state.colorModalOpen }>
+
+                    <View style={ styles.colorModalWrapper }>
+                        <Surface style={ styles.colorModal }>
+                            <ColorPalette
+                                onChange={ color => {
+                                    this.color = color;
+                                    this.setState({ colorModalOpen: false });
+                                }}
+                                value={ this.color }
+                                colors={[Colors.primary, Colors.secondary, '#C0392B', '#E74C3C', '#9B59B6', '#8E44AD', '#2980B9']}
+                                icon={ <Text>x</Text> }
+                                title={''}/>
+                        </Surface>
+                    </View>
+                </Modal>
 
                 <View style={{ flexDirection: 'row' }}>
                     <IconButton
@@ -147,16 +191,22 @@ export default class CreateScreen extends Component {
                         size={24}
                         style={{ flex: 0.1 }}
                         color={ Colors.primary }
-                        onPress={() => this.handleDone()}
-                    />
+                        onPress={() => this.handleDone()}/>
                 </View>
 
-                <TextInput
-                    placeholder='Title'
-                    value={this.state.title}
-                    onChangeText={text => this.setState({ title: text })}
-                    style={{ ...styles.textInput }}
-                />
+                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                    <TextInput
+                        placeholder='Title'
+                        value={this.state.title}
+                        onChangeText={text => this.setState({ title: text })}
+                        style={{ ...styles.titleInput, flex: 0.9, color: this.color }}/>
+                    <IconButton
+                        icon="radio-button-checked"
+                        color={ this.color }
+                        size={24}
+                        style={{ flex: 0.1 }}
+                        onPress={() => this.setState({ colorModalOpen: true })}/>
+                </View>
 
                  <MasonryList
                     sorted
@@ -192,7 +242,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1
     },
-    textInput: {
+    titleInput: {
         margin: 16,
         fontSize: 36,
     },
@@ -210,5 +260,20 @@ const styles = StyleSheet.create({
         height: 160,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    colorModalWrapper: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: Colors.backdrop,
+    },
+    colorModal: {
+        padding: 8,
+        margin: 50,
+        borderRadius: 8,
+        alignItems: 'center',
+        justifyContent: 'center',
+        elevation: 4,
+        height: 150
     }
 })
