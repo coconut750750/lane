@@ -36,7 +36,7 @@ export default class CreateScreen extends Component {
         }
     }
 
-    async uploadImageAsync(albumid, photo) {
+    async uploadImageAsync(laneid, photo) {
       // Why are we using XMLHttpRequest? See:
       // https://github.com/expo/expo/issues/2402#issuecomment-443726662
         const blob = await new Promise((resolve, reject) => {
@@ -56,12 +56,17 @@ export default class CreateScreen extends Component {
         const ref = firebase
             .storage()
             .ref()
-            .child(albumid)
+            .child(laneid)
             .child(photo.md5);
         const snapshot = await ref.put(blob);
-
         blob.close();
-        return await snapshot.ref.getDownloadURL();
+
+        const downloadUrl = await snapshot.ref.getDownloadURL();
+        firebase.database()
+            .ref('lanes')
+            .child(laneid)
+            .child('photos')
+            .push(downloadUrl);
     }
 
     imageBrowserCallback = (callback) => {
@@ -91,20 +96,19 @@ export default class CreateScreen extends Component {
         }
         
         var userid = firebase.auth().currentUser.uid;
-        var albumid = md5(userid + this.state.title);
+        var laneid = md5(userid + this.state.title);
         const { start, end } = this.getStartEnd()
 
-        this.state.photos.forEach((photo) => {
-            this.uploadImageAsync(albumid, photo);
+        this.state.photos.forEach(photo => {
+            this.uploadImageAsync(laneid, photo)
         });
 
         firebase.database()
             .ref('lanes')
-            .child(albumid)
+            .child(laneid)
             .set({
                 owner: userid,
                 title: this.state.title,
-                photos: this.state.photos.map(p => p.md5),
                 startDate: start,
                 endDate: end
         });
@@ -113,7 +117,7 @@ export default class CreateScreen extends Component {
             .ref('users')
             .child(userid)
             .child('lanes')
-            .push(albumid);
+            .push(laneid);
 
         this.props.navigation.goBack()
     }

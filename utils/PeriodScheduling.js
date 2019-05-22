@@ -1,7 +1,7 @@
 var _ = require('lodash');
 
 export function periodsIntersect(periodA, periodB) {
-    return !(periodA.end <= periodB.start || periodA.start >= periodB.end);
+    return !(periodA.end < periodB.start || periodA.start > periodB.end);
 }
 
 export default function schedulePeriods(periods) {

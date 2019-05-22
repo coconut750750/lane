@@ -25,16 +25,16 @@ describe('PeriodScheduling', () => {
     expect(periodsIntersect(periodA, periodB)).toBe(false);
   });
 
-  it('edge case left no intersection', () => {
+  it('edge case left intersection', () => {
     var periodA = { start: 0, end: 5, color: '#ffffff', id: 'a', height: -1 };
     var periodB = { start: -5, end: 0, color: '#ffffff', id: 'b', height: -1 };
-    expect(periodsIntersect(periodA, periodB)).toBe(false);
+    expect(periodsIntersect(periodA, periodB)).toBe(true);
   });
 
-  it('edge case right no intersection', () => {
+  it('edge case right intersection', () => {
     var periodA = { start: 0, end: 5, color: '#ffffff', id: 'a', height: -1 };
     var periodB = { start: 5, end: 8, color: '#ffffff', id: 'b', height: -1 };
-    expect(periodsIntersect(periodA, periodB)).toBe(false);
+    expect(periodsIntersect(periodA, periodB)).toBe(true);
   });
 
   it('simple scheduling height all 0', () => {
@@ -61,7 +61,7 @@ describe('PeriodScheduling', () => {
   it('scheduling one intersects two adjacents', () => {
     var periodA = { start: 3, end: 7, color: '#ffffff', id: 'a', height: -1 };
     var periodB = { start: 0, end: 5, color: '#ffffff', id: 'b', height: -1 };
-    var periodC = { start: 5, end: 12, color: '#ffffff', id: 'c', height: -1 };
+    var periodC = { start: 6, end: 12, color: '#ffffff', id: 'c', height: -1 };
     var periods = [periodA, periodB, periodC];
     var schedule = schedulePeriods(periods);
     expect(schedule.length).toBe(periods.length);

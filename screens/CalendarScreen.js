@@ -21,8 +21,10 @@ export default class CalendarScreen extends Component {
         this.retrieveLanes();
 
         this.state = {
+            lanes: {},
             markings: {},
             open: false,
+            selectedLanes: [],
         };
     }
 
@@ -52,13 +54,15 @@ export default class CalendarScreen extends Component {
 
     async retrieveLanes() {
         var userid = firebase.auth().currentUser.uid;
+        var laneObjs = {};
         var periods = [];
         await firebase.database().ref('users').child(userid).child('lanes').once('value').then(datasnapshot => {
             var lanes = datasnapshot.val()
             var markings = Object.keys(lanes).map( key =>
                 firebase.database().ref('lanes').child(lanes[key]).once('value', lanesnapshot => {
-                    var lane = lanesnapshot.val()
-                    var color = lane.color;
+                    var laneid = lanesnapshot.key;
+                    var lane = lanesnapshot.val();
+                    laneObjs[laneid] = lane;
                     periods.push({
                         start: new Date(lane.startDate).getTime(),
                         end: new Date(lane.endDate).getTime(),
@@ -68,12 +72,33 @@ export default class CalendarScreen extends Component {
                     });
                 })
             );
-            Promise.all(markings).then( lanes => {
+            Promise.all(markings).then(lanes => {
                 var scheduled = schedulePeriods(periods);
                 var firebaseMarkings = this.setupScheduledMarkings(scheduled);
-                this.setState({markings: firebaseMarkings});
+                this.setState({
+                    lanes: laneObjs,
+                    markings: firebaseMarkings
+                });
             });
         });
+    }
+
+    getLanes(date) {
+        var selectedLanes = [];
+        _.forEach(this.state.lanes, (lane, laneid) => {
+            var start = new Date(lane.startDate).getTime();
+            var end = new Date(lane.endDate).getTime();
+            var selected = new Date(date).getTime();
+            if (selected >= start && selected <= end) {
+                selectedLanes.push(laneid);
+            }
+        });
+
+        if (!_.isEqual(_.sortBy(selectedLanes), _.sortBy(this.state.selectedLanes))) {
+            this.setState({
+                selectedLanes: selectedLanes
+            });
+        }
     }
 
     render() {
@@ -85,9 +110,13 @@ export default class CalendarScreen extends Component {
             <View style={styles.container}>
                 <LaneCalendar
                     markings={{ ...this.state.markings }}
-                />
-                <LaneContent
-                />
+                    onDayPress={ date => this.getLanes(date) }/>
+                {this.state.selectedLanes.length > 0 &&
+                    <LaneContent
+                        title={ this.state.lanes[this.state.selectedLanes[0]].title }
+                        color={ this.state.lanes[this.state.selectedLanes[0]].color }
+                        images={ Object.values(this.state.lanes[this.state.selectedLanes[0]].photos) }/>
+                }
                 <FAB.Group
                       open={this.state.open}
                       icon={this.state.open ? 'add' : 'expand-less'}
@@ -99,8 +128,7 @@ export default class CalendarScreen extends Component {
                             if (this.state.open) {
                                 this.props.navigation.navigate('Create');
                             }
-                      }}
-                />
+                      }}/>
             </View>
         );
     }

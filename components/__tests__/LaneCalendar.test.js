@@ -35,22 +35,6 @@ describe('LaneCalendar', () => {
         const component = shallow(<LaneCalendar markings={{}}/>);
         const instance = component.instance();
         instance.onDayPress({dateString: '2019-05-20'});
-        expect(instance.state.allMarkings).toEqual({
-            ['2019-05-20']: {selected: true, disableTouchEvent: true}
-        });
-    });
-
-    it('selected marked date is highlighted', () => {
-        const component = shallow(<LaneCalendar markings={markings}/>);
-        const instance = component.instance();
-        instance.onDayPress({dateString: '2019-05-16'});
-        expect(instance.state.allMarkings['2019-05-16']).toEqual({
-            periods: [
-                { startingDay: true, endingDay: false, color: '#5f9ea0' },
-                { startingDay: true, endingDay: false, color: '#ffa500' },
-            ],
-            selected: true,
-            disableTouchEvent: true
-        });
+        expect(instance.state.selected).toEqual('2019-05-20');
     });
 });
