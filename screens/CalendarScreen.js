@@ -113,9 +113,7 @@ export default class CalendarScreen extends Component {
                     onDayPress={ date => this.getLanes(date) }/>
                 {this.state.selectedLanes.length > 0 &&
                     <LaneContent
-                        title={ this.state.lanes[this.state.selectedLanes[0]].title }
-                        color={ this.state.lanes[this.state.selectedLanes[0]].color }
-                        images={ Object.values(this.state.lanes[this.state.selectedLanes[0]].photos) }/>
+                        lanes={ this.state.selectedLanes.map(i => this.state.lanes[i]) }/>
                 }
                 <FAB.Group
                       open={this.state.open}
