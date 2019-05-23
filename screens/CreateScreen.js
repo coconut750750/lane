@@ -11,18 +11,20 @@ import {
 import { 
     IconButton,
     Text,
-    Surface
+    Surface,
+    List
 } from 'react-native-paper'
 import { NavigationEvents } from 'react-navigation';
 import ImageBrowser from '../image_picker/ImageBrowser';
 import { Permissions } from 'expo';
 import firebase from 'firebase'
 import MasonryList from "react-native-masonry-list";
-import ColorPalette from 'react-native-color-palette'
+import ColorPalette from '../components/ColorPalette'
 
 import md5 from 'md5';
 
-import Colors from '../constants/Colors'
+import Colors from '../constants/Colors';
+import Layout from '../constants/Layout';
 
 export default class CreateScreen extends Component {
     constructor(props) {
@@ -159,6 +161,69 @@ export default class CreateScreen extends Component {
         });
     }
 
+    renderTopNav() {
+        return (
+            <View style={{ flexDirection: 'row' }}>
+                <IconButton
+                    icon="arrow-back"
+                    size={24}
+                    style={{ flex: 0.1 }}
+                    onPress={() => this.props.navigation.goBack()}/>
+                <View style={{ flex: 0.8 }}>
+                </View>
+                <IconButton
+                    icon="done"
+                    size={24}
+                    style={{ flex: 0.1 }}
+                    color={ this.color }
+                    onPress={() => this.handleDone()}/>
+            </View>
+        );
+    }
+
+    renderColorModal() {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                onRequestClose={() => {return;}}
+                visible={ this.state.colorModalOpen }>
+
+                <View style={ styles.colorModalWrapper }>
+                    <Surface style={ styles.colorModal }>
+                        <ColorPalette
+                            onChange={ color => {
+                                this.color = color;
+                                this.setState({ colorModalOpen: false });
+                            }}
+                            style={{ flex: 1 }}
+                            value={ this.color }
+                            colors={ Colors.laneColors }
+                            title={''}/>
+                    </Surface>
+                </View>
+            </Modal>
+        );
+    }
+
+    renderTitle() {
+        return (
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <TextInput
+                    placeholder='Title'
+                    value={this.state.title}
+                    onChangeText={text => this.setState({ title: text })}
+                    style={{ ...styles.titleInput, flex: 0.9, color: this.color }}/>
+                <IconButton
+                    icon="radio-button-checked"
+                    color={ this.color }
+                    size={24}
+                    style={{ flex: 0.1 }}
+                    onPress={() => this.setState({ colorModalOpen: true })}/>
+            </View>
+        );
+    }
+
     render() {
         if (this.state.imageBrowserOpen) {
             return (<ImageBrowser
@@ -178,57 +243,11 @@ export default class CreateScreen extends Component {
             <View style={ styles.container }>
                 <NavigationEvents onDidFocus={ () => this.resetState() } />
 
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    onRequestClose={() => {return;}}
-                    visible={ this.state.colorModalOpen }>
+                {this.renderColorModal()}
 
-                    <View style={ styles.colorModalWrapper }>
-                        <Surface style={ styles.colorModal }>
-                            <ColorPalette
-                                onChange={ color => {
-                                    this.color = color;
-                                    this.setState({ colorModalOpen: false });
-                                }}
-                                value={ this.color }
-                                colors={[Colors.primary, Colors.secondary, '#C0392B', '#E74C3C', '#9B59B6', '#8E44AD', '#2980B9']}
-                                icon={ <Text>x</Text> }
-                                title={''}/>
-                        </Surface>
-                    </View>
-                </Modal>
+                {this.renderTopNav()}
 
-                <View style={{ flexDirection: 'row' }}>
-                    <IconButton
-                        icon="arrow-back"
-                        size={24}
-                        style={{ flex: 0.1 }}
-                        onPress={() => this.props.navigation.goBack()}
-                    />
-                    <View style={{ flex: 0.8 }}>
-                    </View>
-                    <IconButton
-                        icon="done"
-                        size={24}
-                        style={{ flex: 0.1 }}
-                        color={ Colors.primary }
-                        onPress={() => this.handleDone()}/>
-                </View>
-
-                <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                    <TextInput
-                        placeholder='Title'
-                        value={this.state.title}
-                        onChangeText={text => this.setState({ title: text })}
-                        style={{ ...styles.titleInput, flex: 0.9, color: this.color }}/>
-                    <IconButton
-                        icon="radio-button-checked"
-                        color={ this.color }
-                        size={24}
-                        style={{ flex: 0.1 }}
-                        onPress={() => this.setState({ colorModalOpen: true })}/>
-                </View>
+                {this.renderTitle()}
 
                  <MasonryList
                     sorted
@@ -262,7 +281,8 @@ export default class CreateScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        width: Layout.window.width,
+        height: Layout.window.height
     },
     titleInput: {
         margin: 16,
@@ -273,7 +293,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: Colors.lightGray,
         height: 80,
-        margin: 16,
+        margin: 48,
         justifyContent: 'center'
     },
     addPhotoView: {
@@ -296,6 +316,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 4,
-        height: 150
+        height: 100
     }
 })

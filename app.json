@@ -27,7 +27,7 @@
       "bundleIdentifier": "com.brandon.lane"
     },
     "android": {
-      "package": "com.brandon.lane"
+      "package": "com.brandon.lane",
     },
     "androidStatusBar": {
       "backgroundColor": "#ffffff",

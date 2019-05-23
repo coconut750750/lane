@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Button, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FAB, Portal } from 'react-native-paper';
 import firebase from 'firebase';
@@ -26,6 +26,7 @@ export default class CalendarScreen extends Component {
             markings: {},
             open: false,
             selectedLanes: [],
+            retrieveDone: false
         };
     }
 
@@ -78,7 +79,8 @@ export default class CalendarScreen extends Component {
                 var firebaseMarkings = this.setupScheduledMarkings(scheduled);
                 this.setState({
                     lanes: laneObjs,
-                    markings: firebaseMarkings
+                    markings: firebaseMarkings,
+                    retrieveDone: true
                 });
             });
         });
@@ -107,10 +109,18 @@ export default class CalendarScreen extends Component {
         //    title="Sign Out"
         //    onPress={ () => firebase.auth().signOut() }
         // />
+        if (!this.state.retrieveDone) {
+            return (
+                <ActivityIndicator 
+                    style={{ justifyContent: 'center', alignItems: 'center' }}
+                    size="large"
+                    color={Colors.primary} />
+            );
+        }
         return (
             <View style={styles.container}>
                 <NavigationEvents onDidFocus={ () => this.retrieveLanes() } />
-                
+
                 <LaneCalendar
                     markings={{ ...this.state.markings }}
                     onDayPress={ date => this.getLanes(date) }/>
