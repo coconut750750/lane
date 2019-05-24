@@ -27,6 +27,7 @@ export default class ImageTile extends React.PureComponent {
                 <Image
                     style={{ flex: 1 }}
                     resizeMode='cover'
+                    resizeMethod='resize'
                     source={{ uri: uri }}/>
             </TouchableHighlight>
 

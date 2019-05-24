@@ -25,6 +25,6 @@ export default function schedulePeriods(periods) {
         last = -1;
     }
     
-    periods = _.sortBy(periods, ['height', 'end']);
+    periods = _.sortBy(periods, ['height', 'start']);
     return periods;
 }

@@ -7,33 +7,33 @@ export default class MasonryRow extends Component {
     constructor(props) {
         super(props);
         this.len = props.data.length;
-        this.calculateOffsets(props.data);
     }
 
     shouldComponentUpdate() {
-        return false
-    }
-
-    calculateOffsets(data) {
-        var offset = 0;
-        for (var i = 0; i < data.length; i++) {
-            data[i].offset = offset;
-            offset += data[i].width
-        }
+        return false;
     }
 
     renderItem({item, index}) {
         return (
-            <View style={{ flex: 1, width: item.width, height: item.height, padding: item.padding }}>
+            <View style={{ flex: 1, width: item.width, height: item.height, padding: this.props.padding }}>
                 <Image
                     style={{ flex: 1 }}
                     resizeMode='cover'
+                    resizeMethod='resize'
                     source={{ uri: item.uri }}/>
             </View>
         );
     }
 
     getItemLayout(data, index) {
+        var offset = data[index].offset;
+        if (offset === undefined) {
+            offset = 0;
+            for (var i = 0; i < data.length; i++) {
+                data[i].offset = offset;
+                offset += data[i].width;
+            }
+        }
         return { length: data[index].width, offset: data[index].offset, index }
     }
 
@@ -44,8 +44,9 @@ export default class MasonryRow extends Component {
                     data={this.props.data}
                     horizontal={true}
                     getItemLayout={this.getItemLayout}
-                    renderItem={this.renderItem}
-                    keyExtractor={(item,index) => item.uri}
+                    renderItem={ (item) => this.renderItem(item) }
+                    keyExtractor={ (item,index) => item.uri }
+                    showsHorizontalScrollIndicator={false}
                     initialNumToRender={this.len}
                     removeClippedSubviews={true}
                     windowSize={this.len}

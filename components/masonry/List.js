@@ -4,74 +4,75 @@ var _ = require('lodash');
 
 import MasonryRow from './Row';
 import Layout from '../../constants/Layout';
-import { calculateRowDimensions } from './DimensionUtils';
+import { getDimensions, calculateRowDimensions } from './DimensionUtils';
 
 export default class MasonryList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [] // {data: {height, padding, width, uri}, height}
+            data: [] // {data: {height, width, uri}, height}
         };
 
-        var rowProps = {
-            width: props.width,
-            padding: props.itemPadding
-        }
-
-        var rowCounts = props.rowCounts != undefined ? 
-            props.rowCounts : 
-            this.generateRowCounts(props.uris.length);
-
-        this.generateRows(props.uris, rowCounts, rowProps);
+        this.generateRows(props.uris);
     }
 
-    generateRowCounts(totalCount) {
-        var count = 0;
+    generateRowCounts(dimensions) {
+        let aspectRange = 0.25;
+
+        var total = dimensions.length;
+        var curr = 0;
         var counts = [];
-        while (count < totalCount) {
+
+        while (curr < total) {
+            let { height, width } = dimensions[curr];
+            var aspect =  width / height;
             var delta;
-            if (count + 2 > totalCount) {
-                delta = 1;
-            } else {
-                delta = 2;
+            var max = aspect >= 0.75 && aspect < 1.34 ? 3 : 2
+
+            for (delta = 1; delta < max && curr + delta < total; delta++) {
+                let { height, width } = dimensions[curr + delta];
+                var nextAspect = width / height;
+
+                var difference = Math.abs(aspect - nextAspect);
+                if (difference > aspectRange) {
+                    break;
+                }
             }
+
             counts.push(delta);
-            count += delta;
+            curr += delta;
         }
 
         return counts;
     }
 
-    calculateRowOffsets(rowData) {
-        var offset = 0;
-        for (var i = 0; i < rowData.length; i++) {
-            rowData[i].offset = offset;
-            offset += rowData[i].height
-        }
-    }
+    async generateRows(uris) {
+        let dimensions = await getDimensions(uris);
 
-    async generateRows(uris, rowCounts, rowProps) {
+        var rowCounts = this.generateRowCounts(dimensions);
+
         var rows = [];
         var uriIndex = 0;
         _.forEach(rowCounts, c => {
-            rows.push({
-                uris: uris.slice(uriIndex, uriIndex + c),
-                ...rowProps
-            });
+            rows.push(dimensions.slice(uriIndex, uriIndex + c));
             uriIndex += c;
         });
 
-        await Promise.all(rows.map(rows => 
-            calculateRowDimensions(rows.uris, rows.width, rows.padding)
-        )).then(rowData => {
-            this.calculateRowOffsets(rowData);
-            this.setState({
-                data: rowData,
-            });
+        rowData = rows.map(row => calculateRowDimensions(row, this.props.width));
+        this.setState({
+            data: rowData,
         });
     }
 
     getItemLayout(data, index) {
+        var offset = data[index].offset;
+        if (offset === undefined) {
+            offset = 0;
+            for (var i = 0; i < data.length; i++) {
+                data[i].offset = offset;
+                offset += data[i].height;
+            }
+        }
         return { length: data[index].height, offset: data[index].offset, index };
     }
 
@@ -81,6 +82,7 @@ export default class MasonryList extends Component {
                 <MasonryRow
                     data={item.data}
                     height={item.height}
+                    padding={this.props.itemPadding}
                 />
             </View>
         );
@@ -98,13 +100,13 @@ export default class MasonryList extends Component {
                     pageSize={1}
                     data={this.state.data}
                     getItemLayout={this.getItemLayout}
-                    renderItem={this.renderItem}
-                    keyExtractor={(item, index) => String(index)}
+                    renderItem={ (item) => this.renderItem(item) }
+                    keyExtractor={ (item, index) => String(index) }
                     showsVerticalScrollIndicator={false}
                     removeClippedSubviews={true}
-                    initialNumToRender={5}
+                    initialNumToRender={10}
                     maxToRenderPerBatch={10}
-                    windowSize={11}
+                    windowSize={21}
                 />
             </View>
         );

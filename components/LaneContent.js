@@ -21,9 +21,7 @@ export default class LaneContent extends Component {
         this.setState({
             lanes: this.readyLanesForMasonry(newProps.lanes)
         });
-    }
-
-    onClickPhoto(item, index) {
+        this.scrollToBeginning();
     }
 
     readyLanesForMasonry(lanes) {
@@ -33,6 +31,10 @@ export default class LaneContent extends Component {
             return lane;
         });
         return lanes;
+    }
+
+    scrollToBeginning() {
+        this.flatList.scrollToIndex({animated: true, index: 0});
     }
 
     getItemLayout(data, index) {
@@ -45,7 +47,7 @@ export default class LaneContent extends Component {
             <View style={ styles.page }>
                 <View style={ styles.title }>
                     <Headline
-                        style={{ color: item.color }}>
+                        style={{ color: item.color, fontFamily: 'roboto-medium' }}>
                         { item.title }
                     </Headline>
                 </View>
@@ -63,6 +65,7 @@ export default class LaneContent extends Component {
         return (
             <View style={ styles.container }>
                 <FlatList
+                    ref={(ref) => { this.flatList = ref; }}
                     style={{ flex: 1 }}
                     horizontal={true}
                     pagingEnabled={true}
@@ -74,9 +77,9 @@ export default class LaneContent extends Component {
                     keyExtractor={ (item, index) => String(item.id) }
                     showsHorizontalScrollIndicator={false}
                     removeClippedSubviews={true}
-                    initialNumToRender={1}
-                    maxToRenderPerBatch={1}
-                    windowSize={1}
+                    initialNumToRender={3}
+                    maxToRenderPerBatch={3}
+                    windowSize={5}
                 />
             </View>
         );
