@@ -1,22 +1,20 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
 
-import firebase from 'firebase'
+import { checkIfLoggedIn } from '../backend/Auth';
 
 export default class StartScreen extends Component {
 
     componentDidMount() {
-        this.checkIfLoggedIn();
+        checkIfLoggedIn(this.checkLogin.bind(this));
     }
 
-    checkIfLoggedIn() {
-        firebase.auth().onAuthStateChanged(user => {
-            if (user) {
-                this.props.navigation.navigate('Home');
-            } else {
-                this.props.navigation.navigate('Login');
-            }
-        });
+    checkLogin(loggedIn) {
+        if (loggedIn) {
+            this.props.navigation.navigate('Home');
+        } else {
+            this.props.navigation.navigate('Login');
+        }
     }
 
     render() {

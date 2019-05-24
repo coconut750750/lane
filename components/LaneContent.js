@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import MasonryList from "react-native-masonry-list";
 import { Headline } from 'react-native-paper';
 var _ = require('lodash');
 
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
+import MasonryList from './masonry/List';
 
 export default class LaneContent extends Component {
     constructor(props) {
@@ -13,6 +13,8 @@ export default class LaneContent extends Component {
         this.state = {
             lanes: this.readyLanesForMasonry(props.lanes)
         };
+
+        this.testUris = Object.values(props.lanes[0].photos);
     }
 
     componentWillReceiveProps(newProps) {
@@ -27,10 +29,15 @@ export default class LaneContent extends Component {
     readyLanesForMasonry(lanes) {
         lanes = _.cloneDeep(lanes);
         lanes.forEach( lane => {
-            lane.photos = Object.values(lane.photos).map( p => { return {'uri': p}; });
+            lane.photos = Object.values(lane.photos);
             return lane;
         });
         return lanes;
+    }
+
+    getItemLayout(data, index) {
+        let length = Layout.window.width;
+        return { length: length, offset: length * index, index };
     }
 
     renderItem(item) {
@@ -43,9 +50,10 @@ export default class LaneContent extends Component {
                     </Headline>
                 </View>
                 <MasonryList
-                    sorted
-                    images={ item.photos }
-                    onPressImage={ (item, index) => this.onClickPhoto(item, index) }
+                    uris={ item.photos }
+                    width={ Layout.window.width }
+                    itemPadding={2}
+                    style={{ flex: 1 }}
                 />
             </View>
         );
@@ -55,15 +63,20 @@ export default class LaneContent extends Component {
         return (
             <View style={ styles.container }>
                 <FlatList
-                    style={ styles.container }
+                    style={{ flex: 1 }}
                     horizontal={true}
                     pagingEnabled={true}
                     scrollEnabled={true}
                     pageSize={1}
                     data={this.state.lanes}
+                    getItemLayout={this.getItemLayout}
                     renderItem={ ({item}) => this.renderItem(item) }
-                    keyExtractor={(item, index) => String(index)}
+                    keyExtractor={ (item, index) => String(item.id) }
                     showsHorizontalScrollIndicator={false}
+                    removeClippedSubviews={true}
+                    initialNumToRender={1}
+                    maxToRenderPerBatch={1}
+                    windowSize={1}
                 />
             </View>
         );

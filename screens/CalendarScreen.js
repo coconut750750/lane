@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator, Button, Image } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FAB, Portal } from 'react-native-paper';
-import firebase from 'firebase';
 var _ = require('lodash');
 
 import Colors from '../constants/Colors'
 import LaneCalendar from '../components/LaneCalendar';
 import LaneContent from '../components/LaneContent';
 import schedulePeriods from '../utils/PeriodScheduling';
+import { signOut } from '../backend/Auth';
+import { retrieveLanes } from '../backend/Database';
 
 function mergeCustomizer(objValue, srcValue) {
     if (_.isArray(objValue)) {
@@ -19,12 +20,12 @@ function mergeCustomizer(objValue, srcValue) {
 export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
-        this.retrieveLanes();
+        this.updateLanes();
 
         this.state = {
             lanes: {},
             markings: {},
-            open: false,
+            fabOpen: false,
             selectedLanes: [],
             retrieveDone: false
         };
@@ -54,35 +55,24 @@ export default class CalendarScreen extends Component {
         return markings;
     }
 
-    async retrieveLanes() {
-        var userid = firebase.auth().currentUser.uid;
-        var laneObjs = {};
-        var periods = [];
-        await firebase.database().ref('users').child(userid).child('lanes').once('value').then(datasnapshot => {
-            var lanes = datasnapshot.val()
-            var markings = Object.keys(lanes).map( key =>
-                firebase.database().ref('lanes').child(lanes[key]).once('value', lanesnapshot => {
-                    var laneid = lanesnapshot.key;
-                    var lane = lanesnapshot.val();
-                    laneObjs[laneid] = lane;
-                    periods.push({
-                        start: new Date(lane.startDate).getTime(),
-                        end: new Date(lane.endDate).getTime(),
-                        color: lane.color,
-                        id: lanes[key],
-                        height: -1
-                    });
-                })
-            );
-            Promise.all(markings).then(lanes => {
-                var scheduled = schedulePeriods(periods);
-                var firebaseMarkings = this.setupScheduledMarkings(scheduled);
-                this.setState({
-                    lanes: laneObjs,
-                    markings: firebaseMarkings,
-                    retrieveDone: true
-                });
-            });
+    processPeriods(periods) {
+        var scheduled = schedulePeriods(periods);
+        var markings = this.setupScheduledMarkings(scheduled);
+        this.setState({
+            markings: markings,
+        });
+    }
+
+    processLanes(lanes) {
+        this.setState({
+            lanes: lanes,
+        });
+    }
+
+    async updateLanes() {
+        await retrieveLanes(this.processLanes.bind(this), this.processPeriods.bind(this));
+        this.setState({
+            retrieveDone: true,
         });
     }
 
@@ -105,21 +95,22 @@ export default class CalendarScreen extends Component {
     }
 
     render() {
-        // <Button
-        //    title="Sign Out"
-        //    onPress={ () => firebase.auth().signOut() }
-        // />
         if (!this.state.retrieveDone) {
             return (
-                <ActivityIndicator 
-                    style={{ justifyContent: 'center', alignItems: 'center' }}
-                    size="large"
-                    color={Colors.primary} />
+                <View style={styles.container}>
+                    <ActivityIndicator 
+                        size="large"
+                        color={Colors.primary} />
+                </View>
             );
         }
+        // <Button
+           // title="Sign Out"
+           // onPress={ () => signOut() }
+        // />  
         return (
             <View style={styles.container}>
-                <NavigationEvents onDidFocus={ () => this.retrieveLanes() } />
+                <NavigationEvents onDidFocus={ () => this.updateLanes() } />
 
                 <LaneCalendar
                     markings={{ ...this.state.markings }}
@@ -129,14 +120,14 @@ export default class CalendarScreen extends Component {
                         lanes={ this.state.selectedLanes.map(i => this.state.lanes[i]) }/>
                 }
                 <FAB.Group
-                      open={this.state.open}
-                      icon={this.state.open ? 'add' : 'expand-less'}
+                      open={this.state.fabOpen}
+                      icon={this.state.fabOpen ? 'add' : 'expand-less'}
                       actions={[
                             { icon: 'create', label: 'Edit', onPress: () => console.log('Pressed Edit') },
                       ]}
-                      onStateChange={({ open }) => this.setState({ open })}
+                      onStateChange={({ open }) => this.setState({ fabOpen: open })}
                       onPress={() => {
-                            if (this.state.open) {
+                            if (this.state.fabOpen) {
                                 this.props.navigation.navigate('Create');
                             }
                       }}/>
@@ -147,7 +138,9 @@ export default class CalendarScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     fab: {
         position: 'absolute',

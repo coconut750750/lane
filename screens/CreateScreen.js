@@ -15,16 +15,17 @@ import {
     List
 } from 'react-native-paper'
 import { NavigationEvents } from 'react-navigation';
-import ImageBrowser from '../image_picker/ImageBrowser';
 import { Permissions } from 'expo';
-import firebase from 'firebase'
 import MasonryList from "react-native-masonry-list";
-import ColorPalette from '../components/ColorPalette'
 
 import md5 from 'md5';
 
+import ImageBrowser from '../components/image_picker/ImageBrowser';
+import ColorPalette from '../components/ColorPalette'
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
+import { pushLane, uploadImageAsync } from '../backend/Database';
+import { getUserID } from '../backend/Auth';
 
 export default class CreateScreen extends Component {
     constructor(props) {
@@ -66,42 +67,6 @@ export default class CreateScreen extends Component {
         }
     }
 
-    async uploadImageAsync(laneid, photo) {
-        // Why are we using XMLHttpRequest? See:
-        // https://github.com/expo/expo/issues/2402#issuecomment-443726662
-        this.setState({
-            uploading: true
-        })
-        const blob = await new Promise((resolve, reject) => {
-            const xhr = new XMLHttpRequest();
-            xhr.onload = function() {
-                resolve(xhr.response);
-            };
-            xhr.onerror = function(e) {
-                console.log(e);
-                reject(new TypeError('Network request failed'));
-            };
-            xhr.responseType = 'blob';
-            xhr.open('GET', photo.uri, true);
-            xhr.send(null);
-        });
-
-        const ref = firebase
-            .storage()
-            .ref()
-            .child(laneid)
-            .child(photo.md5);
-        const snapshot = await ref.put(blob);
-        blob.close();
-
-        const downloadUrl = await snapshot.ref.getDownloadURL();
-        firebase.database()
-            .ref('lanes')
-            .child(laneid)
-            .child('photos')
-            .push(downloadUrl);
-    }
-
     imageBrowserCallback = (callback) => {
         callback.then((photos) => {
             var allPhotos = this.state.photos.concat(photos);
@@ -128,29 +93,21 @@ export default class CreateScreen extends Component {
             return;
         }
         
-        var userid = firebase.auth().currentUser.uid;
-        var laneid = md5(userid + this.state.title);
+        var userId = getUserID();
+        var laneId = md5(userId + this.state.title);
         const { start, end } = this.getStartEnd()
 
-        firebase.database()
-            .ref('lanes')
-            .child(laneid)
-            .set({
-                owner: userid,
+        pushLane(userId, laneId, {
                 title: this.state.title,
                 startDate: start,
                 endDate: end,
-                color: this.color
+                color: this.color});
+
+        this.setState({
+            uploading: true
         });
 
-        firebase.database()
-            .ref('users')
-            .child(userid)
-            .child('lanes')
-            .push(laneid);
-
-        await Promise.all(this.state.photos.map(photo => this.uploadImageAsync(laneid, photo)));
-
+        await Promise.all(this.state.photos.map(photo => uploadImageAsync(laneId, photo)));
         this.props.navigation.goBack()
     }
 
@@ -233,10 +190,11 @@ export default class CreateScreen extends Component {
         }
         if (this.state.uploading) {
             return (
-                <ActivityIndicator 
-                    style={{ justifyContent: 'center', alignItems: 'center' }}
-                    size="large"
-                    color={Colors.primary} />
+                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <ActivityIndicator 
+                        size="large"
+                        color={Colors.primary} />
+                </View>
             );
         }
         return (
@@ -249,15 +207,15 @@ export default class CreateScreen extends Component {
 
                 {this.renderTitle()}
 
-                 <MasonryList
+                <MasonryList
                     sorted
                     images={this.state.photos.map(photo => 
                             { return { uri: photo.uri, 
                                        width: photo.width,
-                                       height: photo.height}}
+                                       height: photo.height};}
                         )
                     }
-                    onPressImage={ (item, index) => this.onClickPhoto(item, index) }
+                    //onPressImage={ (item, index) => this.onClickPhoto(item, index) }
                     style={{ flex: 0.85 }}
                 />
                 
@@ -281,8 +239,8 @@ export default class CreateScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
+        height: Layout.window.height,
         width: Layout.window.width,
-        height: Layout.window.height
     },
     titleInput: {
         margin: 16,
@@ -311,7 +269,8 @@ const styles = StyleSheet.create({
     },
     colorModal: {
         padding: 8,
-        margin: 50,
+        margin: 24,
+        marginBottom: 50,
         borderRadius: 8,
         alignItems: 'center',
         justifyContent: 'center',
