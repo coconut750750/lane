@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator, Button, Image } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    ActivityIndicator,
+    Button,
+    Image,
+    Modal
+} from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import { FAB, Portal } from 'react-native-paper';
 var _ = require('lodash');
@@ -8,6 +16,7 @@ import Colors from '../constants/Colors'
 import LaneCalendar from '../components/LaneCalendar';
 import LaneContent from '../components/LaneContent';
 import schedulePeriods from '../utils/PeriodScheduling';
+import { setupScheduledMarkings, getValidLanes } from '../utils/PeriodTools';
 import { signOut } from '../backend/Auth';
 import { retrieveLanes } from '../backend/Database';
 
@@ -20,37 +29,14 @@ export default class CalendarScreen extends Component {
             lanes: {},
             markings: {},
             selectedLanes: [],
-            retrieveDone: false
+            retrieveDone: false,
+            shareModalOpen: false
         };
-    }
-
-    setupScheduledMarkings(scheduled) {
-        var markings = {}
-
-        scheduled.forEach( period => {
-            var start = new Date(period.start).toISOString().split('T')[0];
-            var curr = start;
-            var end = new Date(period.end).toISOString().split('T')[0];
-            var endNext = new Date(period.end + 86400000).toISOString().split('T')[0];
-
-            while (curr != endNext) {
-                if (!(curr in markings)) {
-                    markings[curr] = {periods:[]}
-                }
-                while (markings[curr].periods.length < period.height) {
-                    markings[curr].periods.push({color: 'transparent'})
-                }
-                markings[curr].periods.push({startingDay: curr === start, endingDay: curr === end, color: period.color});
-                curr = new Date(new Date(curr).getTime() + 86400000).toISOString().split('T')[0];
-            }
-        });
-
-        return markings;
     }
 
     processPeriods(periods) {
         var scheduled = schedulePeriods(periods);
-        var markings = this.setupScheduledMarkings(scheduled);
+        var markings = setupScheduledMarkings(scheduled);
         this.setState({
             markings: markings,
         });
@@ -70,22 +56,30 @@ export default class CalendarScreen extends Component {
     }
 
     getLanes(date) {
-        var selectedLanes = [];
-        _.forEach(this.state.lanes, (lane, laneid) => {
-            var start = new Date(lane.startDate).getTime();
-            var end = new Date(lane.endDate).getTime();
-            var selected = new Date(date).getTime();
-            if (selected >= start && selected <= end) {
-                selectedLanes.push(laneid);
-            }
-        });
-
+        var selectedLanes = getValidLanes(this.state.lanes, date);
         if (!_.isEqual(_.sortBy(selectedLanes), _.sortBy(this.state.selectedLanes))) {
             this.setState({
                 selectedLanes: selectedLanes
             });
         }
     }
+
+    // renderShareModal() {
+    //     return (
+    //         <Modal
+    //             animationType="slide"
+    //             transparent={true}
+    //             onRequestClose={ () => {} }
+    //             visible={ this.state.shareModalOpen }>
+    //             <ColorPickerView
+    //                 onChange={ color => {
+    //                     this.color = color;
+    //                     this.setState({ shareModalOpen: false });
+    //                 }}
+    //                 color={ this.color }/>
+    //         </Modal>
+    //     );
+    // }
 
     render() {
         if (!this.state.retrieveDone) {

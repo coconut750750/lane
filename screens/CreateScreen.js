@@ -11,7 +11,6 @@ import {
 import { 
     IconButton,
     Text,
-    Surface,
     List
 } from 'react-native-paper'
 import { NavigationEvents } from 'react-navigation';
@@ -112,13 +111,6 @@ export default class CreateScreen extends Component {
         this.props.navigation.goBack()
     }
 
-    handleSelectColor(color) {
-        this.color = color;
-        this.setState({
-            colorModalOpen: false
-        });
-    }
-
     renderTopNav() {
         return (
             <View style={{ flexDirection: 'row' }}>
@@ -144,7 +136,7 @@ export default class CreateScreen extends Component {
             <Modal
                 animationType="slide"
                 transparent={true}
-                onRequestClose={() => {return;}}
+                onRequestClose={ () => {} }
                 visible={ this.state.colorModalOpen }>
                 <ColorPickerView
                     onChange={ color => {

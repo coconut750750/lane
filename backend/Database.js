@@ -111,6 +111,8 @@ export async function retrieveLanes(processLanes, processPeriods) {
                     var lane = lanesnapshot.val();
                     laneObjs[laneId] = {...lane, id: laneId};
                     periods.push({
+                        startDate: lane.startDate,
+                        endDate: lane.endDate,
                         start: new Date(lane.startDate).getTime(),
                         end: new Date(lane.endDate).getTime(),
                         color: lane.color,
