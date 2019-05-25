@@ -11,21 +11,14 @@ import schedulePeriods from '../utils/PeriodScheduling';
 import { signOut } from '../backend/Auth';
 import { retrieveLanes } from '../backend/Database';
 
-function mergeCustomizer(objValue, srcValue) {
-    if (_.isArray(objValue)) {
-        return objValue.concat(srcValue);
-    }
-}
-
 export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
-        this.updateLanes();
+        this.initLaneListener();
 
         this.state = {
             lanes: {},
             markings: {},
-            fabOpen: false,
             selectedLanes: [],
             retrieveDone: false
         };
@@ -69,7 +62,7 @@ export default class CalendarScreen extends Component {
         });
     }
 
-    async updateLanes() {
+    async initLaneListener() {
         await retrieveLanes(this.processLanes.bind(this), this.processPeriods.bind(this));
         this.setState({
             retrieveDone: true,
@@ -104,13 +97,9 @@ export default class CalendarScreen extends Component {
                 </View>
             );
         }
-        // <Button
-           // title="Sign Out"
-           // onPress={ () => signOut() }
-        // />  
+
         return (
             <View style={styles.container}>
-                <NavigationEvents onDidFocus={ () => this.updateLanes() } />
 
                 <LaneCalendar
                     markings={{ ...this.state.markings }}
@@ -119,18 +108,16 @@ export default class CalendarScreen extends Component {
                     <LaneContent
                         lanes={ this.state.selectedLanes.map(i => this.state.lanes[i]) }/>
                 }
-                <FAB.Group
-                      open={this.state.fabOpen}
-                      icon={this.state.fabOpen ? 'add' : 'expand-less'}
-                      actions={[
-                            { icon: 'create', label: 'Edit', onPress: () => console.log('Pressed Edit') },
-                      ]}
-                      onStateChange={({ open }) => this.setState({ fabOpen: open })}
-                      onPress={() => {
-                            if (this.state.fabOpen) {
-                                this.props.navigation.navigate('Create');
-                            }
-                      }}/>
+                <FAB
+                    style={styles.fab}
+                    icon="add"
+                    onPress={ () => this.props.navigation.navigate('Create') }
+                />
+                <FAB
+                    style={{ position: 'absolute', margin: 16, left: 0, bottom: 0, }}
+                    icon="keyboard-return"
+                    onPress={ () => signOut() }
+                />
             </View>
         );
     }

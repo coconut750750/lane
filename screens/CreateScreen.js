@@ -18,13 +18,11 @@ import { NavigationEvents } from 'react-navigation';
 import { Permissions } from 'expo';
 import MasonryList from "react-native-masonry-list";
 
-import md5 from 'md5';
-
 import ImageBrowser from '../components/image_picker/ImageBrowser';
-import ColorPalette from '../components/ColorPalette'
+import ColorPickerView from '../components/ColorPickerView'
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
-import { pushLane, uploadImageAsync } from '../backend/Database';
+import { pushLane, uploadImageAsync, addLaneToUser } from '../backend/Database';
 import { getUserID } from '../backend/Auth';
 
 export default class CreateScreen extends Component {
@@ -92,22 +90,25 @@ export default class CreateScreen extends Component {
             alert('Please add a title');
             return;
         }
+        if (this.state.photos.length === 0) {
+            alert('Please add a photo');
+            return;
+        }
+        this.setState({uploading: true});
         
         var userId = getUserID();
-        var laneId = md5(userId + this.state.title);
         const { start, end } = this.getStartEnd()
 
-        pushLane(userId, laneId, {
-                title: this.state.title,
-                startDate: start,
-                endDate: end,
-                color: this.color});
-
-        this.setState({
-            uploading: true
-        });
+        let laneId = await pushLane(userId, {
+            title: this.state.title,
+            startDate: start,
+            endDate: end,
+            color: this.color});
 
         await Promise.all(this.state.photos.map(photo => uploadImageAsync(laneId, photo)));
+        
+        await addLaneToUser(userId, laneId);
+
         this.props.navigation.goBack()
     }
 
@@ -145,20 +146,12 @@ export default class CreateScreen extends Component {
                 transparent={true}
                 onRequestClose={() => {return;}}
                 visible={ this.state.colorModalOpen }>
-
-                <View style={ styles.colorModalWrapper }>
-                    <Surface style={ styles.colorModal }>
-                        <ColorPalette
-                            onChange={ color => {
-                                this.color = color;
-                                this.setState({ colorModalOpen: false });
-                            }}
-                            style={{ flex: 1 }}
-                            value={ this.color }
-                            colors={ Colors.laneColors }
-                            title={''}/>
-                    </Surface>
-                </View>
+                <ColorPickerView
+                    onChange={ color => {
+                        this.color = color;
+                        this.setState({ colorModalOpen: false });
+                    }}
+                    color={ this.color }/>
             </Modal>
         );
     }
