@@ -6,7 +6,6 @@ import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 import MasonryList from './masonry/List';
 import LaneHeader from './LaneHeader';
-import { shareLane, deleteLane } from '../backend/Database';
 
 export default class LaneContent extends Component {
     constructor(props) {
@@ -32,9 +31,9 @@ export default class LaneContent extends Component {
                 <LaneHeader 
                     title={ item.title }
                     color={ item.color }
-                    onEdit={ () => { console.log('edit'); } }
-                    onShare={ () => { console.log('share'); } }
-                    onDelete={ () => { deleteLane(item); } }
+                    onEdit={ () => this.props.onEditLane(item) }
+                    onShare={ () => this.props.onShareLane(item) }
+                    onDelete={ () => this.props.onDeleteLane(item) }
                 />
                 <MasonryList
                     uris={ Object.values(item.photos) }

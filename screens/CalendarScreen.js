@@ -4,12 +4,9 @@ import {
     Text,
     StyleSheet,
     ActivityIndicator,
-    Button,
-    Image,
     Modal
 } from 'react-native';
-import { NavigationEvents } from 'react-navigation';
-import { FAB, Portal } from 'react-native-paper';
+import { FAB } from 'react-native-paper';
 var _ = require('lodash');
 
 import Colors from '../constants/Colors'
@@ -19,6 +16,8 @@ import schedulePeriods from '../utils/PeriodScheduling';
 import { setupScheduledMarkings, getValidLanes } from '../utils/PeriodTools';
 import { signOut } from '../backend/Auth';
 import { retrieveLanes } from '../backend/Database';
+import SharingView from '../components/SharingView';
+import { shareLane, deleteLane } from '../backend/Database';
 
 export default class CalendarScreen extends Component {
     constructor(props) {
@@ -64,22 +63,36 @@ export default class CalendarScreen extends Component {
         }
     }
 
-    // renderShareModal() {
-    //     return (
-    //         <Modal
-    //             animationType="slide"
-    //             transparent={true}
-    //             onRequestClose={ () => {} }
-    //             visible={ this.state.shareModalOpen }>
-    //             <ColorPickerView
-    //                 onChange={ color => {
-    //                     this.color = color;
-    //                     this.setState({ shareModalOpen: false });
-    //                 }}
-    //                 color={ this.color }/>
-    //         </Modal>
-    //     );
-    // }
+    onEditLane(laneObj) {
+
+    }
+
+    onShareLane(laneObj) {
+        this.setState({shareModalOpen: true});
+    }
+
+    onDeleteLane(laneObj) {
+        this.setState({
+            selectedLanes: []
+        }, () => {
+            deleteLane(laneObj);
+        });
+    }
+
+    renderShareModal() {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                onRequestClose={ () => {} }
+                visible={ this.state.shareModalOpen }>
+                <SharingView
+                    onCancel={ () => this.setState({shareModalOpen: false}) }
+                    onSend={ email => console.log(email) }
+                />
+            </Modal>
+        );
+    }
 
     render() {
         if (!this.state.retrieveDone) {
@@ -100,7 +113,11 @@ export default class CalendarScreen extends Component {
                     onDayPress={ date => this.getLanes(date) }/>
                 {this.state.selectedLanes.length > 0 &&
                     <LaneContent
-                        lanes={ this.state.selectedLanes.map(i => this.state.lanes[i]) }/>
+                        lanes={ this.state.selectedLanes.map(i => this.state.lanes[i]) }
+                        onEditLane={ lane => this.onEditLane(lane) }
+                        onShareLane={ lane => this.onShareLane(lane) }
+                        onDeleteLane={ lane => this.onDeleteLane(lane) }
+                    />
                 }
                 <FAB
                     style={styles.fab}
