@@ -96,42 +96,30 @@ export async function pushLane(ownerId, laneObj) {
     return await firebase.database().ref(LANES).push(laneObj).key;
 }
 
-export async function retrieveLanes(processLanes, processPeriods) {
+export async function retrieveLanes(processLanes) {
     var userid = firebase.auth().currentUser.uid;
     firebase.database().ref(USERS).child(userid).child(LANES).on('value', datasnapshot => {
         var laneObjs = {};
-        var periods = [];
         var lanes = datasnapshot.val();
+
         if (!lanes) {
             processLanes(laneObjs);
-            processPeriods(periods);
         } else {
             var markings = Object.keys(lanes).map( laneId =>
                 firebase.database().ref(LANES).child(laneId).once('value', lanesnapshot => {
                     var lane = lanesnapshot.val();
                     laneObjs[laneId] = {...lane, id: laneId};
-                    periods.push({
-                        startDate: lane.startDate,
-                        endDate: lane.endDate,
-                        start: new Date(lane.startDate).getTime(),
-                        end: new Date(lane.endDate).getTime(),
-                        color: lane.color,
-                        id: laneId,
-                        height: -1
-                    });
                 })
             );
+            
             Promise.all(markings).then(lanes => {
                 processLanes(laneObjs);
-                processPeriods(periods);
             });
         }
     });
 }
 
 export async function uploadImageAsync(laneId, photo) {
-    // Why are we using XMLHttpRequest? See:
-    // https://github.com/expo/expo/issues/2402#issuecomment-443726662
     const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = function() {

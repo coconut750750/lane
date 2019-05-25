@@ -13,7 +13,7 @@ import Colors from '../constants/Colors'
 import LaneCalendar from '../components/LaneCalendar';
 import LaneContent from '../components/LaneContent';
 import schedulePeriods from '../utils/PeriodScheduling';
-import { setupScheduledMarkings, getValidLanes } from '../utils/PeriodTools';
+import { constructPeriodFromLane, setupScheduledMarkings, getValidLanes } from '../utils/PeriodTools';
 import { signOut, getIdFromEmail } from '../backend/Auth';
 import { retrieveLanes } from '../backend/Database';
 import SharingView from '../components/SharingView';
@@ -38,22 +38,25 @@ export default class CalendarScreen extends Component {
 
     processPeriods(periods) {
         var scheduled = schedulePeriods(periods);
-        var markings = setupScheduledMarkings(scheduled);
-        this.setState({
-            markings: markings,
-        });
+        return setupScheduledMarkings(scheduled);
     }
 
     processLanes(lanes) {
+        var periods = [];
+        _.forEach(lanes, (laneObj, id) => {
+            periods.push(constructPeriodFromLane(laneObj));
+        });
+
         this.setState({
-            selectedLanes: [],
             lanes: lanes,
+            markings: this.processPeriods(periods),
+            selectedLanes: [],
             loading: false,
         });
     }
 
     async initLaneListener() {
-        retrieveLanes(this.processLanes.bind(this), this.processPeriods.bind(this));
+        retrieveLanes(this.processLanes.bind(this));
     }
 
     getLanes(date) {

@@ -10,6 +10,18 @@ function dateToString(date) {
     return date.toISOString().split('T')[0];
 }
 
+export function constructPeriodFromLane(laneObj) {
+    return {
+        startDate: laneObj.startDate,
+        endDate: laneObj.endDate,
+        start: new Date(laneObj.startDate).getTime(),
+        end: new Date(laneObj.endDate).getTime(),
+        color: laneObj.color,
+        id: laneObj.id,
+        height: -1
+    };
+}
+
 export function setupScheduledMarkings(scheduled) {
     var markings = {};
 

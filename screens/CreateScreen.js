@@ -13,7 +13,6 @@ import {
     Text,
     List
 } from 'react-native-paper'
-import { NavigationEvents } from 'react-navigation';
 import { Permissions } from 'expo';
 import MasonryList from "react-native-masonry-list";
 
@@ -109,6 +108,7 @@ export default class CreateScreen extends Component {
         await addLaneToUser(userId, laneId);
 
         this.props.navigation.goBack()
+        this.resetState();
     }
 
     renderTopNav() {
@@ -184,8 +184,6 @@ export default class CreateScreen extends Component {
         }
         return (
             <View style={ styles.container }>
-                <NavigationEvents onDidFocus={ () => this.resetState() } />
-
                 {this.renderColorModal()}
 
                 {this.renderTopNav()}
