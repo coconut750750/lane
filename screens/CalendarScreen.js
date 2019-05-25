@@ -14,7 +14,7 @@ import LaneCalendar from '../components/LaneCalendar';
 import LaneContent from '../components/LaneContent';
 import schedulePeriods from '../utils/PeriodScheduling';
 import { setupScheduledMarkings, getValidLanes } from '../utils/PeriodTools';
-import { signOut } from '../backend/Auth';
+import { signOut, getIdFromEmail } from '../backend/Auth';
 import { retrieveLanes } from '../backend/Database';
 import SharingView from '../components/SharingView';
 import { shareLane, deleteLane } from '../backend/Database';
@@ -22,15 +22,18 @@ import { shareLane, deleteLane } from '../backend/Database';
 export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
-        this.initLaneListener();
 
         this.state = {
             lanes: {},
             markings: {},
             selectedLanes: [],
-            retrieveDone: false,
+            loading: true,
             shareModalOpen: false
         };
+    }
+
+    componentDidMount() {
+        this.initLaneListener();
     }
 
     processPeriods(periods) {
@@ -43,15 +46,14 @@ export default class CalendarScreen extends Component {
 
     processLanes(lanes) {
         this.setState({
+            selectedLanes: [],
             lanes: lanes,
+            loading: false,
         });
     }
 
     async initLaneListener() {
-        await retrieveLanes(this.processLanes.bind(this), this.processPeriods.bind(this));
-        this.setState({
-            retrieveDone: true,
-        });
+        retrieveLanes(this.processLanes.bind(this), this.processPeriods.bind(this));
     }
 
     getLanes(date) {
@@ -68,14 +70,39 @@ export default class CalendarScreen extends Component {
     }
 
     onShareLane(laneObj) {
-        this.setState({shareModalOpen: true});
+        this.setState({
+            shareModalOpen: true,
+            sharingId: laneObj.id
+        });
+    }
+
+    onSendShare(email) {
+        this.setState({
+            loading: true,
+            shareModalOpen: false
+        });
+        getIdFromEmail(email, id => {
+            if (id === undefined) {
+                alert('Email doesn\'t exist!');
+            } else {
+                shareLane(this.state.sharingId, id);
+            }
+            this.setState({
+                loading: false,
+                sharingId: undefined
+            });
+        });
     }
 
     onDeleteLane(laneObj) {
         this.setState({
-            selectedLanes: []
-        }, () => {
-            deleteLane(laneObj);
+            selectedLanes: [],
+            loading: true,
+        });
+        deleteLane(laneObj.id, () => {
+            this.setState({
+                loading: false
+            });
         });
     }
 
@@ -88,14 +115,14 @@ export default class CalendarScreen extends Component {
                 visible={ this.state.shareModalOpen }>
                 <SharingView
                     onCancel={ () => this.setState({shareModalOpen: false}) }
-                    onSend={ email => console.log(email) }
+                    onSend={ email => this.onSendShare(email) }
                 />
             </Modal>
         );
     }
 
     render() {
-        if (!this.state.retrieveDone) {
+        if (this.state.loading) {
             return (
                 <View style={styles.container}>
                     <ActivityIndicator 
@@ -107,6 +134,8 @@ export default class CalendarScreen extends Component {
 
         return (
             <View style={styles.container}>
+
+                {this.renderShareModal()}
 
                 <LaneCalendar
                     markings={{ ...this.state.markings }}

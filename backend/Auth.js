@@ -35,16 +35,20 @@ function onSignIn(googleUser) {
                 .auth()
                 .signInWithCredential(credential)
                 .then(function(result) {
-                    if (result.additionalUserInfo.isNewUser) {
-                        firebase
-                            .database()
-                            .ref('/users/' + result.user.uid)
+                    if (true || result.additionalUserInfo.isNewUser) {
+                        firebase.database()
+                            .ref('users')
+                            .child(result.user.uid)
                             .set({
                                 email: result.user.email,
                                 profile: result.additionalUserInfo.profile.picture,
                                 firstname: result.additionalUserInfo.profile.given_name,
                                 lastname: result.additionalUserInfo.profile.family_name
                             });
+                        firebase.database()
+                            .ref('emails')
+                            .child(result.user.uid)
+                            .set(result.user.email);
                     }
                 })
                 .catch(function(error) {
@@ -89,5 +93,18 @@ export function signOut() {
 export function checkIfLoggedIn(checkComplete) {
     firebase.auth().onAuthStateChanged(user => {
         checkComplete(user != undefined);
+    });
+}
+
+export async function getIdFromEmail(email, onComplete) {
+    firebase.database().ref('emails').once('value', snapshot => {
+        var emails = snapshot.val();
+        for (var id in emails) {
+            if (emails[id] === email) {
+                onComplete(id);
+                return;
+            }
+        }
+        onComplete(undefined);
     });
 }

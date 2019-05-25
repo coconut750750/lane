@@ -38,7 +38,7 @@ export async function removeUserFromLane(userId, laneId) {
         .remove();
 }
 
-export async function removeAllUsersFromLane(laneObj) {
+export async function removeAllSharedUsers(laneObj) {
     if (laneObj.shared != null) {
         await Promise.all(
             Object.keys(laneObj.shared).map( id => 
@@ -150,18 +150,24 @@ export async function uploadImageAsync(laneId, photo) {
     await addPhoto(blob, photoId, laneId);
 }
 
-export async function shareLane(laneid, otherUserId) {
+export async function shareLane(laneId, otherUserId) {
     await Promise.all([
         addLaneToUser(otherUserId, laneId),
         addUserToLane(otherUserId, laneId)
     ]);
 }
 
-export async function deleteLane(laneObj) {
-    await Promise.all([
-        removeAllUsersFromLane(laneObj),
-        removeLaneFromUser(laneObj.owner, laneObj.id),
-        removeAllLanePhotos(laneObj),
-        removeLane(laneObj.id)
-    ]);
+export function deleteLane(laneId, onComplete) {
+    firebase.database().ref(LANES).child(laneId).once('value', lanesnapshot => {
+        var laneObj = lanesnapshot.val();
+        laneObj.id = laneId;
+        Promise.all([
+            removeAllSharedUsers(laneObj),
+            removeLaneFromUser(laneObj.owner, laneId),
+            removeAllLanePhotos(laneObj),
+            removeLane(laneId)
+        ]).then(_ => {
+            onComplete()
+        });
+    });
 }

@@ -204,7 +204,7 @@ export default class CreateScreen extends Component {
                     style={{ flex: 0.85 }}
                 />
                 
-                <View style={{ ...styles.surface, flex: 0.15 }}>
+                <View style={{ ...styles.addPhotoSurface, flex: 0.15 }}>
                     <TouchableNativeFeedback
                         style={{ flex: 1 }}
                         onPress={ () => this.handleAddPhotos() }>
@@ -231,12 +231,13 @@ const styles = StyleSheet.create({
         margin: 16,
         fontSize: 36,
     },
-    surface: {
+    addPhotoSurface: {
         borderRadius: 8,
         borderWidth: 1,
         borderColor: Colors.lightGray,
         height: 80,
-        margin: 48,
+        margin: 24,
+        marginBottom: 48,
         justifyContent: 'center'
     },
     addPhotoView: {
