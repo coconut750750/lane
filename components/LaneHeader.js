@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Animated } from 'react-native';
 import { Headline, Menu, IconButton } from 'react-native-paper';
 
+import { getUserID } from '../backend/Auth';
 import Colors from '../constants/Colors';
 
 export default class LaneHeader extends Component {
@@ -22,7 +23,7 @@ export default class LaneHeader extends Component {
 
     render() {
         return (
-            <View style={ styles.header }>
+            <Animated.View style={{ ...styles.header, ...this.props.style }}>
                 <Headline
                     style={{ ...styles.title, color: this.props.color, flex: 0.95 }}>
                     { this.props.title }
@@ -30,19 +31,29 @@ export default class LaneHeader extends Component {
                 <Menu
                     visible={this.state.menuVisible}
                     onDismiss={ () => this.closeMenu() }
+                    transform={this.props.style.transform[0].translateY}
                     anchor={ <IconButton
                                 style={{ flex: 0.05 }}
                                 icon="more-vert"
                                 color={ Colors.lightGray }
                                 onPress={ () => this.openMenu() }/> }>
-                    <Menu.Item onPress={ () => { this.props.onEdit(); this.closeMenu(); } } title="Edit" />
-                    <Menu.Item onPress={ () => { this.props.onShare(); this.closeMenu(); } } title="Share" />
-                    <Menu.Item onPress={ () => { this.props.onDelete(); this.closeMenu(); } } title="Delete" />
-              </Menu>
-            </View>
+                    <Menu.Item 
+                        onPress={ () => { this.props.onEdit(); this.closeMenu(); } }
+                        title="Edit" />
+                    <Menu.Item
+                        onPress={ () => { this.props.onShare(); this.closeMenu(); } }
+                        title="Share" />
+                    <Menu.Item
+                        disabled={this.props.owner != getUserID()}
+                        onPress={ () => { this.props.onDelete(); this.closeMenu(); } }
+                        title="Delete" />
+                </Menu>
+
+            </Animated.View>
         );
     }
 }
+
 
 const styles = StyleSheet.create({
     header: {

@@ -198,7 +198,6 @@ export default class CreateScreen extends Component {
                                        height: photo.height};}
                         )
                     }
-                    //onPressImage={ (item, index) => this.onClickPhoto(item, index) }
                     style={{ flex: 0.85 }}
                 />
                 

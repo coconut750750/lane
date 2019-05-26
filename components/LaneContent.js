@@ -10,6 +10,9 @@ import LaneHeader from './LaneHeader';
 export default class LaneContent extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            scrollOffset: 0
+        };
     }
 
     componentWillReceiveProps(newProps) {
@@ -20,34 +23,52 @@ export default class LaneContent extends Component {
         this.flatList.scrollToIndex({animated: true, index: 0});
     }
 
+    onContentScroll(event) {
+        console.log(event);
+    }
+
     getItemLayout(data, index) {
         let length = Layout.window.width;
         return { length: length, offset: length * index, index };
     }
 
+    renderItemHeader(item) {
+        return (
+            <LaneHeader 
+                title={ item.title }
+                color={ item.color }
+                owner={ item.owner }
+                onEdit={ () => this.props.onEditLane(item) }
+                onShare={ () => this.props.onShareLane(item) }
+                onDelete={ () => this.props.onDeleteLane(item) }
+                style={{
+                    transform: this.props.headerTransform,
+                    position: 'absolute',
+                    top: this.props.calendarHeight
+                }}
+            />
+        );
+    }
+
     renderItem(item) {
         return (
-            <View style={ styles.page }>
-                <LaneHeader 
-                    title={ item.title }
-                    color={ item.color }
-                    onEdit={ () => this.props.onEditLane(item) }
-                    onShare={ () => this.props.onShareLane(item) }
-                    onDelete={ () => this.props.onDeleteLane(item) }
-                />
+            <View style={{ ...styles.page }}>
                 <MasonryList
                     uris={ Object.values(item.photos) }
                     width={ Layout.window.width }
                     itemPadding={2}
-                    style={{ flex: 1 }}
+                    onScroll={ this.props.onScroll }
+                    style={{ flex: 1, marginTop: 40 }}
+                    containerStyle={{ paddingTop: this.props.calendarHeight }}
                 />
+                {this.renderItemHeader(item)}
             </View>
         );
     }
 
     render() {
         return (
-            <View style={ styles.container }>
+            <View style={styles.container}>
                 <FlatList
                     ref={(ref) => { this.flatList = ref; }}
                     style={{ flex: 1 }}
@@ -73,6 +94,7 @@ export default class LaneContent extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: Colors.background
     },
     page: {
         flex: 1,

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, Animated, FlatList } from 'react-native';
 var _ = require('lodash');
 
 import MasonryRow from './Row';
 import Layout from '../../constants/Layout';
 import { getDimensions, calculateRowDimensions } from './DimensionUtils';
+
+const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 export default class MasonryList extends Component {
     constructor(props) {
@@ -17,6 +19,9 @@ export default class MasonryList extends Component {
     }
 
     generateRowCounts(dimensions) {
+        if (dimensions.length === 2) {
+            return [1, 1];
+        }
         let aspectRange = 0.25;
 
         var total = dimensions.length;
@@ -93,8 +98,9 @@ export default class MasonryList extends Component {
             return null;
         }
         return (
-            <View style={this.props.style}>
-                <FlatList
+            <Animated.View style={this.props.style}>
+                <AnimatedFlatList
+                    contentContainerStyle={this.props.containerStyle}
                     horizontal={false}
                     scrollEnabled={true}
                     pageSize={1}
@@ -107,8 +113,10 @@ export default class MasonryList extends Component {
                     initialNumToRender={10}
                     maxToRenderPerBatch={10}
                     windowSize={21}
+                    scrollEventThrottle={1}
+                    onScroll={this.props.onScroll}
                 />
-            </View>
+            </Animated.View>
         );
     }
 }

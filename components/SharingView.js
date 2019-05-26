@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         elevation: 4,
         margin: 12,
-        height: 150
     },
     textInput: {
         flex: 1

@@ -4,12 +4,14 @@ import {
     Text,
     StyleSheet,
     ActivityIndicator,
-    Modal
+    Modal,
+    Animated,
 } from 'react-native';
 import { FAB } from 'react-native-paper';
 var _ = require('lodash');
 
 import Colors from '../constants/Colors'
+import Layout from '../constants/Layout'
 import LaneCalendar from '../components/LaneCalendar';
 import LaneContent from '../components/LaneContent';
 import schedulePeriods from '../utils/PeriodScheduling';
@@ -23,12 +25,17 @@ export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
 
+        const scrollAnim = new Animated.Value(0);
+
         this.state = {
             lanes: {},
             markings: {},
             selectedLanes: [],
             loading: true,
-            shareModalOpen: false
+            shareModalOpen: false,
+
+            // animations
+            scrollAnim: scrollAnim,
         };
     }
 
@@ -135,22 +142,36 @@ export default class CalendarScreen extends Component {
             );
         }
 
+        const calendarTranslate = this.state.scrollAnim.interpolate({
+            inputRange: [0, Layout.calendarHeight],
+            outputRange: [0, -Layout.calendarHeight],
+            extrapolate: 'clamp',
+        });
+        const transform = [{ translateY: calendarTranslate }];
+
         return (
             <View style={styles.container}>
 
                 {this.renderShareModal()}
 
-                <LaneCalendar
-                    markings={{ ...this.state.markings }}
-                    onDayPress={ date => this.getLanes(date) }/>
                 {this.state.selectedLanes.length > 0 &&
                     <LaneContent
                         lanes={ this.state.selectedLanes.map(i => this.state.lanes[i]) }
                         onEditLane={ lane => this.onEditLane(lane) }
                         onShareLane={ lane => this.onShareLane(lane) }
                         onDeleteLane={ lane => this.onDeleteLane(lane) }
+                        calendarHeight={ Layout.calendarHeight }
+                        headerTransform={ transform }
+                        onScroll={Animated.event(
+                            [{ nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }],
+                            { useNativeDriver: true },
+                        )}
                     />
                 }
+                <LaneCalendar
+                    markings={{ ...this.state.markings }}
+                    onDayPress={ date => this.getLanes(date) }
+                    style={{ ...styles.calendar, transform: transform }}/>
                 <FAB
                     style={styles.fab}
                     icon="add"
@@ -178,4 +199,11 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
+    calendar: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        height: Layout.calendarHeight
+    }
 })
