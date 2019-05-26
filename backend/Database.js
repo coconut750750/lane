@@ -54,7 +54,9 @@ export async function removeLane(laneId) {
         .remove();
 }
 
-export async function addPhoto(blob, photoId, laneId) {
+export async function addPhoto(blob, photo, laneId) {
+    let photoId = photo.md5;
+
     const snapshot = await firebase.storage()
         .ref()
         .child(laneId)
@@ -67,7 +69,11 @@ export async function addPhoto(blob, photoId, laneId) {
     await firebase.database()
         .ref(LANES).child(laneId)
         .child('photos').child(photoId)
-        .set(photoUrl);
+        .set({
+            uri: photoUrl,
+            width: photo.image.width,
+            height: photo.image.height,
+        });
 }
 
 export async function removePhoto(photoId, laneId) {
@@ -134,8 +140,7 @@ export async function uploadImageAsync(laneId, photo) {
         xhr.send(null);
     });
 
-    let photoId = photo.md5;
-    await addPhoto(blob, photoId, laneId);
+    await addPhoto(blob, photo, laneId);
 }
 
 export async function shareLane(laneId, otherUserId) {

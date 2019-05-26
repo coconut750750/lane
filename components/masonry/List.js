@@ -14,12 +14,16 @@ export default class MasonryList extends Component {
         this.state = {
             data: [] // {data: {height, width, uri}, height}
         };
+    }
 
-        this.generateRows(props.uris);
+    componentDidMount() {
+        this.generateRows(this.props.photos);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        this.generateRows(this.props.uris);
+        if (this.props.photos != prevProps.photos) {
+            this.generateRows(this.props.photos);
+        }
     }
 
     generateRowCounts(dimensions) {
@@ -55,15 +59,13 @@ export default class MasonryList extends Component {
         return counts;
     }
 
-    async generateRows(uris) {
-        let dimensions = await getDimensions(uris);
-
-        var rowCounts = this.generateRowCounts(dimensions);
+    generateRows(photos) {
+        var rowCounts = this.generateRowCounts(photos);
 
         var rows = [];
         var uriIndex = 0;
         _.forEach(rowCounts, c => {
-            rows.push(dimensions.slice(uriIndex, uriIndex + c));
+            rows.push(photos.slice(uriIndex, uriIndex + c));
             uriIndex += c;
         });
 
@@ -83,6 +85,10 @@ export default class MasonryList extends Component {
             }
         }
         return { length: data[index].height, offset: data[index].offset, index };
+    }
+
+    keyExtractor(item, index) {
+        return item.data.map(p => p.uri).join('');
     }
 
     renderItem(item, index) {
@@ -111,7 +117,7 @@ export default class MasonryList extends Component {
                     data={this.state.data}
                     getItemLayout={this.getItemLayout}
                     renderItem={ ({item, index}) => this.renderItem(item, index) }
-                    keyExtractor={ (item, index) => String(index) }
+                    keyExtractor={ (item, index) => this.keyExtractor(item, index) }
                     showsVerticalScrollIndicator={false}
                     removeClippedSubviews={true}
                     initialNumToRender={10}

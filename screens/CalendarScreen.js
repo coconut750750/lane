@@ -31,6 +31,7 @@ export default class CalendarScreen extends Component {
             lanes: {},
             markings: {},
             selectedLanes: [],
+            currentLane: 0,
             loading: true,
             shareModalOpen: false,
 
@@ -57,21 +58,49 @@ export default class CalendarScreen extends Component {
         this.setState({
             lanes: lanes,
             markings: this.processPeriods(periods),
-            selectedLanes: [],
             loading: false,
         });
+        this.unselect()
     }
 
     async initLaneListener() {
         retrieveLanes(this.processLanes.bind(this));
     }
 
+    select(lanes) {
+        this.setState({
+            selectedLanes: lanes,
+            scrollAnim: new Animated.Value(0),
+        });
+    }
+
+    unselect() {
+        this.setState({
+            selectedLanes: [],
+            scrollAnim: new Animated.Value(0),
+        });
+    }
+
     getLanes(date) {
         var selectedLanes = getValidLanes(this.state.lanes, date);
         if (!_.isEqual(_.sortBy(selectedLanes), _.sortBy(this.state.selectedLanes))) {
+            this.select(selectedLanes);
+        }
+    }
+
+    onBackLane() {
+        if (this.state.currentLane > 0) {
             this.setState({
-                selectedLanes: selectedLanes
-            });
+                currentLane: this.state.currentLane - 1
+            })
+        }
+    }
+
+    onNextLane() {
+        if (this.state.currentLane < this.state.selectedLanes.length - 1) {
+            this.setState({
+                currentLane: this.state.currentLane + 1
+            })
         }
     }
 
@@ -105,8 +134,8 @@ export default class CalendarScreen extends Component {
     }
 
     onDeleteLane(laneObj) {
+        this.unselect();
         this.setState({
-            selectedLanes: [],
             loading: true,
         });
         deleteLane(laneObj.id, () => {
@@ -142,6 +171,8 @@ export default class CalendarScreen extends Component {
             );
         }
 
+        const laneIndex = this.state.selectedLanes[this.state.currentLane];
+
         const calendarTranslate = this.state.scrollAnim.interpolate({
             inputRange: [0, Layout.calendarHeight],
             outputRange: [0, -Layout.calendarHeight],
@@ -156,7 +187,9 @@ export default class CalendarScreen extends Component {
 
                 {this.state.selectedLanes.length > 0 &&
                     <LaneContent
-                        lanes={ this.state.selectedLanes.map(i => this.state.lanes[i]) }
+                        lane={ this.state.lanes[laneIndex] }
+                        onBackLane={ () => this.onBackLane() }
+                        onNextLane={ () => this.onNextLane() }
                         onEditLane={ lane => this.onEditLane(lane) }
                         onShareLane={ lane => this.onShareLane(lane) }
                         onDeleteLane={ lane => this.onDeleteLane(lane) }

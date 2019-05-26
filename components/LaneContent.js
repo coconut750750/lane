@@ -15,38 +15,6 @@ export default class LaneContent extends Component {
         };
     }
 
-    // componentWillReceiveProps(newProps) {
-    //     this.scrollToBeginning();
-    // }
-
-    onBackLane() {
-        if (this.state.currentIndex > 0) {
-            this.setState({
-                currentIndex: this.state.currentIndex - 1
-            });
-        }
-    }
-
-    onNextLane() {
-        if (this.state.currentIndex < this.props.lanes.length - 1) {
-            this.setState({
-                currentIndex: this.state.currentIndex + 1
-            });
-        }
-    }
-
-    getRotatedLanes(lanes) {
-        var rotated = _.cloneDeep(lanes);
-        for (var i = 0; i < this.state.currentIndex; i++) {
-            rotated.push(rotated.shift());
-        }
-        return rotated;
-    }
-
-    onContentScroll(event) {
-        console.log(event);
-    }
-
     getItemLayout(data, index) {
         let length = Layout.window.width;
         return { length: length, offset: length * index, index };
@@ -58,8 +26,8 @@ export default class LaneContent extends Component {
                 title={ item.title }
                 color={ item.color }
                 owner={ item.owner }
-                onBackLane={ () => this.onBackLane() }
-                onNextLane={ () => this.onNextLane() }
+                onBackLane={ () => this.props.onBackLane() }
+                onNextLane={ () => this.props.onNextLane() }
                 onEdit={ () => this.props.onEditLane(item) }
                 onShare={ () => this.props.onShareLane(item) }
                 onDelete={ () => this.props.onDeleteLane(item) }
@@ -72,11 +40,11 @@ export default class LaneContent extends Component {
         );
     }
 
-    renderItem(item, index) {
+    renderItem(item) {
         return (
             <View style={{ ...styles.page }}>
                 <MasonryList
-                    uris={ Object.values(item.photos) }
+                    photos={ Object.values(item.photos) }
                     width={ Layout.window.width }
                     itemPadding={2}
                     onScroll={ this.props.onScroll }
@@ -91,25 +59,26 @@ export default class LaneContent extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <FlatList
-                    ref={(ref) => { this.flatList = ref; }}
-                    style={{ flex: 1 }}
-                    horizontal={true}
-                    pagingEnabled={true}
-                    scrollEnabled={false}
-                    pageSize={1}
-                    data={ this.getRotatedLanes(this.props.lanes) }
-                    getItemLayout={this.getItemLayout}
-                    renderItem={ ({item, index}) => this.renderItem(item, index) }
-                    keyExtractor={ (item, index) => String(item.id) }
-                    showsHorizontalScrollIndicator={false}
-                    removeClippedSubviews={true}
-                    initialNumToRender={3}
-                    maxToRenderPerBatch={3}
-                    windowSize={5}
-                />
+                {this.renderItem(this.props.lane)}
             </View>
         );
+                // <FlatList
+                //     ref={(ref) => { this.flatList = ref; }}
+                //     style={{ flex: 1 }}
+                //     horizontal={true}
+                //     pagingEnabled={true}
+                //     scrollEnabled={false}
+                //     pageSize={1}
+                //     data={ this.getRotatedLanes(this.props.lanes) }
+                //     getItemLayout={this.getItemLayout}
+                //     renderItem={ ({item, index}) => this.renderItem(item, index) }
+                //     keyExtractor={ (item, index) => String(item.id) }
+                //     showsHorizontalScrollIndicator={false}
+                //     removeClippedSubviews={true}
+                //     initialNumToRender={3}
+                //     maxToRenderPerBatch={3}
+                //     windowSize={5}
+                // />
     }
 }
 
