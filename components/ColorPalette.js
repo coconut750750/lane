@@ -6,31 +6,18 @@ import Layout from '../constants/Layout';
 export default class ColorPalette extends Component {
     constructor(props) {
         super(props);
-        this.state = { color: props.value  };
-        this.onColorChange = this.onColorChange.bind(this);
         this.renderColorOption = this.renderColorOption.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.value !== this.props.value) {
-            this.setState({ color: nextProps.value });
-        }
-    }
-
-    onColorChange(color) {
-        const { onChange } = this.props;
-        this.setState({ color }, () => onChange(color));
-    }
-
     renderColorOption(c) {
-        const { color } = this.state;
+        const color = this.props.value;
         let scaledWidth = Layout.window.width * .025;
         let dimen = Layout.window.width * 0.07;
         let backgroundColor = color == c ? c : '#ffffff'
         return (
             <TouchableOpacity
                 key={c}
-                onPress={() => this.onColorChange(c)}
+                onPress={ () => this.props.onChange(c) }
                 style={[
                     styles.colorOption,
                     {   backgroundColor: backgroundColor,

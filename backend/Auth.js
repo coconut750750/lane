@@ -35,7 +35,7 @@ function onSignIn(googleUser) {
                 .auth()
                 .signInWithCredential(credential)
                 .then(function(result) {
-                    if (true || result.additionalUserInfo.isNewUser) {
+                    if (result.additionalUserInfo.isNewUser) {
                         firebase.database()
                             .ref('users')
                             .child(result.user.uid)

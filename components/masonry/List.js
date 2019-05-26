@@ -18,6 +18,10 @@ export default class MasonryList extends Component {
         this.generateRows(props.uris);
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        this.generateRows(this.props.uris);
+    }
+
     generateRowCounts(dimensions) {
         if (dimensions.length === 2) {
             return [1, 1];
@@ -81,7 +85,7 @@ export default class MasonryList extends Component {
         return { length: data[index].height, offset: data[index].offset, index };
     }
 
-    renderItem({item, index}) {
+    renderItem(item, index) {
         return (
             <View>
                 <MasonryRow
@@ -106,7 +110,7 @@ export default class MasonryList extends Component {
                     pageSize={1}
                     data={this.state.data}
                     getItemLayout={this.getItemLayout}
-                    renderItem={ (item) => this.renderItem(item) }
+                    renderItem={ ({item, index}) => this.renderItem(item, index) }
                     keyExtractor={ (item, index) => String(index) }
                     showsVerticalScrollIndicator={false}
                     removeClippedSubviews={true}

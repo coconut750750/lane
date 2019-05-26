@@ -11,16 +11,36 @@ export default class LaneContent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            scrollOffset: 0
+            currentIndex: 0,
         };
     }
 
-    componentWillReceiveProps(newProps) {
-        this.scrollToBeginning();
+    // componentWillReceiveProps(newProps) {
+    //     this.scrollToBeginning();
+    // }
+
+    onBackLane() {
+        if (this.state.currentIndex > 0) {
+            this.setState({
+                currentIndex: this.state.currentIndex - 1
+            });
+        }
     }
 
-    scrollToBeginning() {
-        this.flatList.scrollToIndex({animated: true, index: 0});
+    onNextLane() {
+        if (this.state.currentIndex < this.props.lanes.length - 1) {
+            this.setState({
+                currentIndex: this.state.currentIndex + 1
+            });
+        }
+    }
+
+    getRotatedLanes(lanes) {
+        var rotated = _.cloneDeep(lanes);
+        for (var i = 0; i < this.state.currentIndex; i++) {
+            rotated.push(rotated.shift());
+        }
+        return rotated;
     }
 
     onContentScroll(event) {
@@ -38,6 +58,8 @@ export default class LaneContent extends Component {
                 title={ item.title }
                 color={ item.color }
                 owner={ item.owner }
+                onBackLane={ () => this.onBackLane() }
+                onNextLane={ () => this.onNextLane() }
                 onEdit={ () => this.props.onEditLane(item) }
                 onShare={ () => this.props.onShareLane(item) }
                 onDelete={ () => this.props.onDeleteLane(item) }
@@ -50,7 +72,7 @@ export default class LaneContent extends Component {
         );
     }
 
-    renderItem(item) {
+    renderItem(item, index) {
         return (
             <View style={{ ...styles.page }}>
                 <MasonryList
@@ -74,11 +96,11 @@ export default class LaneContent extends Component {
                     style={{ flex: 1 }}
                     horizontal={true}
                     pagingEnabled={true}
-                    scrollEnabled={true}
+                    scrollEnabled={false}
                     pageSize={1}
-                    data={ this.props.lanes }
+                    data={ this.getRotatedLanes(this.props.lanes) }
                     getItemLayout={this.getItemLayout}
-                    renderItem={ ({item}) => this.renderItem(item) }
+                    renderItem={ ({item, index}) => this.renderItem(item, index) }
                     keyExtractor={ (item, index) => String(item.id) }
                     showsHorizontalScrollIndicator={false}
                     removeClippedSubviews={true}

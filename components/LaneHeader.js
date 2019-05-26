@@ -24,18 +24,33 @@ export default class LaneHeader extends Component {
     render() {
         return (
             <Animated.View style={{ ...styles.header, ...this.props.style }}>
-                <Headline
-                    style={{ ...styles.title, color: this.props.color, flex: 0.95 }}>
-                    { this.props.title }
-                </Headline>
+                <View style={{ flex: 0.79 }}>
+                    <Headline
+                        style={{ ...styles.title, color: this.props.color, flex: 1, marginLeft: 16 }}>
+                        { this.props.title }
+                    </Headline>
+                </View>
+                <IconButton
+                    style={{ flex: 0.1 }}
+                    size={24}
+                    icon="navigate-before"
+                    color={ Colors.darkGray }
+                    onPress={ () => this.props.onBackLane() }/>
+                <IconButton
+                    style={{ flex: 0.1 }}
+                    size={24}
+                    icon="navigate-next"
+                    color={ Colors.darkGray }
+                    onPress={ () => this.props.onNextLane() }/>
                 <Menu
                     visible={this.state.menuVisible}
                     onDismiss={ () => this.closeMenu() }
                     transform={this.props.style.transform[0].translateY}
                     anchor={ <IconButton
-                                style={{ flex: 0.05 }}
+                                style={{ flex: 0.01 }}
+                                size={24}
                                 icon="more-vert"
-                                color={ Colors.lightGray }
+                                color={ Colors.darkGray }
                                 onPress={ () => this.openMenu() }/> }>
                     <Menu.Item 
                         onPress={ () => { this.props.onEdit(); this.closeMenu(); } }
