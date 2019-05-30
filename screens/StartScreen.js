@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
 
@@ -32,4 +33,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center'
     }
-})
+});
+
+StartScreen.propTypes = {
+    navigation: PropTypes.object
+};

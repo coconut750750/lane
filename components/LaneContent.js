@@ -62,23 +62,6 @@ export default class LaneContent extends Component {
                 {this.renderItem(this.props.lane)}
             </View>
         );
-                // <FlatList
-                //     ref={(ref) => { this.flatList = ref; }}
-                //     style={{ flex: 1 }}
-                //     horizontal={true}
-                //     pagingEnabled={true}
-                //     scrollEnabled={false}
-                //     pageSize={1}
-                //     data={ this.getRotatedLanes(this.props.lanes) }
-                //     getItemLayout={this.getItemLayout}
-                //     renderItem={ ({item, index}) => this.renderItem(item, index) }
-                //     keyExtractor={ (item, index) => String(item.id) }
-                //     showsHorizontalScrollIndicator={false}
-                //     removeClippedSubviews={true}
-                //     initialNumToRender={3}
-                //     maxToRenderPerBatch={3}
-                //     windowSize={5}
-                // />
     }
 }
 

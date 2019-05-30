@@ -1,5 +1,6 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View, Animated } from 'react-native';
+import { View, Animated, ViewPropTypes } from 'react-native';
 import { CalendarList } from 'react-native-calendars';
 var _ = require('lodash');
 
@@ -10,14 +11,7 @@ export default class LaneCalendar extends Component {
         super(props);
         this.state = {
             selected: '',
-            periodMarkings: props.markings,
         };
-    }
-
-    componentWillReceiveProps(newProps) {
-        this.setState({
-            periodMarkings: newProps.markings,
-        });
     }
 
     onDayPress(day) {
@@ -25,6 +19,12 @@ export default class LaneCalendar extends Component {
 
         this.setState({
             selected: day.dateString,
+        });
+    }
+
+    unselect() {
+        this.setState({
+            selected: '',
         });
     }
 
@@ -36,10 +36,12 @@ export default class LaneCalendar extends Component {
                     onDayPress={ (day) => { this.onDayPress(day); } }
                     markingType={'multi-period'}
                     markedDates={ 
-                        _.merge(_.cloneDeep(this.state.periodMarkings), {[this.state.selected]: {selected: true, disableTouchEvent: true}})
+                        _.merge(_.cloneDeep(this.props.markings), {[this.state.selected]: {selected: true, disableTouchEvent: true}})
                     }
                     horizontal={true}
                     pagingEnabled={true}
+                    onScrollEndDrag={this.props.onScrollEndDrag}
+                    onScrollBeginDrag={this.props.onScrollBeginDrag}
                     theme={{
                         backgroundColor: Colors.background,
                         calendarBackground: Colors.background,
@@ -72,3 +74,22 @@ export default class LaneCalendar extends Component {
         );
     }
 }
+
+LaneCalendar.propTypes = {
+    markings: PropTypes.objectOf(
+        PropTypes.shape({
+            periods: PropTypes.arrayOf(
+                PropTypes.oneOfType([
+                    PropTypes.shape({
+                        startingDay: PropTypes.bool.isRequired,
+                        endingDay: PropTypes.bool.isRequired,
+                        color: PropTypes.string.isRequired
+                    }),
+                    PropTypes.oneOf([{ color: 'transparent' }])
+                ])
+            ).isRequired,
+        })
+    ).isRequired,
+    onDayPress: PropTypes.func,
+    style: ViewPropTypes.style,
+};

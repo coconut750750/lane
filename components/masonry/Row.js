@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View, FlatList, Image } from 'react-native';
 
@@ -55,3 +56,15 @@ export default class MasonryRow extends Component {
         );
     }
 }
+
+MasonryRow.propTypes = {
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            uri: PropTypes.string.isRequired,
+            width: PropTypes.number.isRequired,
+            height: PropTypes.number.isRequired,
+        })).isRequired,
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    padding: PropTypes.number
+};

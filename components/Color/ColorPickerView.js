@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Surface } from 'react-native-paper';
 
-import ColorPalette from '../components/ColorPalette'
-import Colors from '../constants/Colors';
+import ColorPalette from './ColorPalette'
+import Colors from '../../constants/Colors';
 
 export default class ColorPickerView extends Component {
     render() {

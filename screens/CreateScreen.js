@@ -17,7 +17,7 @@ import { Permissions } from 'expo';
 import MasonryList from "react-native-masonry-list";
 
 import ImageBrowser from '../components/image_picker/ImageBrowser';
-import ColorPickerView from '../components/ColorPickerView'
+import ColorPickerView from '../components/Color/ColorPickerView'
 import Colors from '../constants/Colors';
 import Layout from '../constants/Layout';
 import { pushLane, uploadImageAsync, addLaneToUser } from '../backend/Database';

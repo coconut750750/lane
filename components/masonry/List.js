@@ -1,10 +1,11 @@
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View, Animated, FlatList } from 'react-native';
+import { View, Animated, FlatList, ViewPropTypes } from 'react-native';
 var _ = require('lodash');
 
 import MasonryRow from './Row';
 import Layout from '../../constants/Layout';
-import { getDimensions, calculateRowDimensions } from './DimensionUtils';
+import { calculateRowDimensions } from './DimensionUtils';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -26,24 +27,24 @@ export default class MasonryList extends Component {
         }
     }
 
-    generateRowCounts(dimensions) {
-        if (dimensions.length === 2) {
+    generateRowCounts(photoSizeData) {
+        if (photoSizeData.length === 2) {
             return [1, 1];
         }
         let aspectRange = 0.25;
 
-        var total = dimensions.length;
+        var total = photoSizeData.length;
         var curr = 0;
         var counts = [];
 
         while (curr < total) {
-            let { height, width } = dimensions[curr];
+            let { height, width } = photoSizeData[curr];
             var aspect =  width / height;
             var delta;
             var max = aspect >= 0.75 && aspect < 1.34 ? 3 : 2
 
             for (delta = 1; delta < max && curr + delta < total; delta++) {
-                let { height, width } = dimensions[curr + delta];
+                let { height, width } = photoSizeData[curr + delta];
                 var nextAspect = width / height;
 
                 var difference = Math.abs(aspect - nextAspect);
@@ -96,6 +97,7 @@ export default class MasonryList extends Component {
             <View>
                 <MasonryRow
                     data={item.data}
+                    width={this.props.width}
                     height={item.height}
                     padding={this.props.itemPadding}
                 />
@@ -130,3 +132,20 @@ export default class MasonryList extends Component {
         );
     }
 }
+
+MasonryList.propTypes = {
+    photos: PropTypes.arrayOf(
+        PropTypes.shape({
+            uri: PropTypes.string.isRequired,
+            width: PropTypes.number.isRequired,
+            height: PropTypes.number.isRequired,
+        })).isRequired,
+    width: PropTypes.number.isRequired,
+    itemPadding: PropTypes.number,
+    onScroll: PropTypes.oneOfType([
+        PropTypes.func,
+        PropTypes.object,
+    ]),
+    style: ViewPropTypes.style,
+    containerStyle: ViewPropTypes.style,
+};

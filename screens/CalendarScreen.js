@@ -6,8 +6,9 @@ import {
     ActivityIndicator,
     Modal,
     Animated,
+    TouchableWithoutFeedback,
 } from 'react-native';
-import { FAB } from 'react-native-paper';
+import { FAB, IconButton } from 'react-native-paper';
 var _ = require('lodash');
 
 import Colors from '../constants/Colors'
@@ -25,8 +26,6 @@ export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
 
-        const scrollAnim = new Animated.Value(0);
-
         this.state = {
             lanes: {},
             markings: {},
@@ -36,12 +35,16 @@ export default class CalendarScreen extends Component {
             shareModalOpen: false,
 
             // animations
-            scrollAnim: scrollAnim,
+            scrollAnim: new Animated.Value(0),
         };
     }
 
     componentDidMount() {
         this.initLaneListener();
+    }
+    
+    async initLaneListener() {
+        retrieveLanes(this.processLanes.bind(this));
     }
 
     processPeriods(periods) {
@@ -61,10 +64,6 @@ export default class CalendarScreen extends Component {
             loading: false,
         });
         this.unselect()
-    }
-
-    async initLaneListener() {
-        retrieveLanes(this.processLanes.bind(this));
     }
 
     select(lanes) {
@@ -92,7 +91,7 @@ export default class CalendarScreen extends Component {
         if (this.state.currentLane > 0) {
             this.setState({
                 currentLane: this.state.currentLane - 1
-            })
+            });
         }
     }
 
@@ -100,7 +99,7 @@ export default class CalendarScreen extends Component {
         if (this.state.currentLane < this.state.selectedLanes.length - 1) {
             this.setState({
                 currentLane: this.state.currentLane + 1
-            })
+            });
         }
     }
 
@@ -204,7 +203,8 @@ export default class CalendarScreen extends Component {
                 <LaneCalendar
                     markings={{ ...this.state.markings }}
                     onDayPress={ date => this.getLanes(date) }
-                    style={{ ...styles.calendar, transform: transform }}/>
+                    style={{ ...styles.calendar, transform: transform }}
+                />
                 <FAB
                     style={styles.fab}
                     icon="add"
@@ -214,6 +214,13 @@ export default class CalendarScreen extends Component {
                     style={{ position: 'absolute', margin: 16, left: 0, bottom: 0, }}
                     icon="keyboard-return"
                     onPress={ () => signOut() }
+                />
+                <IconButton
+                    style={{ position: 'absolute', margin: 16, left: 0, top: 0, }}
+                    size={24}
+                    icon="menu"
+                    color='#000000'
+                    onPress={ () => this.props.navigation.openDrawer() }
                 />
             </View>
         );
