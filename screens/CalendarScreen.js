@@ -142,6 +142,16 @@ export default class CalendarScreen extends Component {
         });
     }
 
+    renderLoading() {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator 
+                    size="large"
+                    color={Colors.primary} />
+            </View>
+        );
+    }
+
     renderShareModal() {
         return (
             <Modal
@@ -159,13 +169,7 @@ export default class CalendarScreen extends Component {
 
     render() {
         if (this.state.loading) {
-            return (
-                <View style={styles.container}>
-                    <ActivityIndicator 
-                        size="large"
-                        color={Colors.primary} />
-                </View>
-            );
+            return this.renderLoading();
         }
 
         const laneIndex = this.state.selectedLanes[this.state.currentLane];
