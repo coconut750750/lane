@@ -3,15 +3,15 @@ import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import renderer from 'react-test-renderer';
 
-import LoginScreen from '../LoginScreen'
-import * as auth from '../../backend/Auth';
+import LoginScreen from 'lane/screens/LoginScreen'
+import * as auth from 'lane/backend/Auth';
 
-jest.mock("../../backend/Auth");
+jest.mock("lane/backend/Auth");
 
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('LoginScreen', () => {
-    it('rendering login screen', () => {
+    it('renders login screen', () => {
         const component = shallow(<LoginScreen />);
         const instance = component.instance();
         instance.state.didAttemptLogin = false;
@@ -19,7 +19,7 @@ describe('LoginScreen', () => {
         expect(screen).toMatchSnapshot();
     });
 
-    it('rendering loading screen', () => {
+    it('renders loading screen', () => {
         const component = shallow(<LoginScreen />);
         const instance = component.instance();
         instance.state.didAttemptLogin = true;
@@ -27,7 +27,7 @@ describe('LoginScreen', () => {
         expect(screen).toMatchSnapshot();
     });
 
-    it('testing button press function', () => {
+    it('attempts to login', () => {
         const component = shallow(<LoginScreen />);
         const instance = component.instance();
         expect(instance.state.didAttemptLogin).toBeFalsy();

@@ -2,10 +2,9 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native'
 
-import { checkIfLoggedIn } from '../backend/Auth';
+import { checkIfLoggedIn } from 'lane/backend/Auth';
 
 export default class StartScreen extends Component {
-
     componentDidMount() {
         checkIfLoggedIn(this.checkLogin.bind(this));
     }
