@@ -9,7 +9,7 @@ import CreateScreen from '../screens/CreateScreen';
 export default Drawer = createDrawerNavigator({   
         Home: CalendarScreen,
         Create: CreateScreen,
-        // Add: AddScreen
+        // Edit: EditScreen
     }, {
         contentComponent: DrawerContent,
         drawerWidth: 250,

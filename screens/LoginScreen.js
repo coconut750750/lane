@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, Button, ActivityIndicator, StyleSheet } from 'react-native'
+import { View, Text, Button, ActivityIndicator, StyleSheet } from 'react-native';
 
 import { signInWithGoogleAsync } from '../backend/Auth';
-import Colors from '../constants/Colors'
+import Colors from '../constants/Colors';
 
 export default class LoginScreen extends Component {
     constructor(props) {
@@ -12,30 +12,40 @@ export default class LoginScreen extends Component {
         };
     }
 
+    attemptSignIn() {
+        signInWithGoogleAsync();
+        this.setState({
+            didAttemptLogin: true
+        });
+    }
+    
+    renderLogin() {
+        return (
+            <View style={styles.container}>
+                <Button
+                    title="Sign in with Google"
+                    onPress={ () => this.attemptSignIn() }
+                />
+            </View>
+        );
+    }
+
+    renderLoading() {
+        return (
+            <View style={styles.container}>
+                <ActivityIndicator 
+                    size="large"
+                    color={Colors.primary}
+                />
+            </View>
+        );
+    }
+
     render() {
-        if (this.state.didAttemptLogin) {
-            return (
-                <View style={styles.container}>
-                    <ActivityIndicator 
-                        size="large"
-                        color={Colors.primary}
-                    />
-                </View>
-            )
+        if (!this.state.didAttemptLogin) {
+            return this.renderLogin();
         } else {
-            return (
-                <View style={styles.container}>
-                    <Button
-                        title="Sign in with Google"
-                        onPress={ () => {
-                            signInWithGoogleAsync();
-                            this.setState({
-                                didAttemptLogin: true
-                            });
-                        } }
-                    />
-                </View>
-            );
+            return this.renderLoading();
         }
     }
 }

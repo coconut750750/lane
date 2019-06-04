@@ -160,7 +160,7 @@ export function deleteLane(laneId, onComplete) {
             removeAllLanePhotos(laneObj),
             removeLane(laneId)
         ]).then(_ => {
-            onComplete()
+            onComplete();
         });
     });
 }
