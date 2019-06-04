@@ -33,7 +33,3 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     }
 });
-
-StartScreen.propTypes = {
-    navigation: PropTypes.object
-};

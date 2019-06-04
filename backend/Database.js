@@ -102,7 +102,7 @@ export async function pushLane(ownerId, laneObj) {
     return await firebase.database().ref(LANES).push(laneObj).key;
 }
 
-export async function retrieveLanes(processLanes) {
+export async function onLaneUpdate(processLanes) {
     var userid = firebase.auth().currentUser.uid;
     firebase.database().ref(USERS).child(userid).child(LANES).on('value', datasnapshot => {
         var lanes = datasnapshot.val();

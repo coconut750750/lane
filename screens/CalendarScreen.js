@@ -12,8 +12,7 @@ import { FAB, IconButton } from 'react-native-paper';
 var _ = require('lodash');
 
 import { signOut, getIdFromEmail } from 'lane/backend/Auth';
-import { retrieveLanes } from 'lane/backend/Database';
-import { shareLane, deleteLane } from 'lane/backend/Database';
+import { onLaneUpdate, shareLane, deleteLane } from 'lane/backend/Database';
 
 import SharingView from 'lane/components/SharingView';
 import LaneCalendar from 'lane/components/LaneCalendar';
@@ -43,11 +42,7 @@ export default class CalendarScreen extends Component {
     }
 
     componentDidMount() {
-        this.initLaneListener();
-    }
-    
-    async initLaneListener() {
-        retrieveLanes(this.processLanes.bind(this));
+        onLaneUpdate(this.processLanes.bind(this));
     }
 
     processPeriods(periods) {
