@@ -8,7 +8,7 @@ import {
     Animated,
     TouchableWithoutFeedback,
 } from 'react-native';
-import { FAB, IconButton } from 'react-native-paper';
+import { FAB, IconButton, Snackbar } from 'react-native-paper';
 var _ = require('lodash');
 
 import { signOut, getIdFromEmail } from 'lane/backend/Auth';
@@ -38,6 +38,10 @@ export default class CalendarScreen extends Component {
 
             // animations
             scrollAnim: new Animated.Value(0),
+
+            // snackbar
+            snackVisible: false,
+            snackMessage: '',
         };
     }
 
@@ -55,10 +59,11 @@ export default class CalendarScreen extends Component {
         _.forEach(lanes, (laneObj, id) => {
             periods.push(constructPeriodFromLane(laneObj));
         });
+        const markings = this.processPeriods(periods);
 
         this.setState({
             lanes: lanes,
-            markings: this.processPeriods(periods),
+            markings: markings,
             loading: false,
         });
         this.unselect()
@@ -119,7 +124,10 @@ export default class CalendarScreen extends Component {
         });
         getIdFromEmail(email, id => {
             if (id === undefined) {
-                alert('Email doesn\'t exist!');
+                this.setState({
+                    snackVisible: true,
+                    snackMessage: 'Email doesn\'t exist!'
+                });
             } else {
                 shareLane(this.state.sharingId, id);
             }
@@ -224,6 +232,12 @@ export default class CalendarScreen extends Component {
                     color='#000000'
                     onPress={ () => this.props.navigation.openDrawer() }
                 />
+                <Snackbar
+                    visible={this.state.snackVisible}
+                    duration={3000}
+                    onDismiss={() => this.setState({ snackVisible: false, snackMessage: '' })}>
+                    { this.state.snackMessage }
+                </Snackbar>
             </View>
         );
     }

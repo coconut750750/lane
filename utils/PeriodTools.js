@@ -48,19 +48,13 @@ export function setupScheduledMarkings(scheduled) {
 
 export function getValidLanes(lanes, date) {
     var selectedLanes = [];
-    _.forEach(lanes, (lane, laneid) => {
+    _.forEach(lanes, (lane, laneIndex) => {
         var start = new Date(lane.startDate).getTime();
         var end = new Date(lane.endDate).getTime();
         var selected = new Date(date).getTime();
         if (selected >= start && selected <= end) {
-            selectedLanes.push(laneid);
+            selectedLanes.push(laneIndex);
         }
     });
     return selectedLanes;
-
-    if (!_.isEqual(_.sortBy(selectedLanes), _.sortBy(this.state.selectedLanes))) {
-        this.setState({
-            selectedLanes: selectedLanes
-        });
-    }
 }

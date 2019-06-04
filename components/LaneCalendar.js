@@ -85,7 +85,9 @@ LaneCalendar.propTypes = {
                         endingDay: PropTypes.bool.isRequired,
                         color: PropTypes.string.isRequired
                     }),
-                    PropTypes.oneOf([{ color: 'transparent' }])
+                    PropTypes.shape({
+                        color: PropTypes.oneOf(['transparent']).isRequired
+                    })
                 ])
             ).isRequired,
         })

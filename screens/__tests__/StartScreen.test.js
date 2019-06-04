@@ -23,35 +23,34 @@ describe('StartScreen', () => {
         return { component, instance };
     }
 
-    const setupLoggedIn = () => {
-        auth.checkIfLoggedIn.mockImplementation( (callback) => callback(true) );
+    const setupCheckLogin = (fn) => {
+        auth.checkIfLoggedIn.mockImplementation(fn);
         return setup();
     }
 
-    const setupLoggedOut = () => {
-        auth.checkIfLoggedIn.mockImplementation( (callback) => callback(false) );
-        return setup();
+    const setupDefault = () => {
+        return setupCheckLogin( callback => callback(true) );
     }
 
     it('renders start screen', () => {
-        const { component, instance } = setupLoggedIn();
+        const { component, instance } = setupDefault();
 
         const screen = renderer.create(instance.render()).toJSON();
         expect(screen).toMatchSnapshot();
     });
 
     it('did start start auth listener', () => {
-        const { component, instance } = setupLoggedIn();
+        const { component, instance } = setupDefault();
         expect(auth.checkIfLoggedIn).toHaveBeenCalled();
     });
 
     it('did navigate to home when check login was true', () => {
-        const { component, instance } = setupLoggedIn();
+        const { component, instance } = setupCheckLogin( callback => callback(true) );
         expect(mockNavigate).toHaveBeenCalledWith('Home');
     });
 
     it('did not navigate to home when check login was false', () => {
-        const { component, instance } = setupLoggedOut();
+        const { component, instance } = setupCheckLogin( callback => callback(false) );
         expect(mockNavigate).toHaveBeenCalledWith('Home');
     });
 });
