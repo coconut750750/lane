@@ -3,8 +3,9 @@ import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import renderer from 'react-test-renderer';
 
-import LoginScreen from 'lane/screens/LoginScreen'
 import * as auth from 'lane/backend/Auth';
+
+import LoginScreen from '../LoginScreen'
 
 jest.mock("lane/backend/Auth");
 

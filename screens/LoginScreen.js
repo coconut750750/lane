@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Button, ActivityIndicator, StyleSheet } from 'react-native';
 
 import { signInWithGoogleAsync } from 'lane/backend/Auth';
+
 import Colors from 'lane/constants/Colors';
 
 export default class LoginScreen extends Component {

@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 
-import { firebaseConfig } from '../config'
+import { firebaseConfig } from 'lane/config'
 
 export default function init() {
     firebase.initializeApp(firebaseConfig)

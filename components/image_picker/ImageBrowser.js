@@ -7,11 +7,12 @@ import {
     Dimensions
 } from 'react-native';
 import { FileSystem } from 'expo';
-import ImageTile from './ImageTile';
 import { IconButton, Text } from 'react-native-paper';
 
-import Colors from '../../constants/Colors';
-import Layout from '../../constants/Layout';
+import Colors from 'lane/constants/Colors';
+import Layout from 'lane/constants/Layout';
+
+import ImageTile from './ImageTile';
 
 let numColumns = 2;
 

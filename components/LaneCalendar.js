@@ -4,7 +4,7 @@ import { View, Animated, ViewPropTypes } from 'react-native';
 import { CalendarList } from 'react-native-calendars';
 var _ = require('lodash');
 
-import Colors from '../constants/Colors'
+import Colors from 'lane/constants/Colors'
 
 export default class LaneCalendar extends Component {
     constructor(props) {

@@ -16,12 +16,14 @@ import {
 import { Permissions } from 'expo';
 import MasonryList from "react-native-masonry-list";
 
-import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
-import ColorPickerView from 'lane/components/Color/ColorPickerView'
-import Colors from 'lane/constants/Colors';
-import Layout from 'lane/constants/Layout';
 import { pushLane, uploadImageAsync, addLaneToUser } from 'lane/backend/Database';
 import { getUserID } from 'lane/backend/Auth';
+
+import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
+import ColorPickerView from 'lane/components/Color/ColorPickerView'
+
+import Colors from 'lane/constants/Colors';
+import Layout from 'lane/constants/Layout';
 
 export default class CreateScreen extends Component {
     constructor(props) {

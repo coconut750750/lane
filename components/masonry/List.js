@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import { View, Animated, FlatList, ViewPropTypes } from 'react-native';
 var _ = require('lodash');
 
-import MasonryRow from './Row';
-import Layout from '../../constants/Layout';
+import Layout from 'lane/constants/Layout';
+
 import { calculateRowDimensions } from './DimensionUtils';
+import MasonryRow from './Row';
 
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 

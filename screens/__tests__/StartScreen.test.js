@@ -3,10 +3,11 @@ import Enzyme, {shallow} from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import renderer from 'react-test-renderer';
 
-import StartScreen from '../StartScreen'
-import * as auth from '../../backend/Auth';
+import * as auth from 'lane/backend/Auth';
 
-jest.mock("../../backend/Auth");
+import StartScreen from '../StartScreen'
+
+jest.mock("lane/backend/Auth");
 
 Enzyme.configure({ adapter: new Adapter() });
 

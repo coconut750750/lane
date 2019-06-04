@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 
-import { clientId } from '../config';
+import { clientId } from 'lane/config';
 
 export function getUserID() {
     return firebase.auth().currentUser.uid;

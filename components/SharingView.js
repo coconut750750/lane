@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Surface, TextInput, Button } from 'react-native-paper';
 
-import Colors from '../constants/Colors';
+import Colors from 'lane/constants/Colors';
 
 export default class SharingView extends Component {
     constructor(props) {

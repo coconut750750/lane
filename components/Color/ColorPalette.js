@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { TouchableOpacity, View, Text, Dimensions, StyleSheet } from 'react-native';
 
-import Layout from '../../constants/Layout';
+import Layout from 'lane/constants/Layout';
 
 export default class ColorPalette extends Component {
     constructor(props) {

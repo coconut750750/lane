@@ -11,16 +11,19 @@ import {
 import { FAB, IconButton } from 'react-native-paper';
 var _ = require('lodash');
 
-import Colors from 'lane/constants/Colors'
-import Layout from 'lane/constants/Layout'
-import LaneCalendar from 'lane/components/LaneCalendar';
-import LaneContent from 'lane/components/LaneContent';
-import schedulePeriods from 'lane/utils/PeriodScheduling';
-import { constructPeriodFromLane, setupScheduledMarkings, getValidLanes } from 'lane/utils/PeriodTools';
 import { signOut, getIdFromEmail } from 'lane/backend/Auth';
 import { retrieveLanes } from 'lane/backend/Database';
-import SharingView from 'lane/components/SharingView';
 import { shareLane, deleteLane } from 'lane/backend/Database';
+
+import SharingView from 'lane/components/SharingView';
+import LaneCalendar from 'lane/components/LaneCalendar';
+import LaneContent from 'lane/components/LaneContent';
+
+import Colors from 'lane/constants/Colors'
+import Layout from 'lane/constants/Layout'
+
+import schedulePeriods from 'lane/utils/PeriodScheduling';
+import { constructPeriodFromLane, setupScheduledMarkings, getValidLanes } from 'lane/utils/PeriodTools';
 
 export default class CalendarScreen extends Component {
     constructor(props) {

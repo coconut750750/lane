@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 var _ = require('lodash');
 
-import Colors from '../constants/Colors';
-import Layout from '../constants/Layout';
-import MasonryList from './masonry/List';
+import Colors from 'lane/constants/Colors';
+import Layout from 'lane/constants/Layout';
+
+import MasonryList from 'lane/components/masonry/List';
+
 import LaneHeader from './LaneHeader';
 
 export default class LaneContent extends Component {

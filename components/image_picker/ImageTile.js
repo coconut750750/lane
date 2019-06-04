@@ -5,7 +5,7 @@ import {
     TouchableHighlight,
 } from 'react-native';
 
-import Layout from '../../constants/Layout';
+import Layout from 'lane/constants/Layout';
 
 export default class ImageTile extends React.PureComponent {
     constructor(props) {

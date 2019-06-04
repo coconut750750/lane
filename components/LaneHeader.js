@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { View, StyleSheet, Animated } from 'react-native';
 import { Headline, Menu, IconButton } from 'react-native-paper';
 
-import { getUserID } from '../backend/Auth';
-import Colors from '../constants/Colors';
+import { getUserID } from 'lane/backend/Auth';
+
+import Colors from 'lane/constants/Colors';
 
 export default class LaneHeader extends Component {
     constructor(props) {
