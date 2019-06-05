@@ -49,6 +49,13 @@ export default class CalendarScreen extends Component {
         onLaneUpdate(this.processLanes.bind(this));
     }
 
+    alert(message) {
+        this.setState({
+            snackVisible: true,
+            snackMessage: message
+        });
+    }
+
     processPeriods(periods) {
         var scheduled = schedulePeriods(periods);
         return setupScheduledMarkings(scheduled);
@@ -124,10 +131,7 @@ export default class CalendarScreen extends Component {
         });
         getIdFromEmail(email, id => {
             if (id === undefined) {
-                this.setState({
-                    snackVisible: true,
-                    snackMessage: 'Email doesn\'t exist!'
-                });
+                this.alert('Email doesn\'t exist!');
             } else {
                 shareLane(this.state.sharingId, id);
             }

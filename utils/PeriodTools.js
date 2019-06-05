@@ -58,3 +58,13 @@ export function getValidLanes(lanes, date) {
     });
     return selectedLanes;
 }
+
+export function getStartEnd(photos) {
+    var startTS = Math.min(...photos.map(p => p.timestamp));
+    var endTS = Math.max(...photos.map(p => p.timestamp));
+
+    var start = new Date(startTS * 1000);
+    var end = new Date(endTS * 1000);
+
+    return {start: start.toISOString().split('T')[0], end: end.toISOString().split('T')[0]};
+}

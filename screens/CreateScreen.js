@@ -11,7 +11,8 @@ import {
 import { 
     IconButton,
     Text,
-    List
+    List,
+    Snackbar
 } from 'react-native-paper'
 import { Permissions } from 'expo';
 import MasonryList from "react-native-masonry-list";
@@ -25,6 +26,8 @@ import ColorPickerView from 'lane/components/Color/ColorPickerView'
 import Colors from 'lane/constants/Colors';
 import Layout from 'lane/constants/Layout';
 
+import { getStartEnd } from 'lane/utils/PeriodTools';
+
 export default class CreateScreen extends Component {
     constructor(props) {
         super(props);
@@ -34,7 +37,11 @@ export default class CreateScreen extends Component {
             photos: [],
             imageBrowserOpen: false,
             colorModalOpen: false,
-            uploading: false
+            uploading: false,
+
+            // snackbar
+            snackVisible: false,
+            snackMessage: '',
         };
         this.color = Colors.primary;
     }
@@ -50,6 +57,13 @@ export default class CreateScreen extends Component {
         this.color = Colors.primary;
     }
 
+    alert(message) {
+        this.setState({
+            snackVisible: true,
+            snackMessage: message
+        });
+    }
+
     async handleAddPhotos() {
         let status;
         try {
@@ -57,11 +71,11 @@ export default class CreateScreen extends Component {
         } catch (e) {
             status = {status: 'error', error: e}
         }
-
+        // console.log(status);
         if (status.status === 'granted') {
             this.setState({ imageBrowserOpen: true })
         } else {
-            alert('Sorry! We need permissions to access your photos.');
+            this.alert('Sorry! We need permissions to access your photos.');
         }
     }
 
@@ -75,29 +89,19 @@ export default class CreateScreen extends Component {
         }).catch((e) => console.log(e))
     }
 
-    getStartEnd() {
-        var startTS = Math.min(...this.state.photos.map(p => p.timestamp));
-        var endTS = Math.max(...this.state.photos.map(p => p.timestamp));
-
-        var start = new Date(startTS * 1000);
-        var end = new Date(endTS * 1000);
-
-        return {start: start.toISOString().split('T')[0], end: end.toISOString().split('T')[0]};
-    }
-
     async handleDone() {
         if (this.state.title === '') {
-            alert('Please add a title');
+            this.alert('Please add a title');
             return;
         }
         if (this.state.photos.length === 0) {
-            alert('Please add a photo');
+            this.alert('Please add a photo');
             return;
         }
         this.setState({uploading: true});
         
         var userId = getUserID();
-        const { start, end } = this.getStartEnd()
+        const { start, end } = getStartEnd(this.state.photos)
 
         let laneId = await pushLane(userId, {
             title: this.state.title,
@@ -150,6 +154,24 @@ export default class CreateScreen extends Component {
         );
     }
 
+    renderImageBrowser() {
+        return (
+            <ImageBrowser
+                disabled={ this.state.photos.map(p => p.uri) }
+                callback={ this.imageBrowserCallback }/>
+        );
+    }
+
+    renderLoading() {
+        return (
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator 
+                    size="large"
+                    color={Colors.primary} />
+            </View>
+        );
+    }
+
     renderTitle() {
         return (
             <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -169,21 +191,14 @@ export default class CreateScreen extends Component {
     }
 
     render() {
-        if (this.state.imageBrowserOpen) {
-            return (<ImageBrowser
-                        disabled={ this.state.photos.map(p => p.uri) }
-                        callback={ this.imageBrowserCallback }/>
-            );
-        }
         if (this.state.uploading) {
-            return (
-                <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                    <ActivityIndicator 
-                        size="large"
-                        color={Colors.primary} />
-                </View>
-            );
+            return this.renderLoading();
         }
+
+        if (this.state.imageBrowserOpen) {
+            return this.renderImageBrowser();
+        }
+
         return (
             <View style={ styles.container }>
                 {this.renderColorModal()}
@@ -216,6 +231,13 @@ export default class CreateScreen extends Component {
                         </View>
                     </TouchableNativeFeedback>
                 </View>
+
+                <Snackbar
+                    visible={this.state.snackVisible}
+                    duration={3000}
+                    onDismiss={() => this.setState({ snackVisible: false, snackMessage: '' })}>
+                    { this.state.snackMessage }
+                </Snackbar>
             </View>
         );
     }
