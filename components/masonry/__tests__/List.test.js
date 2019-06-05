@@ -8,7 +8,7 @@ import MasonryList from '../List'
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('List', () => {
-    let dimens1row = [{uri: 'uri', height: 100, width: 100}, {uri: 'uri', height: 300, width: 360}, {uri: 'uri', height: 100, width: 100}]
+    let dimens1row = [{uri: 'uri', height: 100, width: 100}, {uri: 'uri', height: 100, width: 100}, {uri: 'uri', height: 100, width: 100}]
     let dimens2row = [{uri: 'uri', height: 100, width: 360}, {uri: 'uri', height: 100, width: 360}, {uri: 'uri', height: 100, width: 100}]
 
     let data = [{ 
@@ -49,7 +49,7 @@ describe('List', () => {
 
     it('simple generate row counts', () => {
         const component = shallow(
-            <MasonryList uris={[]} width={0} itemPadding={2} style={{ flex: 1 }} />
+            <MasonryList photos={dimens1row} width={0} itemPadding={2} style={{ flex: 1 }} />
         );
         const instance = component.instance();
         let rowCounts = instance.generateRowCounts(dimens1row);
@@ -58,7 +58,7 @@ describe('List', () => {
 
     it('three row counts', () => {
         const component = shallow(
-            <MasonryList uris={[]} width={0} itemPadding={2} style={{ flex: 1 }} />
+            <MasonryList photos={dimens2row} width={0} itemPadding={2} style={{ flex: 1 }} />
         );
         const instance = component.instance();
         let rowCounts = instance.generateRowCounts(dimens2row);
@@ -67,7 +67,7 @@ describe('List', () => {
 
     it('simple get item layout', () => {
         const component = shallow(
-            <MasonryList uris={[]} width={0} itemPadding={2} style={{ flex: 1 }} />
+            <MasonryList photos={dimens1row} width={0} itemPadding={2} style={{ flex: 1 }} />
         );
         const instance = component.instance();
         var dataCopy = _.cloneDeep(data);

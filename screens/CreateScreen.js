@@ -1,31 +1,12 @@
 import React, { Component } from 'react';
-import { 
-    View,
-    Button,
-    TextInput,
-    StyleSheet,
-    TouchableNativeFeedback,
-    TouchableWithoutFeedback,
-    ActivityIndicator,
-    Modal,
-} from 'react-native'
-import { 
-    IconButton,
-    Text,
-    List,
-    Snackbar
-} from 'react-native-paper'
-import { Permissions } from 'expo';
+import { View, StyleSheet, ActivityIndicator } from 'react-native'
 
 import { pushLane, uploadImageAsync, addLaneToUser } from 'lane/backend/Database';
 import { getUserID } from 'lane/backend/Auth';
 
-import ColorPickerView from 'lane/components/Color/ColorPickerView'
-import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
-import MasonryList from 'lane/components/masonry/List';
+import LaneModifyView from 'lane/components/LaneModifyView';
 
 import Colors from 'lane/constants/Colors';
-import Layout from 'lane/constants/Layout';
 
 import { getStartEnd } from 'lane/utils/PeriodTools';
 
@@ -34,28 +15,12 @@ export default class CreateScreen extends Component {
         super(props);
 
         this.state = {
-            title: '',
-            photos: [],
-            imageBrowserOpen: false,
-            colorModalOpen: false,
             uploading: false,
 
             // snackbar
             snackVisible: false,
             snackMessage: '',
         };
-        this.color = Colors.primary;
-    }
-
-    resetState() {
-        this.setState({
-            title: '',
-            photos: [],
-            imageBrowserOpen: false,
-            colorModalOpen: false,
-            uploading: false
-        });
-        this.color = Colors.primary;
     }
 
     alert(message) {
@@ -65,120 +30,31 @@ export default class CreateScreen extends Component {
         });
     }
 
-    async handleAddPhotos() {
-        let status;
-        try {
-            status = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        } catch (e) {
-            status = {status: 'error', error: e}
-        }
-
-        if (status.status === 'granted') {
-            this.setState({ imageBrowserOpen: true })
-        } else {
-            this.alert('Sorry! We need permissions to access your photos.');
-        }
-    }
-
-    imageBrowserCallback = (selectedPhotoPromise) => {
-        selectedPhotoPromise.then((photos) => {
-            const allPhotos = this.state.photos.concat(photos);
-            this.setState({
-                imageBrowserOpen: false,
-                photos: allPhotos,
-            });
-        }).catch((e) => console.log(e));
-    }
-
-    removePhoto(uri) {
-        const photos = this.state.photos;
-        const filteredPhotos = photos.filter((item, index) => {
-            return item.image.uri != uri;
-        });
-        this.setState({
-            photos: filteredPhotos,
-        });
-    }
-
-    async handleDone() {
-        if (this.state.title === '') {
+    handleDone = async (title, photos, color) => {
+        if (title === '') {
             this.alert('Please add a title');
             return;
         }
-        if (this.state.photos.length === 0) {
+        if (photos.length === 0) {
             this.alert('Please add a photo');
             return;
         }
         this.setState({uploading: true});
         
         var userId = getUserID();
-        const { start, end } = getStartEnd(this.state.photos)
+        const { start, end } = getStartEnd(photos)
 
         let laneId = await pushLane(userId, {
-            title: this.state.title,
+            title: title,
             startDate: start,
             endDate: end,
-            color: this.color});
+            color: color});
 
-        await Promise.all(this.state.photos.map(photo => uploadImageAsync(laneId, photo)));
+        await Promise.all(photos.map(photo => uploadImageAsync(laneId, photo)));
         
         await addLaneToUser(userId, laneId);
 
         this.props.navigation.goBack()
-        this.resetState();
-    }
-
-    renderTopNav() {
-        return (
-            <View style={{ flexDirection: 'row' }}>
-                <IconButton
-                    icon="arrow-back"
-                    size={24}
-                    style={{ flex: 0.1 }}
-                    onPress={() => this.props.navigation.goBack()}/>
-                <View style={{ flex: 0.8 }}>
-                </View>
-                <IconButton
-                    icon="done"
-                    size={24}
-                    style={{ flex: 0.1 }}
-                    color={ this.color }
-                    onPress={() => this.handleDone()}/>
-            </View>
-        );
-    }
-
-    renderColorModal() {
-        return (
-            <Modal
-                animationType="slide"
-                transparent={true}
-                onRequestClose={ () => {} }
-                visible={ this.state.colorModalOpen }>
-                <TouchableWithoutFeedback
-                    onPress={ () => this.setState({ colorModalOpen: false }) }>
-                    <View style={{ 
-                        flex: 1,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: Colors.backdrop,}}>
-                        <ColorPickerView
-                            onChange={ color => {
-                                this.color = color;
-                                this.setState({ colorModalOpen: false });
-                            }}
-                            color={ this.color }/>
-                    </View>
-                </TouchableWithoutFeedback>
-            </Modal>
-        );
-    }
-
-    renderImageBrowser() {
-        return (
-            <ImageBrowser
-                callback={ this.imageBrowserCallback }/>
-        );
     }
 
     renderLoading() {
@@ -191,77 +67,16 @@ export default class CreateScreen extends Component {
         );
     }
 
-    renderTitle() {
-        return (
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                <TextInput
-                    placeholder='Title'
-                    value={this.state.title}
-                    onChangeText={text => this.setState({ title: text })}
-                    style={{ ...styles.titleInput, flex: 0.9, color: this.color }}/>
-                <IconButton
-                    icon="radio-button-checked"
-                    color={ this.color }
-                    size={24}
-                    style={{ flex: 0.1 }}
-                    onPress={() => this.setState({ colorModalOpen: true })}/>
-            </View>
-        );
-    }
-
     render() {
         if (this.state.uploading) {
             return this.renderLoading();
         }
 
-        if (this.state.imageBrowserOpen) {
-            return this.renderImageBrowser();
-        }
-
         return (
             <View style={ styles.container }>
-                {this.renderColorModal()}
-
-                {this.renderTopNav()}
-
-                {this.renderTitle()}
-
-                <MasonryList
-                    photos={this.state.photos.map(photo => 
-                            { return photo.image; }
-                        )
-                    }
-                    width={ Layout.window.width }
-                    itemPadding={8}
-                    imageStyle={{
-                        borderRadius: 8,
-                        overflow: 'hidden'
-                    }}
-                    style={{ flex: 0.85 }}
-                    onImagePress={ uri => this.alert('Long press to delete image') }
-                    onImageLongPress={ uri => this.removePhoto(uri) }
-                />
-                
-                <View style={{ ...styles.addPhotoSurface, flex: 0.15 }}>
-                    <TouchableNativeFeedback
-                        style={{ flex: 1 }}
-                        onPress={ () => this.handleAddPhotos() }>
-                        <View style={ styles.addPhotoView }>
-                            <IconButton
-                                icon="add-a-photo"
-                                size={24}
-                                style={{ flex: 1 }}/>
-                            <Text>Add a Photo</Text>
-                        </View>
-                    </TouchableNativeFeedback>
-                </View>
-
-                <Snackbar
-                    visible={this.state.snackVisible}
-                    duration={3000}
-                    onDismiss={() => this.setState({ snackVisible: false, snackMessage: '' })}>
-                    { this.state.snackMessage }
-                </Snackbar>
+                <LaneModifyView
+                    handleDone={this.handleDone}
+                    goBack={ () => this.props.navigation.goBack() }/>
             </View>
         );
     }
@@ -306,4 +121,4 @@ const styles = StyleSheet.create({
         elevation: 4,
         height: 100
     }
-})
+});

@@ -46,32 +46,15 @@ describe('CreateScreen', () => {
         db.pushLane.mockReset();
         db.uploadImageAsync.mockReset();
         db.addLaneToUser.mockReset();
-        Permissions.askAsync.mockReset();
     });
 
     it('renders empty create screen correctly', () => {
         const { component, instance } = setup();
         const screen = renderer.create(instance.render()).toJSON();
-        const loading = renderer.create(instance.renderImageBrowser()).toJSON();
-        const imageBrowser = renderer.create(instance.renderLoading()).toJSON();
+        const loading = renderer.create(instance.renderLoading()).toJSON();
 
-        expect(screen).toMatchSnapshot();
         expect(screen).not.toEqual(loading);
-        expect(screen).not.toEqual(imageBrowser);
-    });
-
-    it('renders top nav correctly', () => {
-        const { component, instance } = setup();
-        const topNav = renderer.create(instance.renderTopNav()).toJSON();
-
-        expect(topNav).toMatchSnapshot();
-    });
-
-    it('renders color modal correctly', () => {
-        const { component, instance } = setup();
-        const colorModal = renderer.create(instance.renderColorModal()).toJSON();
-
-        expect(colorModal).toMatchSnapshot();
+        expect(screen).toMatchSnapshot();
     });
 
     it('renders loading screen correctly', () => {
@@ -91,103 +74,24 @@ describe('CreateScreen', () => {
         expect(screen).toEqual(loadingScreen);
     });
 
-    it('renders image browser if image_browser_open is true in state', () => {
-        const { component, instance } = setup();
-        const imageBrowser = renderer.create(instance.renderImageBrowser()).toJSON();
-
-        instance.state.imageBrowserOpen = true;
-        const screen = renderer.create(instance.render()).toJSON();
-
-        expect(screen).toEqual(imageBrowser);
-    });
-
-    it('alerts if permissions throws error', () => {
-        Permissions.askAsync.mockImplementation( permission => { throw 'lolol'; } );
-        const { component, instance } = setup();
-
-        return instance.handleAddPhotos().then(data => {
-            expect(Permissions.askAsync).toHaveBeenCalled();
-            expect(instance.state.snackVisible).toBeTruthy();
-        });
-    });
-
-    it('alerts if permissions returns false', () => {
-        Permissions.askAsync.mockImplementation( permission => { return {status: 'error'} } );
-        const { component, instance } = setup();
-
-        return instance.handleAddPhotos().then(data => {
-            expect(Permissions.askAsync).toHaveBeenCalled();
-            expect(instance.state.snackVisible).toBeTruthy();
-        });
-    });
-
-    it('opens image browser if permissions returns true', () => {
-        Permissions.askAsync.mockImplementation( permission => { return {status: 'granted'} } );
-        const { component, instance } = setup();
-
-        return instance.handleAddPhotos().then( () => {
-            expect(Permissions.askAsync).toHaveBeenCalled();
-            expect(instance.state.snackVisible).toBeFalsy();
-            expect(instance.state.imageBrowserOpen).toBeTruthy();
-        });
-    });
-
-    it('adds selected photos to state', () => {
-        const { component, instance } = setup();
-        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
-        const photoPromise = Promise.all([]).then( () => {
-            return photos;
-        });
-
-        instance.imageBrowserCallback(photoPromise);
-        photoPromise.then( () => {
-            expect(instance.state.imageBrowserOpen).toBeFalsy();
-            expect(instance.state.photos).toEqual(photos);
-        });
-    });
-
-    it('adds additional photos to state', () => {
-        const { component, instance } = setup();
-        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
-        const photoPromise = Promise.all([]).then( () => {
-            return photos;
-        });
-        instance.imageBrowserCallback(photoPromise);
-        instance.imageBrowserCallback(photoPromise);
-
-        photoPromise.then( () => {
-            expect(instance.state.imageBrowserOpen).toBeFalsy();
-            expect(instance.state.photos).toEqual([...photos, ...photos]);
-        });
-    });
-
-    it('removes photo from state', () => {
-        const { component, instance } = setup();
-        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
-        const photoPromise = Promise.all([]).then( () => {
-            return photos;
-        });
-        instance.imageBrowserCallback(photoPromise);
-
-        photoPromise.then( () => {
-            instance.removePhoto('uri1');
-            expect(instance.state.photos).toEqual([photos[1]]);
-        });
-    });
-
     it('alerts if handle done received no title', () => {
+        const title = '';
+        const photos = [];
+        const color = '#ffffff';
         const { component, instance } = setup();
 
-        return instance.handleDone().then( () => {
+        return instance.handleDone(title, photos, color).then( () => {
             expect(instance.state.snackVisible).toBeTruthy();
         });
     });
 
-    it('alerts if handle done received no title', () => {
+    it('alerts if handle done received no photos', () => {
+        const title = 'title';
+        const photos = [];
+        const color = '#ffffff';
         const { component, instance } = setup();
-        instance.state.title = 'title';
 
-        return instance.handleDone().then( () => {
+        return instance.handleDone(title, photos, color).then( () => {
             expect(instance.state.snackVisible).toBeTruthy();
         });
     });
@@ -204,24 +108,24 @@ describe('CreateScreen', () => {
                 width: 100,
                 height: 100
             }
-        }
+        };
+        const color = '#ffffff';
+
         auth.getUserID.mockImplementation( () => { return id; } );
         db.pushLane.mockImplementation( (ownerId, laneObj) => { return laneid; } );
         db.uploadImageAsync.mockImplementation( (laneId, photo) => {} );
         db.addLaneToUser.mockImplementation( (userId, laneId) => {} );
 
         const { component, instance } = setup();
-        instance.state.title = title;
-        instance.state.photos = [photo]
 
-        return instance.handleDone().then( () => {
+        return instance.handleDone(title, [photo], color).then( () => {
             expect(instance.state.snackVisible).toBeFalsy();
             expect(auth.getUserID).toHaveBeenCalled();
             expect(db.pushLane).toHaveBeenCalledWith(id, {
                 title: 'title',
                 startDate: '1970-01-01',
                 endDate: '1970-01-01',
-                color: '#6200ee',
+                color: color,
             });
             expect(db.uploadImageAsync).toHaveBeenCalledTimes(1);
             expect(db.uploadImageAsync).toHaveBeenCalledWith(laneid, photo);
@@ -250,24 +154,24 @@ describe('CreateScreen', () => {
                 width: 100,
                 height: 100
             }
-        }]
+        }];
+        const color = '#ffffff';
+
         auth.getUserID.mockImplementation( () => { return id; } );
         db.pushLane.mockImplementation( (ownerId, laneObj) => { return laneid; } );
         db.uploadImageAsync.mockImplementation( (laneId, photo) => {} );
         db.addLaneToUser.mockImplementation( (userId, laneId) => {} );
 
         const { component, instance } = setup();
-        instance.state.title = title;
-        instance.state.photos = photos;
 
-        return instance.handleDone().then( () => {
+        return instance.handleDone(title, photos, color).then( () => {
             expect(instance.state.snackVisible).toBeFalsy();
             expect(auth.getUserID).toHaveBeenCalled();
             expect(db.pushLane).toHaveBeenCalledWith(id, {
                 title: 'title',
                 startDate: '1970-01-01',
                 endDate: '1970-01-02',
-                color: '#6200ee',
+                color: color,
             });
             expect(db.uploadImageAsync).toHaveBeenCalledTimes(2);
             expect(db.uploadImageAsync).toHaveBeenCalledWith(laneid, photos[0]);

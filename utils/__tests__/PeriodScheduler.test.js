@@ -39,7 +39,7 @@ describe('PeriodScheduling', () => {
 
     it('simple scheduling height all 0', () => {
         var periodA = { start: 0, end: 5, color: '#ffffff', id: 'a', height: -1 };
-        var periodB = { start: 5, end: 6, color: '#ffffff', id: 'b', height: -1 };
+        var periodB = { start: 6, end: 6, color: '#ffffff', id: 'b', height: -1 };
         var periodC = { start: 9, end: 12, color: '#ffffff', id: 'c', height: -1 };
         var periods = [periodA, periodB, periodC];
         var schedule = schedulePeriods(periods);

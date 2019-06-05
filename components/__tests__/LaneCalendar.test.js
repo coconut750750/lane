@@ -32,7 +32,8 @@ describe('LaneCalendar', () => {
     });
 
     it('selected date is highlighted', () => {
-        const component = shallow(<LaneCalendar markings={{}}/>);
+        const onDayPress = jest.fn( date => {} );
+        const component = shallow(<LaneCalendar markings={{}} onDayPress={onDayPress}/>);
         const instance = component.instance();
         instance.onDayPress({dateString: '2019-05-20'});
         expect(instance.state.selected).toEqual('2019-05-20');
