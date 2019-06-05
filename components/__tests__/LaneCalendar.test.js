@@ -36,6 +36,8 @@ describe('LaneCalendar', () => {
         const component = shallow(<LaneCalendar markings={{}} onDayPress={onDayPress}/>);
         const instance = component.instance();
         instance.onDayPress({dateString: '2019-05-20'});
+        
         expect(instance.state.selected).toEqual('2019-05-20');
+        expect(onDayPress).toHaveBeenCalledWith('2019-05-20')
     });
 });

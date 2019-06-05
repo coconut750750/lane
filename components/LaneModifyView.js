@@ -246,6 +246,7 @@ const styles = StyleSheet.create({
         elevation: 4,
         height: 100
     }
-})
+});
+
 LaneModifyView.propTypes = {
 };
