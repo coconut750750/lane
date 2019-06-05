@@ -101,7 +101,7 @@ describe('CreateScreen', () => {
         expect(screen).toEqual(imageBrowser);
     });
 
-    it('will alert if permissions throws error', () => {
+    it('alerts if permissions throws error', () => {
         Permissions.askAsync.mockImplementation( permission => { throw 'lolol'; } );
         const { component, instance } = setup();
 
@@ -111,7 +111,7 @@ describe('CreateScreen', () => {
         });
     });
 
-    it('will alert if permissions returns false', () => {
+    it('alerts if permissions returns false', () => {
         Permissions.askAsync.mockImplementation( permission => { return {status: 'error'} } );
         const { component, instance } = setup();
 
@@ -121,7 +121,7 @@ describe('CreateScreen', () => {
         });
     });
 
-    it('will open image browser if permissions returns true', () => {
+    it('opens image browser if permissions returns true', () => {
         Permissions.askAsync.mockImplementation( permission => { return {status: 'granted'} } );
         const { component, instance } = setup();
 
@@ -132,7 +132,35 @@ describe('CreateScreen', () => {
         });
     });
 
-    it('will alert if handle done received no title', () => {
+    it('adds selected photos to state', () => {
+        const { component, instance } = setup();
+        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
+        const photoPromise = Promise.all([]).then( () => {
+            return photos;
+        });
+
+        instance.imageBrowserCallback(photoPromise, {})
+        photoPromise.then( () => {
+            expect(instance.state.imageBrowserOpen).toBeFalsy();
+            expect(instance.state.photos).toEqual(photos);
+        });
+    });
+
+    it('removes deselected photos from state', () => {
+        const { component, instance } = setup();
+        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
+        const photoPromise = Promise.all([]).then( () => {
+            return photos;
+        });
+
+        instance.imageBrowserCallback(photoPromise, {uri2: true})
+        photoPromise.then( () => {
+            expect(instance.state.imageBrowserOpen).toBeFalsy();
+            expect(instance.state.photos).toEqual([photos[0]]);
+        });
+    });
+
+    it('alerts if handle done received no title', () => {
         const { component, instance } = setup();
 
         return instance.handleDone().then( () => {
@@ -140,7 +168,7 @@ describe('CreateScreen', () => {
         });
     });
 
-    it('will alert if handle done received no title', () => {
+    it('alerts if handle done received no title', () => {
         const { component, instance } = setup();
         instance.state.title = 'title';
 
@@ -149,7 +177,7 @@ describe('CreateScreen', () => {
         });
     });
 
-    it('will successfully handle done with one picture', () => {
+    it('successfully handle done with one picture', () => {
         const id = 'testid';
         const laneid = 'laneid';
         const title = 'title';
@@ -187,7 +215,7 @@ describe('CreateScreen', () => {
         });
     });
 
-    it('will successfully handle done with multiple pictures', () => {
+    it('successfully handle done with multiple pictures', () => {
         const id = 'testid';
         const laneid = 'laneid';
         const title = 'title';
