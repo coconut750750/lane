@@ -22,7 +22,6 @@ export default class ImageBrowser extends React.Component {
         this.state = {
             photos: [],
             selected: {},
-            deselected: {},
             after: null,
             has_next_page: true
         }
@@ -33,28 +32,6 @@ export default class ImageBrowser extends React.Component {
     }
 
     selectImage = (index) => {
-        const uri = this.state.photos[index].image.uri;
-        if (this.props.preselected.includes(uri)) {
-            this.toggleDeselectedImage(uri);
-        } else {
-            this.toggleSelectedImage(index);
-        }
-    }
-
-    toggleDeselectedImage(uri) {
-        let newDeselected = {...this.state.deselected};
-        if (newDeselected[uri]) {
-            delete newDeselected[uri];
-        } else {
-            newDeselected[uri] = true;
-        }
-        if (!newDeselected) {
-            newDeselected = {};
-        }
-        this.setState({ deselected: newDeselected });
-    }
-
-    toggleSelectedImage(index) {
         let newSelected = {...this.state.selected};
         if (newSelected[index]) {
             delete newSelected[index];
@@ -112,19 +89,12 @@ export default class ImageBrowser extends React.Component {
                     return {...selectedPhotos[i], ...data};
                 })
             });
-        this.props.callback(photoPromise, this.state.deselected);
-    }
-
-    countSelected() {
-        const newOnes = Object.keys(this.state.selected).length;
-        const oldOnes = this.props.preselected.length;
-        const deselectedOld = Object.keys(this.state.deselected).length;
-
-        return newOnes + oldOnes - deselectedOld;
+        this.props.callback(photoPromise);
     }
 
     renderHeader() {
-        let headerText = this.countSelected() + ' Selected';
+        const count = Object.keys(this.state.selected).length;
+        let headerText = count+ ' Selected';
         return (
             <View style={styles.header}>
                 <IconButton
@@ -145,8 +115,7 @@ export default class ImageBrowser extends React.Component {
 
     renderImageTile = ({item, index}) => {
         let uri = item.image.uri;
-        let preselected = this.props.preselected.includes(uri) && !this.state.deselected[uri];
-        let selected = this.state.selected[index] || preselected ? true : false;
+        let selected = this.state.selected[index] ? true : false;
         
         return(
             <ImageTile

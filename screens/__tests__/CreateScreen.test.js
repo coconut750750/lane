@@ -139,24 +139,39 @@ describe('CreateScreen', () => {
             return photos;
         });
 
-        instance.imageBrowserCallback(photoPromise, {})
+        instance.imageBrowserCallback(photoPromise);
         photoPromise.then( () => {
             expect(instance.state.imageBrowserOpen).toBeFalsy();
             expect(instance.state.photos).toEqual(photos);
         });
     });
 
-    it('removes deselected photos from state', () => {
+    it('adds additional photos to state', () => {
         const { component, instance } = setup();
         const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
         const photoPromise = Promise.all([]).then( () => {
             return photos;
         });
+        instance.imageBrowserCallback(photoPromise);
+        instance.imageBrowserCallback(photoPromise);
 
-        instance.imageBrowserCallback(photoPromise, {uri2: true})
         photoPromise.then( () => {
             expect(instance.state.imageBrowserOpen).toBeFalsy();
-            expect(instance.state.photos).toEqual([photos[0]]);
+            expect(instance.state.photos).toEqual([...photos, ...photos]);
+        });
+    });
+
+    it('removes photo from state', () => {
+        const { component, instance } = setup();
+        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
+        const photoPromise = Promise.all([]).then( () => {
+            return photos;
+        });
+        instance.imageBrowserCallback(photoPromise);
+
+        photoPromise.then( () => {
+            instance.removePhoto('uri1');
+            expect(instance.state.photos).toEqual([photos[1]]);
         });
     });
 

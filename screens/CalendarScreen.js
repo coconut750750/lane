@@ -114,7 +114,7 @@ export default class CalendarScreen extends Component {
     }
 
     onEditLane(laneObj) {
-
+        this.props.navigation.navigate('Edit', { laneObj: laneObj });
     }
 
     onShareLane(laneObj) {

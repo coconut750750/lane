@@ -4,13 +4,14 @@ import { createDrawerNavigator } from 'react-navigation';
 
 import CalendarScreen from 'lane/screens/CalendarScreen';
 import CreateScreen from 'lane/screens/CreateScreen';
+import EditScreen from 'lane/screens/EditScreen';
 
 import DrawerContent from "./DrawerContent"
 
 export default Drawer = createDrawerNavigator({   
         Home: CalendarScreen,
         Create: CreateScreen,
-        // Edit: EditScreen
+        Edit: EditScreen
     }, {
         contentComponent: DrawerContent,
         drawerWidth: 250,

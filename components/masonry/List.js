@@ -90,7 +90,7 @@ export default class MasonryList extends Component {
     }
 
     keyExtractor(item, index) {
-        return item.data.map(p => p.uri).join('');
+        return item.data.map(p => p.uri).join('') + '' + index;
     }
 
     renderItem(item, index) {
@@ -101,6 +101,9 @@ export default class MasonryList extends Component {
                     width={this.props.width}
                     height={item.height}
                     padding={this.props.itemPadding}
+                    imageStyle={this.props.imageStyle}
+                    onImagePress={this.props.onImagePress}
+                    onImageLongPress={this.props.onImageLongPress}
                 />
             </View>
         );
@@ -149,4 +152,7 @@ MasonryList.propTypes = {
     ]),
     style: ViewPropTypes.style,
     containerStyle: ViewPropTypes.style,
+    imageStyle: ViewPropTypes.style,
+    onImagePress: PropTypes.func,
+    onImageLongPress: PropTypes.func,
 };

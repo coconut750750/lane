@@ -9,6 +9,13 @@ exports[`CreateScreen renders color modal correctly 1`] = `
   visible={false}
 >
   <View
+    accessible={true}
+    onResponderGrant={[Function]}
+    onResponderMove={[Function]}
+    onResponderRelease={[Function]}
+    onResponderTerminate={[Function]}
+    onResponderTerminationRequest={[Function]}
+    onStartShouldSetResponder={[Function]}
     style={
       Object {
         "alignItems": "center",
@@ -410,8 +417,9 @@ exports[`CreateScreen renders empty create screen correctly 1`] = `
 <View
   style={
     Object {
-      "height": 1334,
-      "width": 750,
+      "alignItems": "center",
+      "flex": 1,
+      "justifyContent": "center",
     }
   }
 >
@@ -423,6 +431,13 @@ exports[`CreateScreen renders empty create screen correctly 1`] = `
     visible={false}
   >
     <View
+      accessible={true}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
       style={
         Object {
           "alignItems": "center",
@@ -1013,10 +1028,8 @@ exports[`CreateScreen renders empty create screen correctly 1`] = `
         "borderRadius": 8,
         "borderWidth": 1,
         "flex": 0.15,
-        "height": 80,
         "justifyContent": "center",
         "margin": 24,
-        "marginBottom": 48,
       }
     }
   >

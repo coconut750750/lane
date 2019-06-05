@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View, FlatList, Image } from 'react-native';
+import { View, FlatList, Image, TouchableOpacity, ViewPropTypes } from 'react-native';
 
 var _ = require('lodash');
 
@@ -15,13 +15,19 @@ export default class MasonryRow extends Component {
     }
 
     renderItem({item, index}) {
+        const uri = item.uri;
         return (
             <View style={{ flex: 1, width: item.width, height: item.height, padding: this.props.padding }}>
-                <Image
+                <TouchableOpacity
                     style={{ flex: 1 }}
-                    resizeMode='cover'
-                    resizeMethod='resize'
-                    source={{ uri: item.uri }}/>
+                    onPress={ () => this.props.onImagePress(uri) }
+                    onLongPress={ () => this.props.onImageLongPress(uri) }>
+                    <Image
+                        style={{ flex: 1, ...this.props.imageStyle }}
+                        resizeMode='cover'
+                        resizeMethod='resize'
+                        source={{ uri: uri }}/>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -57,6 +63,12 @@ export default class MasonryRow extends Component {
     }
 }
 
+MasonryRow.defaultProps = {
+    onImagePress: () => {},
+    onImageLongPress: () => {},
+};
+
+
 MasonryRow.propTypes = {
     data: PropTypes.arrayOf(
         PropTypes.shape({
@@ -66,5 +78,8 @@ MasonryRow.propTypes = {
         })).isRequired,
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-    padding: PropTypes.number
+    padding: PropTypes.number,
+    imageStyle: ViewPropTypes.style,
+    onImagePress: PropTypes.func,
+    onImageLongPress: PropTypes.func,
 };

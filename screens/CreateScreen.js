@@ -5,8 +5,9 @@ import {
     TextInput,
     StyleSheet,
     TouchableNativeFeedback,
+    TouchableWithoutFeedback,
     ActivityIndicator,
-    Modal
+    Modal,
 } from 'react-native'
 import { 
     IconButton,
@@ -71,7 +72,7 @@ export default class CreateScreen extends Component {
         } catch (e) {
             status = {status: 'error', error: e}
         }
-        // console.log(status);
+
         if (status.status === 'granted') {
             this.setState({ imageBrowserOpen: true })
         } else {
@@ -79,17 +80,24 @@ export default class CreateScreen extends Component {
         }
     }
 
-    imageBrowserCallback = (selectedPhotoPromise, deselectedPhotos) => {
+    imageBrowserCallback = (selectedPhotoPromise) => {
         selectedPhotoPromise.then((photos) => {
             const allPhotos = this.state.photos.concat(photos);
-            const filteredPhotos = allPhotos.filter((item, index) => {
-                return !deselectedPhotos[item.image.uri];
-            });
             this.setState({
                 imageBrowserOpen: false,
-                photos: filteredPhotos,
+                photos: allPhotos,
             });
         }).catch((e) => console.log(e));
+    }
+
+    removePhoto(uri) {
+        const photos = this.state.photos;
+        const filteredPhotos = photos.filter((item, index) => {
+            return item.image.uri != uri;
+        });
+        this.setState({
+            photos: filteredPhotos,
+        });
     }
 
     async handleDone() {
@@ -147,12 +155,21 @@ export default class CreateScreen extends Component {
                 transparent={true}
                 onRequestClose={ () => {} }
                 visible={ this.state.colorModalOpen }>
-                <ColorPickerView
-                    onChange={ color => {
-                        this.color = color;
-                        this.setState({ colorModalOpen: false });
-                    }}
-                    color={ this.color }/>
+                <TouchableWithoutFeedback
+                    onPress={ () => this.setState({ colorModalOpen: false }) }>
+                    <View style={{ 
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: Colors.backdrop,}}>
+                        <ColorPickerView
+                            onChange={ color => {
+                                this.color = color;
+                                this.setState({ colorModalOpen: false });
+                            }}
+                            color={ this.color }/>
+                    </View>
+                </TouchableWithoutFeedback>
             </Modal>
         );
     }
@@ -160,7 +177,6 @@ export default class CreateScreen extends Component {
     renderImageBrowser() {
         return (
             <ImageBrowser
-                preselected={ this.state.photos.map(p => p.uri) }
                 callback={ this.imageBrowserCallback }/>
         );
     }
@@ -216,8 +232,14 @@ export default class CreateScreen extends Component {
                         )
                     }
                     width={ Layout.window.width }
-                    itemPadding={2}
+                    itemPadding={8}
+                    imageStyle={{
+                        borderRadius: 8,
+                        overflow: 'hidden'
+                    }}
                     style={{ flex: 0.85 }}
+                    onImagePress={ uri => this.alert('Long press to delete image') }
+                    onImageLongPress={ uri => this.removePhoto(uri) }
                 />
                 
                 <View style={{ ...styles.addPhotoSurface, flex: 0.15 }}>
@@ -247,8 +269,9 @@ export default class CreateScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        height: Layout.window.height,
-        width: Layout.window.width,
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     titleInput: {
         margin: 16,
@@ -258,15 +281,12 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         borderWidth: 1,
         borderColor: Colors.lightGray,
-        height: 80,
         margin: 24,
-        marginBottom: 48,
         justifyContent: 'center'
     },
     addPhotoView: {
         flex: 1,
-        padding: 8,
-        height: 160,
+        padding: 4,
         alignItems: 'center',
         justifyContent: 'center',
     },
