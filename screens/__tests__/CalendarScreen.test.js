@@ -171,6 +171,8 @@ describe('CalendarScreen', () => {
 
         expect(instance.state.shareModalOpen).toBeFalsy();
         expect(db.shareLane).not.toHaveBeenCalled();
+        expect(instance.state.snackVisible).toBeTruthy();
+        expect(instance.state.snackMessage).toEqual('Email doesn\'t exist!');
     });
 
     it('successfully deletes a lane', () => {
