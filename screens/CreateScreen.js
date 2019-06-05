@@ -15,13 +15,13 @@ import {
     Snackbar
 } from 'react-native-paper'
 import { Permissions } from 'expo';
-import MasonryList from "react-native-masonry-list";
 
 import { pushLane, uploadImageAsync, addLaneToUser } from 'lane/backend/Database';
 import { getUserID } from 'lane/backend/Auth';
 
-import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
 import ColorPickerView from 'lane/components/Color/ColorPickerView'
+import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
+import MasonryList from 'lane/components/masonry/List';
 
 import Colors from 'lane/constants/Colors';
 import Layout from 'lane/constants/Layout';
@@ -79,14 +79,17 @@ export default class CreateScreen extends Component {
         }
     }
 
-    imageBrowserCallback = (callback) => {
-        callback.then((photos) => {
-            var allPhotos = this.state.photos.concat(photos);
+    imageBrowserCallback = (selectedPhotoPromise, deselectedPhotos) => {
+        selectedPhotoPromise.then((photos) => {
+            const allPhotos = this.state.photos.concat(photos);
+            const filteredPhotos = allPhotos.filter((item, index) => {
+                return !deselectedPhotos[item.image.uri];
+            });
             this.setState({
                 imageBrowserOpen: false,
-                photos: allPhotos,
+                photos: filteredPhotos,
             });
-        }).catch((e) => console.log(e))
+        }).catch((e) => console.log(e));
     }
 
     async handleDone() {
@@ -157,7 +160,7 @@ export default class CreateScreen extends Component {
     renderImageBrowser() {
         return (
             <ImageBrowser
-                disabled={ this.state.photos.map(p => p.uri) }
+                preselected={ this.state.photos.map(p => p.uri) }
                 callback={ this.imageBrowserCallback }/>
         );
     }
@@ -208,13 +211,12 @@ export default class CreateScreen extends Component {
                 {this.renderTitle()}
 
                 <MasonryList
-                    sorted
-                    images={this.state.photos.map(photo => 
-                            { return { uri: photo.uri, 
-                                       width: photo.width,
-                                       height: photo.height};}
+                    photos={this.state.photos.map(photo => 
+                            { return photo.image; }
                         )
                     }
+                    width={ Layout.window.width }
+                    itemPadding={2}
                     style={{ flex: 0.85 }}
                 />
                 

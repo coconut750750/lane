@@ -22,6 +22,7 @@ export default class ImageBrowser extends React.Component {
         this.state = {
             photos: [],
             selected: {},
+            deselected: {},
             after: null,
             has_next_page: true
         }
@@ -32,6 +33,28 @@ export default class ImageBrowser extends React.Component {
     }
 
     selectImage = (index) => {
+        const uri = this.state.photos[index].image.uri;
+        if (this.props.preselected.includes(uri)) {
+            this.toggleDeselectedImage(uri);
+        } else {
+            this.toggleSelectedImage(index);
+        }
+    }
+
+    toggleDeselectedImage(uri) {
+        let newDeselected = {...this.state.deselected};
+        if (newDeselected[uri]) {
+            delete newDeselected[uri];
+        } else {
+            newDeselected[uri] = true;
+        }
+        if (!newDeselected) {
+            newDeselected = {};
+        }
+        this.setState({ deselected: newDeselected });
+    }
+
+    toggleSelectedImage(index) {
         let newSelected = {...this.state.selected};
         if (newSelected[index]) {
             delete newSelected[index];
@@ -41,7 +64,7 @@ export default class ImageBrowser extends React.Component {
         if (!newSelected) {
             newSelected = {};
         }
-        this.setState({ selected: newSelected })
+        this.setState({ selected: newSelected });
     }
 
     getPhotos = () => {
@@ -82,19 +105,26 @@ export default class ImageBrowser extends React.Component {
         let files = selectedPhotos
             .map(photo => FileSystem.getInfoAsync(photo.image.uri, { md5: true, size: true }));
         
-        let callbackResult = Promise
+        let photoPromise = Promise
             .all(files)
             .then(imageData=> {
                 return imageData.map((data, i) => {
                     return {...selectedPhotos[i], ...data};
                 })
             });
-        this.props.callback(callbackResult);
+        this.props.callback(photoPromise, this.state.deselected);
+    }
+
+    countSelected() {
+        const newOnes = Object.keys(this.state.selected).length;
+        const oldOnes = this.props.preselected.length;
+        const deselectedOld = Object.keys(this.state.deselected).length;
+
+        return newOnes + oldOnes - deselectedOld;
     }
 
     renderHeader() {
-        let selectedCount = Object.keys(this.state.selected).length;
-        let headerText = selectedCount + ' Selected';
+        let headerText = this.countSelected() + ' Selected';
         return (
             <View style={styles.header}>
                 <IconButton
@@ -115,14 +145,14 @@ export default class ImageBrowser extends React.Component {
 
     renderImageTile = ({item, index}) => {
         let uri = item.image.uri;
-        let selected = this.state.selected[index] ? true : false;
-        let disabled = this.props.disabled.includes(uri);
+        let preselected = this.props.preselected.includes(uri) && !this.state.deselected[uri];
+        let selected = this.state.selected[index] || preselected ? true : false;
+        
         return(
             <ImageTile
                 uri={uri}
                 index={index}
                 selected={selected}
-                disabled={disabled}
                 selectImage={this.selectImage}
                 perRow={numColumns}
             />

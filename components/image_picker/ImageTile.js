@@ -14,16 +14,15 @@ export default class ImageTile extends React.PureComponent {
     }
 
     render() {
-        let { uri, index, selected, disabled, selectImage } = this.props;
+        let { uri, index, selected, selectImage } = this.props;
         if (!uri) {
             return null;
         }
         return (
             <TouchableHighlight
-                style={{ opacity: selected || disabled ? 0.3 : 1, width: this.dimen, height: this.dimen }}
+                style={{ opacity: selected ? 0.3 : 1, width: this.dimen, height: this.dimen }}
                 underlayColor='transparent'
-                onPress={ () => selectImage(index) }
-                disabled={disabled}>
+                onPress={ () => selectImage(index) }>
                 <Image
                     style={{ flex: 1 }}
                     resizeMode='cover'
