@@ -22,17 +22,17 @@ export default class LaneContent extends Component {
         return { length: length, offset: length * index, index };
     }
 
-    renderItemHeader(item) {
+    renderLaneHeader(lane) {
         return (
             <LaneHeader 
-                title={ item.title }
-                color={ item.color }
-                owner={ item.owner }
+                title={ lane.title }
+                color={ lane.color }
+                owner={ lane.owner }
                 onBackLane={ () => this.props.onBackLane() }
                 onNextLane={ () => this.props.onNextLane() }
-                onEdit={ () => this.props.onEditLane(item) }
-                onShare={ () => this.props.onShareLane(item) }
-                onDelete={ () => this.props.onDeleteLane(item) }
+                onEdit={ () => this.props.onEditLane(lane) }
+                onShare={ () => this.props.onShareLane(lane) }
+                onDelete={ () => this.props.onDeleteLane(lane) }
                 style={{
                     transform: this.props.headerTransform,
                     position: 'absolute',
@@ -42,18 +42,18 @@ export default class LaneContent extends Component {
         );
     }
 
-    renderItem(item) {
+    renderLane(lane) {
         return (
             <View style={{ ...styles.page }}>
                 <MasonryList
-                    photos={ Object.values(item.photos) }
+                    photos={ Object.values(lane.photos) }
                     width={ Layout.window.width }
                     itemPadding={2}
                     onScroll={ this.props.onScroll }
                     style={{ flex: 1, marginTop: 40 }}
                     containerStyle={{ paddingTop: this.props.calendarHeight }}
                 />
-                {this.renderItemHeader(item)}
+                {this.renderLaneHeader(lane)}
             </View>
         );
     }
@@ -61,7 +61,7 @@ export default class LaneContent extends Component {
     render() {
         return (
             <View style={styles.container}>
-                {this.renderItem(this.props.lane)}
+                {this.renderLane(this.props.lane)}
             </View>
         );
     }

@@ -98,7 +98,7 @@ describe('LaneModifyView', () => {
 
     it('adds selected photos to state', () => {
         const { component, instance } = setup();
-        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
+        const photos = [{ uri: 'uri1', width: 100, height: 100, timestamp: 0, md5: '1'}, { uri: 'uri2',  width: 100, height: 100, timestamp: 1, md5: '2'}];
         const photoPromise = Promise.all([]).then( () => {
             return photos;
         });
@@ -112,7 +112,7 @@ describe('LaneModifyView', () => {
 
     it('adds additional photos to state', () => {
         const { component, instance } = setup();
-        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
+        const photos = [{ uri: 'uri1', width: 100, height: 100, timestamp: 0, md5: '1'}, { uri: 'uri2',  width: 100, height: 100, timestamp: 1, md5: '2'}];
         const photoPromise = Promise.all([]).then( () => {
             return photos;
         });
@@ -127,7 +127,7 @@ describe('LaneModifyView', () => {
 
     it('removes photo from state', () => {
         const { component, instance } = setup();
-        const photos = [{image: { uri: 'uri1', width: 100, height: 100 }}, {image: { uri: 'uri2',  width: 100, height: 100 }}];
+        const photos = [{ uri: 'uri1', width: 100, height: 100, timestamp: 0, md5: '1'}, { uri: 'uri2',  width: 100, height: 100, timestamp: 1, md5: '2'}];
         const photoPromise = Promise.all([]).then( () => {
             return photos;
         });

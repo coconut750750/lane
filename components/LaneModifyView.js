@@ -76,7 +76,7 @@ export default class LaneModifyView extends Component {
     removePhoto(uri) {
         const photos = this.state.photos;
         const filteredPhotos = photos.filter((item, index) => {
-            return item.image.uri != uri;
+            return item.uri != uri;
         });
         this.setState({
             photos: filteredPhotos,
@@ -116,7 +116,8 @@ export default class LaneModifyView extends Component {
                         flex: 1,
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: Colors.backdrop,}}>
+                        backgroundColor: Colors.backdrop
+                    }}>
                         <ColorPickerView
                             onChange={ color => {
                                 this.color = color;
@@ -169,7 +170,7 @@ export default class LaneModifyView extends Component {
 
                 <MasonryList
                     photos={this.state.photos.map(photo => 
-                            { return photo.image; }
+                            { return photo; }
                         )
                     }
                     width={ Layout.window.width }
@@ -256,13 +257,11 @@ LaneModifyView.propTypes = {
     laneObj: PropTypes.shape({
         title: PropTypes.string.isRequired,
         photos: PropTypes.arrayOf(PropTypes.shape({
-            image: PropTypes.shape({
-                height: PropTypes.number,
-                width: PropTypes.number,
-                uri: PropTypes.string,
-            }),
-            md5: PropTypes.string,
-            timestamp: PropTypes.number,
+            uri: PropTypes.string.isRequired,
+            height: PropTypes.number.isRequired,
+            width: PropTypes.number.isRequired,
+            md5: PropTypes.string.isRequired,
+            timestamp: PropTypes.number.isRequired,
         })).isRequired,
         color: PropTypes.string.isRequired,
     }),

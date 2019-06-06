@@ -1,5 +1,4 @@
 import firebase from 'firebase';
-import { convertTimestampToDateString } from 'lane/utils/utils';
 
 let USERS = 'users';
 let LANES = 'lanes';
@@ -72,9 +71,9 @@ export async function addPhoto(blob, photo, laneId) {
         .child('photos').child(photoId)
         .set({
             uri: photoUrl,
-            width: photo.image.width,
-            height: photo.image.height,
-            timestamp: convertTimestampToDateString(photo.timestamp),
+            width: photo.width,
+            height: photo.height,
+            timestamp: photo.timestamp,
         });
 }
 
@@ -138,7 +137,7 @@ export async function uploadImageAsync(laneId, photo) {
             reject(new TypeError('Network request failed'));
         };
         xhr.responseType = 'blob';
-        xhr.open('GET', photo.image.uri, true);
+        xhr.open('GET', photo.uri, true);
         xhr.send(null);
     });
 

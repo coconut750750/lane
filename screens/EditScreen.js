@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 
 import LaneModifyView from 'lane/components/LaneModifyView';
 
+var _ = require('lodash');
+
 export default class EditScreen extends Component {
     constructor(props) {
         super(props);
@@ -19,6 +21,14 @@ export default class EditScreen extends Component {
         this.originalLane = props.navigation.getParam('laneObj');
         console.log(this.originalLane);
     }
+
+    // converts the firebase schema of a photo into a schema that modifyview accepts
+    // restructurePhotoDict(photos) {
+    //     var newPhotos = [];
+    //     _.forEach(photos, (value, key) => {
+
+    //     });
+    // }
 
     alert(message) {
         this.setState({
