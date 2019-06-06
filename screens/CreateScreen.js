@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, ActivityIndicator } from 'react-native'
+import { Snackbar } from 'react-native-paper';
 
 import { pushLane, uploadImageAsync, addLaneToUser } from 'lane/backend/Database';
 import { getUserID } from 'lane/backend/Auth';
@@ -54,7 +55,8 @@ export default class CreateScreen extends Component {
         
         await addLaneToUser(userId, laneId);
 
-        this.props.navigation.goBack()
+        this.setState({ uploading: false });
+        this.props.navigation.goBack();
     }
 
     renderLoading() {
@@ -77,6 +79,13 @@ export default class CreateScreen extends Component {
                 <LaneModifyView
                     handleDone={this.handleDone}
                     goBack={ () => this.props.navigation.goBack() }/>
+
+                <Snackbar
+                    visible={this.state.snackVisible}
+                    duration={3000}
+                    onDismiss={() => this.setState({ snackVisible: false, snackMessage: '' })}>
+                    { this.state.snackMessage }
+                </Snackbar>
             </View>
         );
     }

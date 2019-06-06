@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { Snackbar } from 'react-native-paper';
 import PropTypes from 'prop-types';
+var _ = require('lodash');
+
+import { updateLane } from 'lane/backend/Database';
 
 import LaneModifyView from 'lane/components/LaneModifyView';
 
-var _ = require('lodash');
+import Colors from 'lane/constants/Colors';
+
+import { getStartEnd } from 'lane/utils/PeriodTools';
 
 export default class EditScreen extends Component {
     constructor(props) {
@@ -19,16 +25,14 @@ export default class EditScreen extends Component {
         };
 
         this.originalLane = props.navigation.getParam('laneObj');
-        console.log(this.originalLane);
+        this.originalLane.photos = Object.values(this.originalLane.photos);
     }
 
-    // converts the firebase schema of a photo into a schema that modifyview accepts
-    // restructurePhotoDict(photos) {
-    //     var newPhotos = [];
-    //     _.forEach(photos, (value, key) => {
-
-    //     });
-    // }
+    componentDidMount() {
+        this.setState({
+            uploading: false,
+        });
+    }
 
     alert(message) {
         this.setState({
@@ -39,9 +43,35 @@ export default class EditScreen extends Component {
 
     handleDone = async (title, photos, color) => {
         console.log(this.originalLane);
-        console.log(title);
         console.log(photos);
-        console.log(color);
+
+        if (title === '') {
+            this.alert('Please add a title');
+            return;
+        }
+        if (photos.length === 0) {
+            this.alert('Please add a photo');
+            return;
+        }
+        this.setState({uploading: true});
+
+        // // remove photos that were existing
+        // // add new photos
+
+        const { start, end } = getStartEnd(photos)
+
+        await updateLane(this.originalLane.id, {
+            title: title,
+            startDate: start,
+            endDate: end,
+            color: color});
+
+        // await Promise.all(photos.map(photo => uploadImageAsync(laneId, photo)));
+        
+        // await addLaneToUser(userId, laneId);
+
+        this.setState({ uploading: false });
+        this.props.navigation.goBack();
     }
 
     renderLoading() {
@@ -62,8 +92,16 @@ export default class EditScreen extends Component {
         return (
             <View style={ styles.container }>
                 <LaneModifyView
+                    laneObj={this.originalLane}
                     handleDone={this.handleDone}
                     goBack={ () => this.props.navigation.goBack() }/>
+
+                <Snackbar
+                    visible={this.state.snackVisible}
+                    duration={3000}
+                    onDismiss={() => this.setState({ snackVisible: false, snackMessage: '' })}>
+                    { this.state.snackMessage }
+                </Snackbar>
             </View>
         );
     }
