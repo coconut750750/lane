@@ -136,7 +136,7 @@ export async function uploadImageAsync(laneId, photo) {
             reject(new TypeError('Network request failed'));
         };
         xhr.responseType = 'blob';
-        xhr.open('GET', photo.uri, true);
+        xhr.open('GET', photo.image.uri, true);
         xhr.send(null);
     });
 

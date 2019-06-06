@@ -16,11 +16,14 @@ jest.mock('expo', () => ({
     }
 }));
 
+const mockGoBack = jest.fn( () => {} );
+const mockHandleDone = jest.fn( (title, photos, color) => {} );
+
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('LaneModifyView', () => {
     const setup = () => {
-        const component = shallow(<LaneModifyView/>);
+        const component = shallow(<LaneModifyView goBack={mockGoBack} handleDone={mockHandleDone}/>);
         const instance = component.instance();
         return { component, instance };
     }

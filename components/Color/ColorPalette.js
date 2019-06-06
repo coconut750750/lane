@@ -1,6 +1,6 @@
-import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { TouchableOpacity, View, Text, Dimensions, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
 
 import Layout from 'lane/constants/Layout';
 

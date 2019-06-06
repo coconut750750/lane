@@ -86,6 +86,7 @@ export default class ImageBrowser extends React.Component {
             .all(files)
             .then(imageData=> {
                 return imageData.map((data, i) => {
+                    data.uri = undefined;
                     return {...selectedPhotos[i], ...data};
                 })
             });

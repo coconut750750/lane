@@ -15,6 +15,7 @@ import {
     Snackbar
 } from 'react-native-paper'
 import { Permissions } from 'expo';
+import PropTypes from 'prop-types';
 
 import ColorPickerView from 'lane/components/Color/ColorPickerView'
 import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
@@ -28,8 +29,8 @@ export default class LaneModifyView extends Component {
         super(props);
 
         this.state = {
-            title: this.props.title,
-            photos: this.props.photos,
+            title: props.title,
+            photos: props.photos,
             imageBrowserOpen: false,
             colorModalOpen: false,
 
@@ -37,7 +38,7 @@ export default class LaneModifyView extends Component {
             snackVisible: false,
             snackMessage: '',
         };
-        this.color = this.props.color;
+        this.color = props.color;
     }
 
     alert(message) {
@@ -249,6 +250,19 @@ const styles = StyleSheet.create({
 });
 
 LaneModifyView.propTypes = {
+    goBack: PropTypes.func.isRequired,
+    handleDone: PropTypes.func.isRequired,
+    title: PropTypes.string,
+    photos: PropTypes.arrayOf(PropTypes.shape({
+        image: PropTypes.shape({
+            height: PropTypes.number,
+            width: PropTypes.number,
+            uri: PropTypes.string,
+        }),
+        md5: PropTypes.string,
+        timestamp: PropTypes.number,
+    })),
+    color: PropTypes.string,
 };
 
 LaneModifyView.defaultProps = {

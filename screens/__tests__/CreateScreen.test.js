@@ -140,19 +140,19 @@ describe('CreateScreen', () => {
         const title = 'title';
         const photos = [{
             timestamp: 0,
-            uri: 'uri1',
             md5: '1',
             image: {
                 width: 100,
-                height: 100
+                height: 100,
+                uri: 'uri1',
             }
         }, {
             timestamp: 86400,
-            uri: 'uri2',
             md5: '2',
             image: {
                 width: 100,
-                height: 100
+                height: 100,
+                uri: 'uri2',
             }
         }];
         const color = '#ffffff';
