@@ -102,6 +102,7 @@ export default class MasonryList extends Component {
                     height={item.height}
                     padding={this.props.itemPadding}
                     imageStyle={this.props.imageStyle}
+                    touchEnabled={this.props.touchEnabled}
                     onImagePress={this.props.onImagePress}
                     onImageLongPress={this.props.onImageLongPress}
                 />
@@ -153,6 +154,7 @@ MasonryList.propTypes = {
     style: ViewPropTypes.style,
     containerStyle: ViewPropTypes.style,
     imageStyle: ViewPropTypes.style,
+    touchEnabled: PropTypes.bool,
     onImagePress: PropTypes.func,
     onImageLongPress: PropTypes.func,
 };

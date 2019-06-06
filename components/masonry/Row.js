@@ -19,6 +19,7 @@ export default class MasonryRow extends Component {
         return (
             <View style={{ flex: 1, width: item.width, height: item.height, padding: this.props.padding }}>
                 <TouchableOpacity
+                    disabled={ !this.props.touchEnabled }
                     style={{ flex: 1 }}
                     onPress={ () => this.props.onImagePress(uri) }
                     onLongPress={ () => this.props.onImageLongPress(uri) }>
@@ -66,6 +67,7 @@ export default class MasonryRow extends Component {
 MasonryRow.defaultProps = {
     onImagePress: () => {},
     onImageLongPress: () => {},
+    touchEnabled: false,
 };
 
 

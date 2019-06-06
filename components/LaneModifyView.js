@@ -179,6 +179,7 @@ export default class LaneModifyView extends Component {
                         overflow: 'hidden'
                     }}
                     style={{ flex: 0.85 }}
+                    touchEnabled={ true }
                     onImagePress={ uri => this.alert('Long press to delete image') }
                     onImageLongPress={ uri => this.removePhoto(uri) }
                 />
