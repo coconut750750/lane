@@ -29,8 +29,8 @@ export default class LaneModifyView extends Component {
         super(props);
 
         this.state = {
-            title: props.title,
-            photos: props.photos,
+            title: props.laneObj.title,
+            photos: props.laneObj.photos,
             imageBrowserOpen: false,
             colorModalOpen: false,
 
@@ -38,7 +38,7 @@ export default class LaneModifyView extends Component {
             snackVisible: false,
             snackMessage: '',
         };
-        this.color = props.color;
+        this.color = props.laneObj.color;
     }
 
     alert(message) {
@@ -253,22 +253,26 @@ const styles = StyleSheet.create({
 LaneModifyView.propTypes = {
     goBack: PropTypes.func.isRequired,
     handleDone: PropTypes.func.isRequired,
-    title: PropTypes.string,
-    photos: PropTypes.arrayOf(PropTypes.shape({
-        image: PropTypes.shape({
-            height: PropTypes.number,
-            width: PropTypes.number,
-            uri: PropTypes.string,
-        }),
-        md5: PropTypes.string,
-        timestamp: PropTypes.number,
-    })),
-    color: PropTypes.string,
+    laneObj: PropTypes.shape({
+        title: PropTypes.string.isRequired,
+        photos: PropTypes.arrayOf(PropTypes.shape({
+            image: PropTypes.shape({
+                height: PropTypes.number,
+                width: PropTypes.number,
+                uri: PropTypes.string,
+            }),
+            md5: PropTypes.string,
+            timestamp: PropTypes.number,
+        })).isRequired,
+        color: PropTypes.string.isRequired,
+    }),
 };
 
 LaneModifyView.defaultProps = {
-    title: '',
-    photos: [],
-    color: Colors.primary,
+    laneObj: {
+        title: '',
+        photos: [],
+        color: Colors.primary,
+    },
 };
 

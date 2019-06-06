@@ -1,4 +1,5 @@
 var _ = require('lodash');
+import { convertTimestampToDateString } from 'lane/utils/utils';
 
 let secondsPerDay = 86400000;
 
@@ -63,8 +64,8 @@ export function getStartEnd(photos) {
     var startTS = Math.min(...photos.map(p => p.timestamp));
     var endTS = Math.max(...photos.map(p => p.timestamp));
 
-    var start = new Date(startTS * 1000);
-    var end = new Date(endTS * 1000);
+    var start = convertTimestampToDateString(startTS);
+    var end = convertTimestampToDateString(endTS);
 
-    return {start: start.toISOString().split('T')[0], end: end.toISOString().split('T')[0]};
+    return {start: start, end: end};
 }

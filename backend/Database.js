@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import { convertTimestampToDateString } from 'lane/utils/utils';
 
 let USERS = 'users';
 let LANES = 'lanes';
@@ -73,6 +74,7 @@ export async function addPhoto(blob, photo, laneId) {
             uri: photoUrl,
             width: photo.image.width,
             height: photo.image.height,
+            timestamp: convertTimestampToDateString(photo.timestamp),
         });
 }
 
