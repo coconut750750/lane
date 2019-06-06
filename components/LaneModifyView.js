@@ -16,6 +16,7 @@ import {
 } from 'react-native-paper'
 import { Permissions } from 'expo';
 import PropTypes from 'prop-types';
+var _ = require('lodash');
 
 import ColorPickerView from 'lane/components/Color/ColorPickerView'
 import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
@@ -155,6 +156,27 @@ export default class LaneModifyView extends Component {
         );
     }
 
+    renderMasonryList() {
+        const photos = this.state.photos;
+        const sorted = _.orderBy(photos, ['timestamp'], ['asc']);
+
+        return (
+            <MasonryList
+                photos={ sorted }
+                width={ Layout.window.width }
+                itemPadding={8}
+                imageStyle={{
+                    borderRadius: 8,
+                    overflow: 'hidden'
+                }}
+                style={{ flex: 0.85 }}
+                touchEnabled={ true }
+                onImagePress={ uri => this.alert('Long press to delete image') }
+                onImageLongPress={ uri => this.removePhoto(uri) }
+            />
+        );
+    }
+
     render() {
         if (this.state.imageBrowserOpen) {
             return this.renderImageBrowser();
@@ -168,22 +190,7 @@ export default class LaneModifyView extends Component {
 
                 {this.renderTitle()}
 
-                <MasonryList
-                    photos={this.state.photos.map(photo => 
-                            { return photo; }
-                        )
-                    }
-                    width={ Layout.window.width }
-                    itemPadding={8}
-                    imageStyle={{
-                        borderRadius: 8,
-                        overflow: 'hidden'
-                    }}
-                    style={{ flex: 0.85 }}
-                    touchEnabled={ true }
-                    onImagePress={ uri => this.alert('Long press to delete image') }
-                    onImageLongPress={ uri => this.removePhoto(uri) }
-                />
+                {this.renderMasonryList()}
                 
                 <View style={{ ...styles.addPhotoSurface, flex: 0.15 }}>
                     <TouchableNativeFeedback
@@ -260,7 +267,7 @@ LaneModifyView.propTypes = {
             uri: PropTypes.string.isRequired,
             height: PropTypes.number.isRequired,
             width: PropTypes.number.isRequired,
-            md5: PropTypes.string.isRequired,
+            md5: PropTypes.string,
             timestamp: PropTypes.number.isRequired,
         })).isRequired,
         color: PropTypes.string.isRequired,

@@ -43,10 +43,13 @@ export default class LaneContent extends Component {
     }
 
     renderLane(lane) {
+        const photos = Object.values(lane.photos);
+        const sorted = _.orderBy(photos, ['timestamp'], ['asc']);
+
         return (
             <View style={{ ...styles.page }}>
                 <MasonryList
-                    photos={ Object.values(lane.photos) }
+                    photos={ sorted }
                     width={ Layout.window.width }
                     itemPadding={2}
                     onScroll={ this.props.onScroll }
