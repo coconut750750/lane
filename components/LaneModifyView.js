@@ -28,8 +28,8 @@ export default class LaneModifyView extends Component {
         super(props);
 
         this.state = {
-            title: '',
-            photos: [],
+            title: this.props.title,
+            photos: this.props.photos,
             imageBrowserOpen: false,
             colorModalOpen: false,
 
@@ -37,7 +37,7 @@ export default class LaneModifyView extends Component {
             snackVisible: false,
             snackMessage: '',
         };
-        this.color = Colors.primary;
+        this.color = this.props.color;
     }
 
     alert(message) {
@@ -250,3 +250,10 @@ const styles = StyleSheet.create({
 
 LaneModifyView.propTypes = {
 };
+
+LaneModifyView.defaultProps = {
+    title: '',
+    photos: [],
+    color: Colors.primary,
+};
+

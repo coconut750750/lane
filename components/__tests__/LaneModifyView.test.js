@@ -73,7 +73,7 @@ describe('LaneModifyView', () => {
     });
 
     it('alerts if permissions returns false', () => {
-        Permissions.askAsync.mockImplementation( permission => { return {status: 'error'} } );
+        Permissions.askAsync.mockImplementation( permission => { return {status: 'error'}; } );
         const { component, instance } = setup();
 
         return instance.handleAddPhotos().then(data => {
@@ -83,7 +83,7 @@ describe('LaneModifyView', () => {
     });
 
     it('opens image browser if permissions returns true', () => {
-        Permissions.askAsync.mockImplementation( permission => { return {status: 'granted'} } );
+        Permissions.askAsync.mockImplementation( permission => { return {status: 'granted'}; } );
         const { component, instance } = setup();
 
         return instance.handleAddPhotos().then( () => {
