@@ -12,6 +12,8 @@ import { IconButton, Text } from 'react-native-paper';
 import Colors from 'lane/constants/Colors';
 import Layout from 'lane/constants/Layout';
 
+import Photo from 'lane/models/Photo';
+
 import ImageTile from './ImageTile';
 
 let numColumns = 2;
@@ -86,13 +88,12 @@ export default class ImageBrowser extends React.Component {
             .all(files)
             .then(imageData=> {
                 return imageData.map((data, i) => {
-                    const photo = {
-                        uri: data.uri,
-                        height: selectedPhotos[i].image.height,
-                        width: selectedPhotos[i].image.width,
-                        timestamp: selectedPhotos[i].timestamp,
-                        md5: data.md5,
-                    }
+                    const photo = new Photo(
+                        data.uri,
+                        selectedPhotos[i].image.height,
+                        selectedPhotos[i].image.width,
+                        data.md5,
+                        selectedPhotos[i].timestamp);
                     return photo;
                 });
             });

@@ -79,6 +79,7 @@ export default class CalendarScreen extends Component {
     select(lanes) {
         this.setState({
             selectedLanes: lanes,
+            currentLane: 0,
             scrollAnim: new Animated.Value(0),
         });
     }
@@ -86,8 +87,10 @@ export default class CalendarScreen extends Component {
     unselect() {
         this.setState({
             selectedLanes: [],
+            currentLane: 0,
             scrollAnim: new Animated.Value(0),
         });
+        this.refs.calendar.unselect();
     }
 
     getLanes(date) {
@@ -215,6 +218,7 @@ export default class CalendarScreen extends Component {
                     />
                 }
                 <LaneCalendar
+                    ref='calendar'
                     markings={{ ...this.state.markings }}
                     onDayPress={ date => this.getLanes(date) }
                     style={{ ...styles.calendar, transform: transform }}

@@ -31,23 +31,12 @@ export default class EditScreen extends Component {
     }
 
     componentWillReceiveProps(props) {
-        this.setState({originalLane: undefined}, () => this.extractOriginalLane(props));
-        
+        this.setState({ originalLane: undefined }, () => this.extractOriginalLane(props));
     }
 
     extractOriginalLane(props) {
         const originalLane = props.navigation.getParam('laneObj');
-        this.originalPhotoIds = Object.keys(originalLane.photos);
-
-        const photos = [];
-        _.forEach(originalLane.photos, (photo, md5) => {
-            photos.push({
-                ...photo,
-                md5: md5,
-            });
-        })
-
-        originalLane.photos = photos;
+        this.originalPhotoIds = originalLane.photos.map(p => p.md5);
 
         this.setState({ originalLane: originalLane });
     }
@@ -78,7 +67,6 @@ export default class EditScreen extends Component {
             endDate: end,
             color: color});
 
-        // // remove photos that were existing
         const toAdd = [];
         const toRemove = [...this.originalPhotoIds];
         _.forEach(photos, photo => {
@@ -95,7 +83,6 @@ export default class EditScreen extends Component {
         
         this.setState({ uploading: false });
         this.props.navigation.goBack();
-
     }
 
     renderLoading() {

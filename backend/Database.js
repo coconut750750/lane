@@ -1,5 +1,8 @@
 import firebase from 'firebase';
 
+import Lane from 'lane/models/Lane';
+import { parseFirebasePhotos } from 'lane/models/Photo';
+
 let USERS = 'users';
 let LANES = 'lanes';
 let SHARED = 'shared';
@@ -122,7 +125,15 @@ export async function onLaneUpdate(processLanes) {
                 var markings = Object.keys(lanes).map( laneId =>
                     firebase.database().ref(LANES).child(laneId).once('value', lanesnapshot => {
                         var lane = lanesnapshot.val();
-                        laneObjs[laneId] = {...lane, id: laneId};
+                        const laneObj = new Lane(
+                            laneId,
+                            lane.title,
+                            lane.owner,
+                            lane.startDate,
+                            lane.endDate,
+                            lane.color, 
+                            parseFirebasePhotos(lane.photos))
+                        laneObjs[laneId] = laneObj;
                     })
                 );
                 

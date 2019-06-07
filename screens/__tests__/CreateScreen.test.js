@@ -9,6 +9,8 @@ import * as db from 'lane/backend/Database';
 
 import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
 
+import Photo from 'lane/models/Photo';
+
 import CreateScreen from '../CreateScreen'
 
 jest.mock('lane/backend/Auth', () => ({
@@ -100,15 +102,8 @@ describe('CreateScreen', () => {
         const id = 'testid';
         const laneid = 'laneid';
         const title = 'title';
-        const photo = {
-            timestamp: 0,
-            uri: 'uri',
-            md5: '5',
-            image: {
-                width: 100,
-                height: 100
-            }
-        };
+        const photo = new Photo('uri', 100, 100, '5', 0);
+
         const color = '#ffffff';
 
         auth.getUserID.mockImplementation( () => { return id; } );
@@ -138,23 +133,7 @@ describe('CreateScreen', () => {
         const id = 'testid';
         const laneid = 'laneid';
         const title = 'title';
-        const photos = [{
-            timestamp: 0,
-            md5: '1',
-            image: {
-                width: 100,
-                height: 100,
-                uri: 'uri1',
-            }
-        }, {
-            timestamp: 86400,
-            md5: '2',
-            image: {
-                width: 100,
-                height: 100,
-                uri: 'uri2',
-            }
-        }];
+        const photos = [new Photo('uri1', 100, 100, '1', 0), new Photo('uri2', 100, 100, '2', 86400)];
         const color = '#ffffff';
 
         auth.getUserID.mockImplementation( () => { return id; } );

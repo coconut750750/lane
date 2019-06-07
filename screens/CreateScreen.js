@@ -43,9 +43,9 @@ export default class CreateScreen extends Component {
         this.setState({uploading: true});
         
         var userId = getUserID();
-        const { start, end } = getStartEnd(photos)
+        const { start, end } = getStartEnd(photos);
 
-        let laneId = await pushLane(userId, {
+        const laneId = await pushLane(userId, {
             title: title,
             startDate: start,
             endDate: end,
