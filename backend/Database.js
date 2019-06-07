@@ -113,7 +113,6 @@ export async function onLaneUpdate(processLanes) {
     var userid = firebase.auth().currentUser.uid;
     const updateLanes = () => {
         firebase.database().ref(USERS).child(userid).child(LANES).once('value', datasnapshot => {
-            console.log('updated');
             var lanes = datasnapshot.val();
             var laneObjs = {};
 
@@ -138,7 +137,7 @@ export async function onLaneUpdate(processLanes) {
     firebase.database().ref(LANES).on('child_changed', snapshot => updateLanes());
 }
 
-export async function uploadImageAsync(laneId, photo) {
+export async function uploadImageAsync(photo, laneId) {
     const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
         xhr.onload = function() {

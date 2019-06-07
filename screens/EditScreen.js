@@ -4,7 +4,7 @@ import { Snackbar } from 'react-native-paper';
 import PropTypes from 'prop-types';
 var _ = require('lodash');
 
-import { updateLane } from 'lane/backend/Database';
+import { updateLane, removePhoto, uploadImageAsync } from 'lane/backend/Database';
 
 import LaneModifyView from 'lane/components/LaneModifyView';
 
@@ -18,20 +18,38 @@ export default class EditScreen extends Component {
 
         this.state = {
             uploading: false,
+            originalLane: undefined,
 
             // snackbar
             snackVisible: false,
             snackMessage: '',
         };
-
-        this.originalLane = props.navigation.getParam('laneObj');
-        this.originalLane.photos = Object.values(this.originalLane.photos);
     }
 
     componentDidMount() {
-        this.setState({
-            uploading: false,
-        });
+        this.extractOriginalLane(this.props);
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({originalLane: undefined}, () => this.extractOriginalLane(props));
+        
+    }
+
+    extractOriginalLane(props) {
+        const originalLane = props.navigation.getParam('laneObj');
+        this.originalPhotoIds = Object.keys(originalLane.photos);
+
+        const photos = [];
+        _.forEach(originalLane.photos, (photo, md5) => {
+            photos.push({
+                ...photo,
+                md5: md5,
+            });
+        })
+
+        originalLane.photos = photos;
+
+        this.setState({ originalLane: originalLane });
     }
 
     alert(message) {
@@ -42,9 +60,6 @@ export default class EditScreen extends Component {
     }
 
     handleDone = async (title, photos, color) => {
-        console.log(this.originalLane);
-        console.log(photos);
-
         if (title === '') {
             this.alert('Please add a title');
             return;
@@ -55,23 +70,32 @@ export default class EditScreen extends Component {
         }
         this.setState({uploading: true});
 
-        // // remove photos that were existing
-        // // add new photos
-
         const { start, end } = getStartEnd(photos)
 
-        await updateLane(this.originalLane.id, {
+        await updateLane(this.state.originalLane.id, {
             title: title,
             startDate: start,
             endDate: end,
             color: color});
 
-        // await Promise.all(photos.map(photo => uploadImageAsync(laneId, photo)));
-        
-        // await addLaneToUser(userId, laneId);
+        // // remove photos that were existing
+        const toAdd = [];
+        const toRemove = [...this.originalPhotoIds];
+        _.forEach(photos, photo => {
+            var index = toRemove.indexOf(photo.md5);
+            if (index >= 0) {
+                toRemove.splice(index, 1);
+            } else {
+                toAdd.push(photo);
+            }
+        });
 
+        await Promise.all(toRemove.map( photoId => removePhoto(photoId, this.state.originalLane.id) ));
+        await Promise.all(toAdd.map( photo => uploadImageAsync(photo, this.state.originalLane.id) ));
+        
         this.setState({ uploading: false });
         this.props.navigation.goBack();
+
     }
 
     renderLoading() {
@@ -91,10 +115,12 @@ export default class EditScreen extends Component {
 
         return (
             <View style={ styles.container }>
-                <LaneModifyView
-                    laneObj={this.originalLane}
-                    handleDone={this.handleDone}
-                    goBack={ () => this.props.navigation.goBack() }/>
+                { this.state.originalLane != undefined && 
+                    <LaneModifyView
+                        laneObj={this.state.originalLane}
+                        handleDone={this.handleDone}
+                        goBack={ () => this.props.navigation.goBack() }/>
+                }
 
                 <Snackbar
                     visible={this.state.snackVisible}

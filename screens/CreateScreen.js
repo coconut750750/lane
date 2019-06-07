@@ -51,7 +51,7 @@ export default class CreateScreen extends Component {
             endDate: end,
             color: color});
 
-        await Promise.all(photos.map(photo => uploadImageAsync(laneId, photo)));
+        await Promise.all(photos.map(photo => uploadImageAsync(photo, laneId)));
         
         await addLaneToUser(userId, laneId);
 

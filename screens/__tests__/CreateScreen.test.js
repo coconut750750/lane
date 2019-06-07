@@ -113,7 +113,7 @@ describe('CreateScreen', () => {
 
         auth.getUserID.mockImplementation( () => { return id; } );
         db.pushLane.mockImplementation( (ownerId, laneObj) => { return laneid; } );
-        db.uploadImageAsync.mockImplementation( (laneId, photo) => {} );
+        db.uploadImageAsync.mockImplementation( (photo, laneId) => {} );
         db.addLaneToUser.mockImplementation( (userId, laneId) => {} );
 
         const { component, instance } = setup();
@@ -128,7 +128,7 @@ describe('CreateScreen', () => {
                 color: color,
             });
             expect(db.uploadImageAsync).toHaveBeenCalledTimes(1);
-            expect(db.uploadImageAsync).toHaveBeenCalledWith(laneid, photo);
+            expect(db.uploadImageAsync).toHaveBeenCalledWith(photo, laneid);
             expect(db.addLaneToUser).toHaveBeenCalledWith(id, laneid);
             expect(mockGoBack).toHaveBeenCalled();
         });
@@ -159,7 +159,7 @@ describe('CreateScreen', () => {
 
         auth.getUserID.mockImplementation( () => { return id; } );
         db.pushLane.mockImplementation( (ownerId, laneObj) => { return laneid; } );
-        db.uploadImageAsync.mockImplementation( (laneId, photo) => {} );
+        db.uploadImageAsync.mockImplementation( (photo, laneId, ) => {} );
         db.addLaneToUser.mockImplementation( (userId, laneId) => {} );
 
         const { component, instance } = setup();
@@ -174,8 +174,8 @@ describe('CreateScreen', () => {
                 color: color,
             });
             expect(db.uploadImageAsync).toHaveBeenCalledTimes(2);
-            expect(db.uploadImageAsync).toHaveBeenCalledWith(laneid, photos[0]);
-            expect(db.uploadImageAsync).toHaveBeenCalledWith(laneid, photos[1]);
+            expect(db.uploadImageAsync).toHaveBeenCalledWith(photos[0], laneid);
+            expect(db.uploadImageAsync).toHaveBeenCalledWith(photos[1], laneid);
             expect(db.addLaneToUser).toHaveBeenCalledWith(id, laneid);
             expect(mockGoBack).toHaveBeenCalled();
         });
