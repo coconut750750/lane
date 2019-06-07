@@ -112,40 +112,34 @@ export async function pushLane(ownerId, laneMetadata) {
     return await firebase.database().ref(LANES).push(laneMetadata).key;
 }
 
-export async function onLaneUpdate(processLanes) {
-    var userid = firebase.auth().currentUser.uid;
-    const updateLanes = () => {
-        firebase.database().ref(USERS).child(userid).child(LANES).once('value', datasnapshot => {
-            var lanes = datasnapshot.val();
-            var laneObjs = {};
+export async function onLaneUpdate(processLane) {
+    const onUserLaneChange = datasnapshot => {
+        var lanes = datasnapshot.val();
+        if (!lanes) {
+            processLane(undefined);
+        } else {
+            Object.keys(lanes).map( laneId =>
+                firebase.database().ref(LANES).child(laneId).on('value', lanesnapshot => {
+                    var lane = lanesnapshot.val();
+                    if (lane === null) {
+                        return;
+                    }
+                    const laneObj = new Lane(
+                        laneId,
+                        lane.title,
+                        lane.owner,
+                        lane.startDate,
+                        lane.endDate,
+                        lane.color, 
+                        parseFirebasePhotos(lane.photos));
+                    processLane(laneObj);
+                })
+            );
+        }
+    }
 
-            if (!lanes) {
-                processLanes(laneObjs);
-            } else {
-                var markings = Object.keys(lanes).map( laneId =>
-                    firebase.database().ref(LANES).child(laneId).once('value', lanesnapshot => {
-                        var lane = lanesnapshot.val();
-                        const laneObj = new Lane(
-                            laneId,
-                            lane.title,
-                            lane.owner,
-                            lane.startDate,
-                            lane.endDate,
-                            lane.color, 
-                            parseFirebasePhotos(lane.photos))
-                        laneObjs[laneId] = laneObj;
-                    })
-                );
-                
-                Promise.all(markings).then(lanes => {
-                    processLanes(laneObjs);
-                });
-            }
-        });
-    };
-
-    updateLanes();
-    firebase.database().ref(LANES).on('child_changed', snapshot => updateLanes());
+    const userid = firebase.auth().currentUser.uid;
+    firebase.database().ref(USERS).child(userid).child(LANES).on('value', datasnapshot => onUserLaneChange(datasnapshot));
 }
 
 export async function uploadImageAsync(photo, laneId) {
@@ -183,6 +177,7 @@ export function deleteLane(laneId, onComplete) {
             removeAllLanePhotos(laneObj),
             removeLane(laneId)
         ]).then(_ => {
+            firebase.database().ref(LANES).child(laneId).off('value');
             onComplete();
         });
     });

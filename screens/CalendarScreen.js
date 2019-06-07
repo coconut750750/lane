@@ -28,6 +28,7 @@ export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
 
+        this.lanes = {}; // used to add retreived lanes that resolve asynchronously
         this.state = {
             lanes: {},
             markings: {},
@@ -46,7 +47,7 @@ export default class CalendarScreen extends Component {
     }
 
     componentDidMount() {
-        onLaneUpdate(this.processLanes.bind(this));
+        onLaneUpdate(this.processLane.bind(this));
     }
 
     alert(message) {
@@ -61,19 +62,29 @@ export default class CalendarScreen extends Component {
         return setupScheduledMarkings(scheduled);
     }
 
-    processLanes(lanes) {
+    processLane(lane) {
+        if (lane === undefined) {
+            this.setState({ loading: false });
+            return;
+        }
+
+        this.lanes[lane.id] = lane;
+        this.processAll();
+    }
+
+    processAll() {
         var periods = [];
-        _.forEach(lanes, (laneObj, id) => {
+        _.forEach(this.lanes, (laneObj, id) => {
             periods.push(constructPeriodFromLane(laneObj));
         });
         const markings = this.processPeriods(periods);
 
         this.setState({
-            lanes: lanes,
+            lanes: this.lanes,
             markings: markings,
             loading: false,
         });
-        this.unselect()
+        this.unselect();
     }
 
     select(lanes) {
@@ -152,8 +163,10 @@ export default class CalendarScreen extends Component {
         });
         deleteLane(laneObj.id, () => {
             this.setState({
-                loading: false
+                loading: false,
             });
+            delete this.lanes[laneObj.id];
+            this.processAll();
         });
     }
 
