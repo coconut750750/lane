@@ -107,22 +107,17 @@ export function setupScheduledMarkings(scheduled) {
     return markings;
 }
 
-export function getValidLanes(lanes, date) {
+export function getValidLanes(periods, date) {
     const fixedYear = 2000;
     var selectedLanes = [];
-    _.forEach(lanes, (lane, laneIndex) => {
-        const start = calculateFixedYearTime(lane.startDate, fixedYear);
-        const end = calculateFixedYearTime(lane.endDate, fixedYear);
-        const selected = calculateFixedYearTime(date, fixedYear);
+    _.forEach(periods, period => {
+        
+        const start = new Date(period.startDate).getTime();
+        const end = new Date(period.endDate).getTime();
+        const selected = new Date(date).getTime();
 
-        if (start <= end) {
-            if (selected >= start && selected <= end) {
-                selectedLanes.push(laneIndex);
-            }
-        } else {
-            if (selected <= end || selected >= start) {
-                selectedLanes.push(laneIndex);
-            }
+        if (selected >= start && selected <= end) {
+            selectedLanes.push(period.id);
         }
     });
     return selectedLanes;

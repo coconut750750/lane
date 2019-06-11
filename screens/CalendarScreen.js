@@ -22,13 +22,14 @@ import Colors from 'lane/constants/Colors'
 import Layout from 'lane/constants/Layout'
 
 import schedulePeriods from 'lane/utils/PeriodScheduling';
-import { constructPeriodFromLane, setupScheduledMarkings, getValidLanes } from 'lane/utils/PeriodTools';
+import { constructPeriodFromLane, propagatePeriod, setupScheduledMarkings, getValidLanes } from 'lane/utils/PeriodTools';
 
 export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
 
         this.lanes = {}; // used to add retreived lanes that resolve asynchronously
+        this.periods = [];
         this.state = {
             lanes: {},
             markings: {},
@@ -73,11 +74,12 @@ export default class CalendarScreen extends Component {
     }
 
     processAll() {
-        var periods = [];
+        this.periods = [];
         _.forEach(this.lanes, (laneObj, id) => {
-            periods.push(constructPeriodFromLane(laneObj));
+            const period = constructPeriodFromLane(laneObj)
+            this.periods = this.periods.concat(propagatePeriod(period));
         });
-        const markings = this.processPeriods(periods);
+        const markings = this.processPeriods(this.periods);
 
         this.setState({
             lanes: this.lanes,
@@ -105,7 +107,7 @@ export default class CalendarScreen extends Component {
     }
 
     getLanes(date) {
-        var selectedLanes = getValidLanes(this.state.lanes, date);
+        var selectedLanes = getValidLanes(this.periods, date);
         if (!_.isEqual(_.sortBy(selectedLanes), _.sortBy(this.state.selectedLanes))) {
             this.select(selectedLanes);
         }

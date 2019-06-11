@@ -18,6 +18,9 @@ jest.mock("lane/backend/Database", () => ({
     shareLane: jest.fn(),
     deleteLane: jest.fn(),
 }));
+jest.mock('lane/utils/TimeTools', () => ({
+    getYear: jest.fn( () => 2019 ),
+}));
 
 const mockNavigate = jest.fn( dest => {} );
 const navigation = { navigate: mockNavigate };
@@ -25,8 +28,9 @@ const navigation = { navigate: mockNavigate };
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('CalendarScreen', () => {
-    const singleDayEmptyLane = new Lane('testing-lane0', 'testing-title0', 'testing-owner0', '2000-01-01', '2000-01-01', '#ffffff', {});
-    const singleDayLane = new Lane('testing-lane1', 'testing-title1', 'testing-owner1', '2000-01-01', '2000-01-05', '#ffffff', {id0 : {uri: 'uri', width: 100, height: 100}});
+    const singleDayEmptyLane = new Lane('testing-lane0', 'testing-title0', 'testing-owner0', '2019-01-02', '2019-01-02', '#ffffff', {});
+    const singlePicLane = new Lane('testing-lane1', 'testing-title1', 'testing-owner1', '2019-01-02', '2019-01-06', '#ffffff', {id0 : {uri: 'uri', width: 100, height: 100}});
+    const pastLane = new Lane('old-lane0', 'old-title0', 'old-owner0', '2018-01-02', '2018-01-02', '#ffffff', {});
 
     const setup = () => {
         const component = shallow(<CalendarScreen navigation={ navigation }/>);
@@ -89,21 +93,20 @@ describe('CalendarScreen', () => {
     });
 
     it('processes two lanes with 5-day span correctly', () => {
-        const { component, instance } = setupWithLanes([singleDayEmptyLane, singleDayLane]);
+        const { component, instance } = setupWithLanes([singleDayEmptyLane, singlePicLane]);
 
         expect(Object.keys(instance.state.lanes).length).toBe(2);
         expect(Object.keys(instance.state.markings).length).toBe(5);
         expect(instance.state.loading).toBeFalsy();
-
     });
 
     it('selects two lanes correctly', () => {
-        const { component, instance } = setupWithLanes([singleDayEmptyLane, singleDayLane]);
+        const { component, instance } = setupWithLanes([singleDayEmptyLane, singlePicLane]);
 
         instance.getLanes(singleDayEmptyLane.startDate);
         expect(instance.state.selectedLanes).toEqual(['testing-lane0', 'testing-lane1']);
 
-        instance.getLanes(singleDayLane.endDate);
+        instance.getLanes(singlePicLane.endDate);
         expect(instance.state.selectedLanes).toEqual(['testing-lane1']);
     });
 
@@ -116,7 +119,7 @@ describe('CalendarScreen', () => {
         expect(instance.state.selectedLanes).toEqual(['testing-lane0']);
 
         instance.processLane(singleDayEmptyLane);
-        instance.processLane(singleDayLane);
+        instance.processLane(singlePicLane);
 
         expect(instance.state.selectedLanes).toEqual([]);
     });
@@ -170,4 +173,18 @@ describe('CalendarScreen', () => {
 
         expect(db.deleteLane).toHaveBeenCalled();
     });
+
+    it('propagates a one year old lane correctly', () => {
+        const { component, instance } = setupWithLanes([pastLane]);
+
+        expect(Object.keys(instance.state.lanes).length).toBe(1);
+        expect(Object.keys(instance.state.markings).length).toBe(2);
+    });
+
+    it('can select a one year old propagated lane correctly', () => {
+        const { component, instance } = setupWithLanes([pastLane]);
+
+        instance.getLanes('2019-01-02');
+        expect(instance.state.selectedLanes).toEqual(['old-lane0']);
+    })
 });
