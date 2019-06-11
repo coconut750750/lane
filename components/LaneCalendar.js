@@ -9,23 +9,6 @@ import Colors from 'lane/constants/Colors'
 export default class LaneCalendar extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            selected: '',
-        };
-    }
-
-    onDayPress(day) {
-        this.props.onDayPress(day.dateString);
-
-        this.setState({
-            selected: day.dateString,
-        });
-    }
-
-    unselect() {
-        this.setState({
-            selected: '',
-        });
     }
 
     render() {
@@ -33,10 +16,12 @@ export default class LaneCalendar extends Component {
             <Animated.View style={this.props.style}>
                 <CalendarList
                     monthFormat={'MMMM yyyy'}
-                    onDayPress={ (day) => { this.onDayPress(day); } }
+                    onDayPress={ day => this.props.onDayPress(day.dateString) }
+                    pastScrollRange={60}
+                    futureScrollRange={1}
                     markingType={'multi-period'}
                     markedDates={ 
-                        _.merge(_.cloneDeep(this.props.markings), {[this.state.selected]: {selected: true, disableTouchEvent: true}})
+                        _.merge(_.cloneDeep(this.props.markings), {[this.props.selectedDay]: {selected: true, disableTouchEvent: true}})
                     }
                     horizontal={true}
                     pagingEnabled={true}

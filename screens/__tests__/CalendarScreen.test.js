@@ -6,6 +6,8 @@ import renderer from 'react-test-renderer';
 import * as auth from 'lane/backend/Auth';
 import * as db from 'lane/backend/Database';
 
+import Lane from 'lane/models/Lane';
+
 import CalendarScreen from '../CalendarScreen'
 
 jest.mock("lane/backend/Auth", () => ({
@@ -23,25 +25,8 @@ const navigation = { navigate: mockNavigate };
 Enzyme.configure({ adapter: new Adapter() });
 
 describe('CalendarScreen', () => {
-    const singleDayEmptyLane = {
-        id: 'testing-lane0',
-        color: '#ffffff',
-        endDate: '2000-01-01',
-        owner: 'testing-owner0',
-        photos: {},
-        startDate: '2000-01-01',
-        title: 'testing-title0'
-    };
-
-    const singleDayLane = {
-        id: 'testing-lane1',
-        color: '#ffffff',
-        endDate: '2000-01-05',
-        owner: 'testing-owner1',
-        photos: {id0 : {uri: 'uri', width: 100, height: 100}},
-        startDate: '2000-01-01',
-        title: 'testing-title1'
-    }
+    const singleDayEmptyLane = new Lane('testing-lane0', 'testing-title0', 'testing-owner0', '2000-01-01', '2000-01-01', '#ffffff', {});
+    const singleDayLane = new Lane('testing-lane1', 'testing-title1', 'testing-owner1', '2000-01-01', '2000-01-05', '#ffffff', {id0 : {uri: 'uri', width: 100, height: 100}});
 
     const setup = () => {
         const component = shallow(<CalendarScreen navigation={ navigation }/>);
@@ -50,7 +35,7 @@ describe('CalendarScreen', () => {
     }
 
     const setupWithLanes = (lanes) => {
-        db.onLaneUpdate.mockImplementation( process => process(lanes) );
+        db.onLaneUpdate.mockImplementation( process => lanes.map(l => process(l)) );
         return setup();
     }
 
@@ -78,7 +63,7 @@ describe('CalendarScreen', () => {
     });
 
     it('renders zero lanes correctly', () => {
-        const { component, instance } = setupWithLanes([]);
+        const { component, instance } = setupWithLanes([undefined]);
 
         expect(Object.keys(instance.state.lanes).length).toBe(0);
         expect(Object.keys(instance.state.markings).length).toBe(0);
@@ -100,7 +85,7 @@ describe('CalendarScreen', () => {
         const { component, instance } = setupWithLanes([singleDayEmptyLane]);
         instance.getLanes(singleDayEmptyLane.startDate);
 
-        expect(instance.state.selectedLanes).toEqual([0]);
+        expect(instance.state.selectedLanes).toEqual(['testing-lane0']);
     });
 
     it('processes two lanes with 5-day span correctly', () => {
@@ -116,10 +101,10 @@ describe('CalendarScreen', () => {
         const { component, instance } = setupWithLanes([singleDayEmptyLane, singleDayLane]);
 
         instance.getLanes(singleDayEmptyLane.startDate);
-        expect(instance.state.selectedLanes).toEqual([0, 1]);
+        expect(instance.state.selectedLanes).toEqual(['testing-lane0', 'testing-lane1']);
 
         instance.getLanes(singleDayLane.endDate);
-        expect(instance.state.selectedLanes).toEqual([1]);
+        expect(instance.state.selectedLanes).toEqual(['testing-lane1']);
     });
 
     it('unselects when lanes are updated', () => {
@@ -128,9 +113,11 @@ describe('CalendarScreen', () => {
         expect(instance.state.selectedLanes).toEqual([]);
 
         instance.getLanes(singleDayEmptyLane.startDate);
-        expect(instance.state.selectedLanes).toEqual([0]);
+        expect(instance.state.selectedLanes).toEqual(['testing-lane0']);
 
-        instance.processLanes([singleDayEmptyLane, singleDayLane]);
+        instance.processLane(singleDayEmptyLane);
+        instance.processLane(singleDayLane);
+
         expect(instance.state.selectedLanes).toEqual([]);
     });
 

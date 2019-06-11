@@ -101,7 +101,7 @@ export default class CalendarScreen extends Component {
             currentLane: 0,
             scrollAnim: new Animated.Value(0),
         });
-        this.refs.calendar.unselect();
+        this.setState({ selectedDay: '' });
     }
 
     getLanes(date) {
@@ -231,10 +231,13 @@ export default class CalendarScreen extends Component {
                     />
                 }
                 <LaneCalendar
-                    ref='calendar'
                     markings={{ ...this.state.markings }}
-                    onDayPress={ date => this.getLanes(date) }
+                    onDayPress={ date => 
+                        this.setState({
+                            selectedDay: date
+                        }, () => this.getLanes(date))}
                     style={{ ...styles.calendar, transform: transform }}
+                    selectedDay={ this.state.selectedDay }
                 />
                 <FAB
                     style={styles.fab}

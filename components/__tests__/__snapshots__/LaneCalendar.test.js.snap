@@ -1,5 +1,295 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`LaneCalendar redners with selected date 1`] = `
+ShallowWrapper {
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <LaneCalendar
+    markings={Object {}}
+    selectedDay="2019-05-20"
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "checkPropTypes": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateError": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "class",
+    "props": Object {
+      "children": <CalendarList
+        calendarHeight={360}
+        calendarWidth={750}
+        futureScrollRange={1}
+        horizontal={true}
+        markedDates={
+          Object {
+            "2019-05-20": Object {
+              "disableTouchEvent": true,
+              "selected": true,
+            },
+          }
+        }
+        markingType="multi-period"
+        monthFormat="MMMM yyyy"
+        onDayPress={[Function]}
+        pagingEnabled={true}
+        pastScrollRange={60}
+        removeClippedSubviews={true}
+        scrollEnabled={true}
+        scrollsToTop={false}
+        showScrollIndicator={false}
+        style={
+          Object {
+            "height": 0,
+          }
+        }
+        theme={
+          Object {
+            "arrowColor": "#3700b3",
+            "backgroundColor": "#fff",
+            "calendarBackground": "#fff",
+            "dayTextColor": "#888",
+            "dotColor": "#3700b3",
+            "indicatorColor": "#03dac6",
+            "monthTextColor": "#6200ee",
+            "selectedDayBackgroundColor": "#3700b3",
+            "selectedDayTextColor": "white",
+            "selectedDotColor": "#ffffff",
+            "textDayFontFamily": "roboto",
+            "textDayFontSize": 16,
+            "textDayFontWeight": "300",
+            "textDayHeaderFontFamily": "roboto",
+            "textDayHeaderFontSize": 16,
+            "textDayHeaderFontWeight": "300",
+            "textDisabledColor": "#ccc",
+            "textMonthFontFamily": "roboto-medium",
+            "textMonthFontSize": 20,
+            "textMonthFontWeight": "300",
+            "textSectionTitleColor": "#b6c1cd",
+            "todayTextColor": "#6200ee",
+          }
+        }
+      />,
+      "style": undefined,
+    },
+    "ref": null,
+    "rendered": Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "calendarHeight": 360,
+        "calendarWidth": 750,
+        "futureScrollRange": 1,
+        "horizontal": true,
+        "markedDates": Object {
+          "2019-05-20": Object {
+            "disableTouchEvent": true,
+            "selected": true,
+          },
+        },
+        "markingType": "multi-period",
+        "monthFormat": "MMMM yyyy",
+        "onDayPress": [Function],
+        "onScrollBeginDrag": undefined,
+        "onScrollEndDrag": undefined,
+        "pagingEnabled": true,
+        "pastScrollRange": 60,
+        "removeClippedSubviews": true,
+        "scrollEnabled": true,
+        "scrollsToTop": false,
+        "showScrollIndicator": false,
+        "style": Object {
+          "height": 0,
+        },
+        "theme": Object {
+          "arrowColor": "#3700b3",
+          "backgroundColor": "#fff",
+          "calendarBackground": "#fff",
+          "dayTextColor": "#888",
+          "dotColor": "#3700b3",
+          "indicatorColor": "#03dac6",
+          "monthTextColor": "#6200ee",
+          "selectedDayBackgroundColor": "#3700b3",
+          "selectedDayTextColor": "white",
+          "selectedDotColor": "#ffffff",
+          "textDayFontFamily": "roboto",
+          "textDayFontSize": 16,
+          "textDayFontWeight": "300",
+          "textDayHeaderFontFamily": "roboto",
+          "textDayHeaderFontSize": 16,
+          "textDayHeaderFontWeight": "300",
+          "textDisabledColor": "#ccc",
+          "textMonthFontFamily": "roboto-medium",
+          "textMonthFontSize": 20,
+          "textMonthFontWeight": "300",
+          "textSectionTitleColor": "#b6c1cd",
+          "todayTextColor": "#6200ee",
+        },
+      },
+      "ref": null,
+      "rendered": null,
+      "type": [Function],
+    },
+    "type": [Function],
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "class",
+      "props": Object {
+        "children": <CalendarList
+          calendarHeight={360}
+          calendarWidth={750}
+          futureScrollRange={1}
+          horizontal={true}
+          markedDates={
+            Object {
+              "2019-05-20": Object {
+                "disableTouchEvent": true,
+                "selected": true,
+              },
+            }
+          }
+          markingType="multi-period"
+          monthFormat="MMMM yyyy"
+          onDayPress={[Function]}
+          pagingEnabled={true}
+          pastScrollRange={60}
+          removeClippedSubviews={true}
+          scrollEnabled={true}
+          scrollsToTop={false}
+          showScrollIndicator={false}
+          style={
+            Object {
+              "height": 0,
+            }
+          }
+          theme={
+            Object {
+              "arrowColor": "#3700b3",
+              "backgroundColor": "#fff",
+              "calendarBackground": "#fff",
+              "dayTextColor": "#888",
+              "dotColor": "#3700b3",
+              "indicatorColor": "#03dac6",
+              "monthTextColor": "#6200ee",
+              "selectedDayBackgroundColor": "#3700b3",
+              "selectedDayTextColor": "white",
+              "selectedDotColor": "#ffffff",
+              "textDayFontFamily": "roboto",
+              "textDayFontSize": 16,
+              "textDayFontWeight": "300",
+              "textDayHeaderFontFamily": "roboto",
+              "textDayHeaderFontSize": 16,
+              "textDayHeaderFontWeight": "300",
+              "textDisabledColor": "#ccc",
+              "textMonthFontFamily": "roboto-medium",
+              "textMonthFontSize": 20,
+              "textMonthFontWeight": "300",
+              "textSectionTitleColor": "#b6c1cd",
+              "todayTextColor": "#6200ee",
+            }
+          }
+        />,
+        "style": undefined,
+      },
+      "ref": null,
+      "rendered": Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "calendarHeight": 360,
+          "calendarWidth": 750,
+          "futureScrollRange": 1,
+          "horizontal": true,
+          "markedDates": Object {
+            "2019-05-20": Object {
+              "disableTouchEvent": true,
+              "selected": true,
+            },
+          },
+          "markingType": "multi-period",
+          "monthFormat": "MMMM yyyy",
+          "onDayPress": [Function],
+          "onScrollBeginDrag": undefined,
+          "onScrollEndDrag": undefined,
+          "pagingEnabled": true,
+          "pastScrollRange": 60,
+          "removeClippedSubviews": true,
+          "scrollEnabled": true,
+          "scrollsToTop": false,
+          "showScrollIndicator": false,
+          "style": Object {
+            "height": 0,
+          },
+          "theme": Object {
+            "arrowColor": "#3700b3",
+            "backgroundColor": "#fff",
+            "calendarBackground": "#fff",
+            "dayTextColor": "#888",
+            "dotColor": "#3700b3",
+            "indicatorColor": "#03dac6",
+            "monthTextColor": "#6200ee",
+            "selectedDayBackgroundColor": "#3700b3",
+            "selectedDayTextColor": "white",
+            "selectedDotColor": "#ffffff",
+            "textDayFontFamily": "roboto",
+            "textDayFontSize": 16,
+            "textDayFontWeight": "300",
+            "textDayHeaderFontFamily": "roboto",
+            "textDayHeaderFontSize": 16,
+            "textDayHeaderFontWeight": "300",
+            "textDisabledColor": "#ccc",
+            "textMonthFontFamily": "roboto-medium",
+            "textMonthFontSize": 20,
+            "textMonthFontWeight": "300",
+            "textSectionTitleColor": "#b6c1cd",
+            "todayTextColor": "#6200ee",
+          },
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      "type": [Function],
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+        "legacyContextMode": "parent",
+        "lifecycles": Object {
+          "componentDidUpdate": Object {
+            "onSetState": true,
+          },
+          "getChildContext": Object {
+            "calledByRenderer": false,
+          },
+          "getDerivedStateFromError": false,
+          "getDerivedStateFromProps": Object {
+            "hasShouldComponentUpdateBug": false,
+          },
+          "getSnapshotBeforeUpdate": true,
+          "setState": Object {
+            "skipsComponentDidUpdateOnNullish": true,
+          },
+        },
+      },
+    },
+  },
+  Symbol(enzyme.__childContext__): null,
+}
+`;
+
 exports[`LaneCalendar render with markings 1`] = `
 ShallowWrapper {
   Symbol(enzyme.__root__): [Circular],
@@ -54,14 +344,10 @@ ShallowWrapper {
       "children": <CalendarList
         calendarHeight={360}
         calendarWidth={750}
-        futureScrollRange={50}
+        futureScrollRange={1}
         horizontal={true}
         markedDates={
           Object {
-            "": Object {
-              "disableTouchEvent": true,
-              "selected": true,
-            },
             "2019-05-16": Object {
               "periods": Array [
                 Object {
@@ -90,13 +376,17 @@ ShallowWrapper {
                 },
               ],
             },
+            "undefined": Object {
+              "disableTouchEvent": true,
+              "selected": true,
+            },
           }
         }
         markingType="multi-period"
         monthFormat="MMMM yyyy"
         onDayPress={[Function]}
         pagingEnabled={true}
-        pastScrollRange={50}
+        pastScrollRange={60}
         removeClippedSubviews={true}
         scrollEnabled={true}
         scrollsToTop={false}
@@ -143,13 +433,9 @@ ShallowWrapper {
       "props": Object {
         "calendarHeight": 360,
         "calendarWidth": 750,
-        "futureScrollRange": 50,
+        "futureScrollRange": 1,
         "horizontal": true,
         "markedDates": Object {
-          "": Object {
-            "disableTouchEvent": true,
-            "selected": true,
-          },
           "2019-05-16": Object {
             "periods": Array [
               Object {
@@ -178,6 +464,10 @@ ShallowWrapper {
               },
             ],
           },
+          "undefined": Object {
+            "disableTouchEvent": true,
+            "selected": true,
+          },
         },
         "markingType": "multi-period",
         "monthFormat": "MMMM yyyy",
@@ -185,7 +475,7 @@ ShallowWrapper {
         "onScrollBeginDrag": undefined,
         "onScrollEndDrag": undefined,
         "pagingEnabled": true,
-        "pastScrollRange": 50,
+        "pastScrollRange": 60,
         "removeClippedSubviews": true,
         "scrollEnabled": true,
         "scrollsToTop": false,
@@ -233,14 +523,10 @@ ShallowWrapper {
         "children": <CalendarList
           calendarHeight={360}
           calendarWidth={750}
-          futureScrollRange={50}
+          futureScrollRange={1}
           horizontal={true}
           markedDates={
             Object {
-              "": Object {
-                "disableTouchEvent": true,
-                "selected": true,
-              },
               "2019-05-16": Object {
                 "periods": Array [
                   Object {
@@ -269,13 +555,17 @@ ShallowWrapper {
                   },
                 ],
               },
+              "undefined": Object {
+                "disableTouchEvent": true,
+                "selected": true,
+              },
             }
           }
           markingType="multi-period"
           monthFormat="MMMM yyyy"
           onDayPress={[Function]}
           pagingEnabled={true}
-          pastScrollRange={50}
+          pastScrollRange={60}
           removeClippedSubviews={true}
           scrollEnabled={true}
           scrollsToTop={false}
@@ -322,13 +612,9 @@ ShallowWrapper {
         "props": Object {
           "calendarHeight": 360,
           "calendarWidth": 750,
-          "futureScrollRange": 50,
+          "futureScrollRange": 1,
           "horizontal": true,
           "markedDates": Object {
-            "": Object {
-              "disableTouchEvent": true,
-              "selected": true,
-            },
             "2019-05-16": Object {
               "periods": Array [
                 Object {
@@ -357,6 +643,10 @@ ShallowWrapper {
                 },
               ],
             },
+            "undefined": Object {
+              "disableTouchEvent": true,
+              "selected": true,
+            },
           },
           "markingType": "multi-period",
           "monthFormat": "MMMM yyyy",
@@ -364,7 +654,7 @@ ShallowWrapper {
           "onScrollBeginDrag": undefined,
           "onScrollEndDrag": undefined,
           "pagingEnabled": true,
-          "pastScrollRange": 50,
+          "pastScrollRange": 60,
           "removeClippedSubviews": true,
           "scrollEnabled": true,
           "scrollsToTop": false,
@@ -455,11 +745,11 @@ ShallowWrapper {
       "children": <CalendarList
         calendarHeight={360}
         calendarWidth={750}
-        futureScrollRange={50}
+        futureScrollRange={1}
         horizontal={true}
         markedDates={
           Object {
-            "": Object {
+            "undefined": Object {
               "disableTouchEvent": true,
               "selected": true,
             },
@@ -469,7 +759,7 @@ ShallowWrapper {
         monthFormat="MMMM yyyy"
         onDayPress={[Function]}
         pagingEnabled={true}
-        pastScrollRange={50}
+        pastScrollRange={60}
         removeClippedSubviews={true}
         scrollEnabled={true}
         scrollsToTop={false}
@@ -516,10 +806,10 @@ ShallowWrapper {
       "props": Object {
         "calendarHeight": 360,
         "calendarWidth": 750,
-        "futureScrollRange": 50,
+        "futureScrollRange": 1,
         "horizontal": true,
         "markedDates": Object {
-          "": Object {
+          "undefined": Object {
             "disableTouchEvent": true,
             "selected": true,
           },
@@ -530,7 +820,7 @@ ShallowWrapper {
         "onScrollBeginDrag": undefined,
         "onScrollEndDrag": undefined,
         "pagingEnabled": true,
-        "pastScrollRange": 50,
+        "pastScrollRange": 60,
         "removeClippedSubviews": true,
         "scrollEnabled": true,
         "scrollsToTop": false,
@@ -578,11 +868,11 @@ ShallowWrapper {
         "children": <CalendarList
           calendarHeight={360}
           calendarWidth={750}
-          futureScrollRange={50}
+          futureScrollRange={1}
           horizontal={true}
           markedDates={
             Object {
-              "": Object {
+              "undefined": Object {
                 "disableTouchEvent": true,
                 "selected": true,
               },
@@ -592,7 +882,7 @@ ShallowWrapper {
           monthFormat="MMMM yyyy"
           onDayPress={[Function]}
           pagingEnabled={true}
-          pastScrollRange={50}
+          pastScrollRange={60}
           removeClippedSubviews={true}
           scrollEnabled={true}
           scrollsToTop={false}
@@ -639,10 +929,10 @@ ShallowWrapper {
         "props": Object {
           "calendarHeight": 360,
           "calendarWidth": 750,
-          "futureScrollRange": 50,
+          "futureScrollRange": 1,
           "horizontal": true,
           "markedDates": Object {
-            "": Object {
+            "undefined": Object {
               "disableTouchEvent": true,
               "selected": true,
             },
@@ -653,7 +943,7 @@ ShallowWrapper {
           "onScrollBeginDrag": undefined,
           "onScrollEndDrag": undefined,
           "pagingEnabled": true,
-          "pastScrollRange": 50,
+          "pastScrollRange": 60,
           "removeClippedSubviews": true,
           "scrollEnabled": true,
           "scrollsToTop": false,
