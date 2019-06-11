@@ -11,7 +11,7 @@ export async function addLaneToUser(userId, laneId) {
     await firebase.database()
         .ref(USERS).child(userId)
         .child(LANES).child(laneId)
-        .set(0);
+        .set(laneId);
 }
 
 export async function removeLaneFromUser(userId, laneId) {
@@ -31,7 +31,7 @@ export async function addUserToLane(userId, laneId) {
     await firebase.database()
         .ref(LANES).child(laneId)
         .child(SHARED).child(userId)
-        .set(0);
+        .set(userId);
 }
 
 export async function removeUserFromLane(userId, laneId) {
@@ -112,13 +112,12 @@ export async function pushLane(ownerId, laneMetadata) {
     return await firebase.database().ref(LANES).push(laneMetadata).key;
 }
 
-export async function onLaneUpdate(onboardLanes, processLane, unprocessLane) {
+export async function onLaneUpdate(processLane, unprocessLane) {
     const onUserLaneChange = datasnapshot => {
         var lanes = datasnapshot.val();
         if (!lanes) {
             processLane(undefined);
         } else {
-            onboardLanes(lanes);
             Object.keys(lanes).map( laneId =>
                 firebase.database().ref(LANES).child(laneId).on('value', lanesnapshot => {
                     var lane = lanesnapshot.val();
@@ -142,6 +141,7 @@ export async function onLaneUpdate(onboardLanes, processLane, unprocessLane) {
 
     const userid = firebase.auth().currentUser.uid;
     firebase.database().ref(USERS).child(userid).child(LANES).on('value', datasnapshot => onUserLaneChange(datasnapshot));
+    firebase.database().ref(USERS).child(userid).child(LANES).on('child_removed', datasnapshot => unprocessLane(datasnapshot.val()));
 }
 
 export async function uploadImageAsync(photo, laneId) {

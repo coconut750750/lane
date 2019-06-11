@@ -48,7 +48,7 @@ export default class CalendarScreen extends Component {
     }
 
     componentDidMount() {
-        onLaneUpdate(this.onboardLanes.bind(this), this.processLane.bind(this), this.unprocessLane.bind(this));
+        onLaneUpdate(this.processLane.bind(this), this.unprocessLane.bind(this));
     }
 
     alert(message) {
@@ -61,14 +61,6 @@ export default class CalendarScreen extends Component {
     processPeriods(periods) {
         var scheduled = schedulePeriods(periods);
         return setupScheduledMarkings(scheduled);
-    }
-
-    onboardLanes(laneIds) {
-        for (var id of Object.keys(this.lanes)) {
-            if (!Object.keys(laneIds).includes(id)) {
-                delete this.lanes[id];
-            }
-        }
     }
 
     processLane(lane) {
