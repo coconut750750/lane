@@ -48,7 +48,7 @@ export default class CalendarScreen extends Component {
     }
 
     componentDidMount() {
-        onLaneUpdate(this.processLane.bind(this));
+        onLaneUpdate(this.onboardLanes.bind(this), this.processLane.bind(this), this.unprocessLane.bind(this));
     }
 
     alert(message) {
@@ -63,6 +63,14 @@ export default class CalendarScreen extends Component {
         return setupScheduledMarkings(scheduled);
     }
 
+    onboardLanes(laneIds) {
+        for (var id of Object.keys(this.lanes)) {
+            if (!Object.keys(laneIds).includes(id)) {
+                delete this.lanes[id];
+            }
+        }
+    }
+
     processLane(lane) {
         if (lane === undefined) {
             this.setState({ loading: false });
@@ -70,6 +78,11 @@ export default class CalendarScreen extends Component {
         }
 
         this.lanes[lane.id] = lane;
+        this.processAll();
+    }
+
+    unprocessLane(laneId) {
+        delete this.lanes[laneId];
         this.processAll();
     }
 
@@ -167,8 +180,6 @@ export default class CalendarScreen extends Component {
             this.setState({
                 loading: false,
             });
-            delete this.lanes[laneObj.id];
-            this.processAll();
         });
     }
 

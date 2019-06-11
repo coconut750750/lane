@@ -112,16 +112,18 @@ export async function pushLane(ownerId, laneMetadata) {
     return await firebase.database().ref(LANES).push(laneMetadata).key;
 }
 
-export async function onLaneUpdate(processLane) {
+export async function onLaneUpdate(onboardLanes, processLane, unprocessLane) {
     const onUserLaneChange = datasnapshot => {
         var lanes = datasnapshot.val();
         if (!lanes) {
             processLane(undefined);
         } else {
+            onboardLanes(lanes);
             Object.keys(lanes).map( laneId =>
                 firebase.database().ref(LANES).child(laneId).on('value', lanesnapshot => {
                     var lane = lanesnapshot.val();
                     if (lane === null) {
+                        unprocessLane(laneId);
                         return;
                     }
                     const laneObj = new Lane(
@@ -177,7 +179,6 @@ export function deleteLane(laneId, onComplete) {
             removeAllLanePhotos(laneObj),
             removeLane(laneId)
         ]).then(_ => {
-            firebase.database().ref(LANES).child(laneId).off('value');
             onComplete();
         });
     });
