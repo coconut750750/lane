@@ -32,14 +32,6 @@ export default class CreateScreen extends Component {
     }
 
     handleDone = async (title, photos, color) => {
-        if (title === '') {
-            this.alert('Please add a title');
-            return;
-        }
-        if (photos.length === 0) {
-            this.alert('Please add a photo');
-            return;
-        }
         this.setState({uploading: true});
         
         var userId = getUserID();

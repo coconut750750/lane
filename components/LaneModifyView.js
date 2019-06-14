@@ -25,6 +25,9 @@ import MasonryList from 'lane/components/masonry/List';
 import Colors from 'lane/constants/Colors';
 import Layout from 'lane/constants/Layout';
 
+import { getStartEnd } from 'lane/utils/PeriodTools';
+import { getDaysApart } from 'lane/utils/TimeTools';
+
 export default class LaneModifyView extends Component {
     constructor(props) {
         super(props);
@@ -85,6 +88,32 @@ export default class LaneModifyView extends Component {
         });
     }
 
+    validateLane() {
+        if (this.state.title === '') {
+            this.alert('Please add a title');
+            return false;
+        }
+
+        if (this.state.photos.length === 0) {
+            this.alert('Please add a photo');
+            return false;
+        }
+
+        const { start, end } = getStartEnd(this.state.photos);
+        if (getDaysApart(start, end) >= 365) {
+            this.alert('Lanes cannot be longer than a year')
+            return false;
+        }
+
+        return true;
+    }
+
+    handleDone() {
+        if (this.validateLane()) {
+            this.props.handleDone(this.state.title, this.state.photos, this.color)
+        }
+    }
+
     renderTopNav() {
         return (
             <View style={{ flexDirection: 'row' }}>
@@ -100,7 +129,7 @@ export default class LaneModifyView extends Component {
                     size={24}
                     style={{ flex: 0.1 }}
                     color={ this.color }
-                    onPress={() => this.props.handleDone(this.state.title, this.state.photos, this.color)}/>
+                    onPress={ () => this.handleDone() }/>
             </View>
         );
     }

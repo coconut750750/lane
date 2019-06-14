@@ -6,6 +6,8 @@ import { Permissions } from 'expo';
 
 import ImageBrowser from 'lane/components/image_picker/ImageBrowser';
 
+import Photo from 'lane/models/Photo';
+
 import LaneModifyView from '../LaneModifyView'
 
 jest.mock('lane/components/image_picker/ImageBrowser', () => 'imagebrowser' );
@@ -98,7 +100,8 @@ describe('LaneModifyView', () => {
 
     it('adds selected photos to state', () => {
         const { component, instance } = setup();
-        const photos = [{ uri: 'uri1', width: 100, height: 100, timestamp: 0, md5: '1'}, { uri: 'uri2',  width: 100, height: 100, timestamp: 1, md5: '2'}];
+
+        const photos = [new Photo('uri1', 100, 100, '1', 0), new Photo('uri2', 100, 100, '2', 1)];
         const photoPromise = Promise.all([]).then( () => {
             return photos;
         });
@@ -112,7 +115,7 @@ describe('LaneModifyView', () => {
 
     it('adds additional photos to state', () => {
         const { component, instance } = setup();
-        const photos = [{ uri: 'uri1', width: 100, height: 100, timestamp: 0, md5: '1'}, { uri: 'uri2',  width: 100, height: 100, timestamp: 1, md5: '2'}];
+        const photos = [new Photo('uri1', 100, 100, '1', 0), new Photo('uri2', 100, 100, '2', 1)];
         const photoPromise = Promise.all([]).then( () => {
             return photos;
         });
@@ -127,7 +130,7 @@ describe('LaneModifyView', () => {
 
     it('removes photo from state', () => {
         const { component, instance } = setup();
-        const photos = [{ uri: 'uri1', width: 100, height: 100, timestamp: 0, md5: '1'}, { uri: 'uri2',  width: 100, height: 100, timestamp: 1, md5: '2'}];
+        const photos = [new Photo('uri1', 100, 100, '1', 0), new Photo('uri2', 100, 100, '2', 1)];
         const photoPromise = Promise.all([]).then( () => {
             return photos;
         });
@@ -137,5 +140,47 @@ describe('LaneModifyView', () => {
             instance.removePhoto('uri1');
             expect(instance.state.photos).toEqual([photos[1]]);
         });
+    });
+
+    it('validates no title and no photo lane correctly', () => {
+        const { component, instance } = setup();
+        expect(instance.validateLane()).toBeFalsy();
+    });
+
+    it('validates no title lane correctly', () => {
+        const { component, instance } = setup();
+        const photos = [new Photo('uri1', 100, 100, '1', 0), new Photo('uri2', 100, 100, '2', 1)];
+        instance.state.photos = photos;
+        expect(instance.validateLane()).toBeFalsy();
+    });
+
+    it('validates no photo lane correctly', () => {
+        const { component, instance } = setup();
+        instance.state.title = 'title';
+        expect(instance.validateLane()).toBeFalsy();
+    });
+
+    it('validates a lane longer than a year correctly', () => {
+        const { component, instance } = setup();
+        const photos = [new Photo('uri1', 100, 100, '1', 0), new Photo('uri2', 100, 100, '2', 31536000)];
+        instance.state.title = 'title';
+        instance.state.photos = photos;
+        expect(instance.validateLane()).toBeFalsy();
+    });
+
+    it('validates a lane just less than a year correctly (right edge)', () => {
+        const { component, instance } = setup();
+        const photos = [new Photo('uri1', 100, 100, '1', 0), new Photo('uri2', 100, 100, '2', 31535999)];
+        instance.state.title = 'title';
+        instance.state.photos = photos;
+        expect(instance.validateLane()).toBeTruthy();
+    });
+
+    it('validates a lane just less than a year correctly (left edge)', () => {
+        const { component, instance } = setup();
+        const photos = [new Photo('uri1', 100, 100, '1', 86400), new Photo('uri2', 100, 100, '2', 31536000)];
+        instance.state.title = 'title';
+        instance.state.photos = photos;
+        expect(instance.validateLane()).toBeTruthy();
     });
 });

@@ -1,5 +1,12 @@
 var _ = require('lodash');
-import { convertTimestampToDateString, getYear } from 'lane/utils/TimeTools';
+
+import { 
+    dateToString, 
+    timestampToDateString, 
+    getYear,
+    getTomorrow,
+    stringDateToSeconds
+} from 'lane/utils/TimeTools';
 
 export default class Period {
     constructor(startDate, endDate, start, end, color, id, height) {
@@ -11,26 +18,6 @@ export default class Period {
         this.id = id; // string
         this.height = height; // int
     }
-}
-
-let secondsPerDay = 86400000;
-
-function getTomorrow(dayInSeconds) {
-    return new Date(dayInSeconds + secondsPerDay)
-}
-
-function dateToString(date) {
-    return date.toISOString().split('T')[0];
-}
-
-function stringDateToSeconds(date) {
-    return new Date(date).getTime()
-}
-
-function calculateFixedYearTime(date, fixedYear) {
-    const d = new Date(date);
-    d.setYear(fixedYear);
-    return d.getTime();
 }
 
 export function constructPeriodFromLane(laneObj) {
@@ -127,8 +114,8 @@ export function getStartEnd(photos) {
     var startTS = Math.min(...photos.map(p => p.timestamp));
     var endTS = Math.max(...photos.map(p => p.timestamp));
 
-    var start = convertTimestampToDateString(startTS);
-    var end = convertTimestampToDateString(endTS);
+    var start = timestampToDateString(startTS);
+    var end = timestampToDateString(endTS);
 
     return {start: start, end: end};
 }
