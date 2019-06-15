@@ -8,6 +8,8 @@ import * as db from 'lane/backend/Database';
 
 import Lane from 'lane/models/Lane';
 
+import * as timeTools from 'lane/utils/TimeTools';
+
 import CalendarScreen from '../CalendarScreen'
 
 jest.mock("lane/backend/Auth", () => ({
@@ -18,9 +20,8 @@ jest.mock("lane/backend/Database", () => ({
     shareLane: jest.fn(),
     deleteLane: jest.fn(),
 }));
-jest.mock('lane/utils/TimeTools', () => ({
-    getYear: jest.fn( () => 2019 ),
-}));
+
+timeTools.getYear = jest.fn( () => 2019 );
 
 const mockNavigate = jest.fn( dest => {} );
 const navigation = { navigate: mockNavigate };

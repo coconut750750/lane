@@ -2,7 +2,7 @@
 
 exports[`LaneModifyView renders color modal correctly 1`] = `
 <Modal
-  animationType="slide"
+  animationType="fade"
   hardwareAccelerated={false}
   onRequestClose={[Function]}
   transparent={true}
@@ -32,7 +32,6 @@ exports[`LaneModifyView renders color modal correctly 1`] = `
           "backgroundColor": "#ffffff",
           "borderRadius": 8,
           "elevation": 4,
-          "height": 100,
           "justifyContent": "center",
           "margin": 24,
           "marginBottom": 50,
@@ -47,13 +46,7 @@ exports[`LaneModifyView renders color modal correctly 1`] = `
         }
       }
     >
-      <View
-        style={
-          Object {
-            "flex": 1,
-          }
-        }
-      >
+      <View>
         <View
           style={
             Array [
@@ -424,7 +417,7 @@ exports[`LaneModifyView renders empty create screen correctly 1`] = `
   }
 >
   <Modal
-    animationType="slide"
+    animationType="fade"
     hardwareAccelerated={false}
     onRequestClose={[Function]}
     transparent={true}
@@ -454,7 +447,6 @@ exports[`LaneModifyView renders empty create screen correctly 1`] = `
             "backgroundColor": "#ffffff",
             "borderRadius": 8,
             "elevation": 4,
-            "height": 100,
             "justifyContent": "center",
             "margin": 24,
             "marginBottom": 50,
@@ -469,13 +461,7 @@ exports[`LaneModifyView renders empty create screen correctly 1`] = `
           }
         }
       >
-        <View
-          style={
-            Object {
-              "flex": 1,
-            }
-          }
-        >
+        <View>
           <View
             style={
               Array [

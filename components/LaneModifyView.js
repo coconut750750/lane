@@ -137,7 +137,7 @@ export default class LaneModifyView extends Component {
     renderColorModal() {
         return (
             <Modal
-                animationType="slide"
+                animationType="fade"
                 transparent={true}
                 onRequestClose={ () => {} }
                 visible={ this.state.colorModalOpen }>

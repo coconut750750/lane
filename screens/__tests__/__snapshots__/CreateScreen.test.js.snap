@@ -20,7 +20,7 @@ exports[`CreateScreen renders empty create screen correctly 1`] = `
     }
   >
     <Modal
-      animationType="slide"
+      animationType="fade"
       hardwareAccelerated={false}
       onRequestClose={[Function]}
       transparent={true}
@@ -50,7 +50,6 @@ exports[`CreateScreen renders empty create screen correctly 1`] = `
               "backgroundColor": "#ffffff",
               "borderRadius": 8,
               "elevation": 4,
-              "height": 100,
               "justifyContent": "center",
               "margin": 24,
               "marginBottom": 50,
@@ -65,13 +64,7 @@ exports[`CreateScreen renders empty create screen correctly 1`] = `
             }
           }
         >
-          <View
-            style={
-              Object {
-                "flex": 1,
-              }
-            }
-          >
+          <View>
             <View
               style={
                 Array [

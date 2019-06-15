@@ -76,28 +76,6 @@ describe('CreateScreen', () => {
         expect(screen).toEqual(loadingScreen);
     });
 
-    it('alerts if handle done received no title', () => {
-        const title = '';
-        const photos = [];
-        const color = '#ffffff';
-        const { component, instance } = setup();
-
-        return instance.handleDone(title, photos, color).then( () => {
-            expect(instance.state.snackVisible).toBeTruthy();
-        });
-    });
-
-    it('alerts if handle done received no photos', () => {
-        const title = 'title';
-        const photos = [];
-        const color = '#ffffff';
-        const { component, instance } = setup();
-
-        return instance.handleDone(title, photos, color).then( () => {
-            expect(instance.state.snackVisible).toBeTruthy();
-        });
-    });
-
     it('successfully handle done with one picture', () => {
         const id = 'testid';
         const laneid = 'laneid';
