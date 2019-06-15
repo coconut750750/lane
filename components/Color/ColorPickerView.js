@@ -29,6 +29,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         elevation: 4,
-        height: 100
     }
 })

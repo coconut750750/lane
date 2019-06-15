@@ -39,7 +39,7 @@ export default class ColorPalette extends Component {
     render() {
         const { colors } = this.props;
         return (
-            <View style={styles.container}>
+            <View>
                 <View style={[styles.colorContainer]}>
                     {colors.map((c) => this.renderColorOption(c))}
                 </View>
@@ -49,9 +49,6 @@ export default class ColorPalette extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-    },
     colorContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',

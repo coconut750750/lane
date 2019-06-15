@@ -15,6 +15,5 @@ export function parseFirebasePhotos(firePhotos) {
     _.forEach(firePhotos, (photo, id) => {
         photos.push(new Photo(photo.uri, photo.height, photo.width, id, photo.timestamp));
     });
-    console.log(photos[0].timestamp)
     return photos;
 }

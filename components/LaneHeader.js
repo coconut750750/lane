@@ -46,7 +46,6 @@ export default class LaneHeader extends Component {
                 <Menu
                     visible={this.state.menuVisible}
                     onDismiss={ () => this.closeMenu() }
-                    transform={this.props.style.transform[0].translateY}
                     anchor={ <IconButton
                                 style={{ flex: 0.01 }}
                                 size={24}
