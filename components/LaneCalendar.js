@@ -25,8 +25,6 @@ export default class LaneCalendar extends Component {
                     }
                     horizontal={true}
                     pagingEnabled={true}
-                    onScrollEndDrag={this.props.onScrollEndDrag}
-                    onScrollBeginDrag={this.props.onScrollBeginDrag}
                     theme={{
                         backgroundColor: Colors.background,
                         calendarBackground: Colors.background,
@@ -52,7 +50,10 @@ export default class LaneCalendar extends Component {
                         textDayHeaderFontSize: 16,
                     }}
                     style={{
-                        height: 0
+                        height: this.props.height,
+                    }}
+                    calendarStyle={{
+                        height: this.props.height,
                     }}
                 />
             </Animated.View>

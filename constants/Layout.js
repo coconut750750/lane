@@ -9,5 +9,5 @@ export default {
     height,
   },
   isSmallDevice: width < 375,
-  calendarHeight: 360
+  calendarHeight: 400,
 };

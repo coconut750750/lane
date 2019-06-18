@@ -243,6 +243,7 @@ export default class CalendarScreen extends Component {
                         }, () => this.getLanes(date))}
                     style={{ ...styles.calendar, transform: transform }}
                     selectedDay={ this.state.selectedDay }
+                    height={ Layout.calendarHeight }
                 />
                 <FAB
                     style={styles.fab}
