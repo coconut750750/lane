@@ -58,11 +58,6 @@ export default class CalendarScreen extends Component {
         });
     }
 
-    processPeriods(periods) {
-        var scheduled = schedulePeriods(periods);
-        return setupScheduledMarkings(scheduled);
-    }
-
     processLane(lane) {
         if (lane === undefined) {
             this.setState({ loading: false });
@@ -78,13 +73,21 @@ export default class CalendarScreen extends Component {
         this.processAll();
     }
 
+    processPeriods(periods) {
+        var scheduled = schedulePeriods(periods);
+        return setupScheduledMarkings(scheduled);
+    }
+
     processAll() {
         this.periods = [];
+        var propagatedPeriods = [];
         _.forEach(this.lanes, (laneObj, id) => {
             const period = constructPeriodFromLane(laneObj)
-            this.periods = this.periods.concat(propagatePeriod(period));
+            this.periods.push(period);
+            propagatedPeriods = propagatedPeriods.concat(propagatePeriod(period));
         });
-        const markings = this.processPeriods(this.periods);
+        this.periods = schedulePeriods(this.periods);
+        const markings = this.processPeriods(propagatedPeriods);
 
         this.setState({
             lanes: this.lanes,
@@ -92,6 +95,14 @@ export default class CalendarScreen extends Component {
             loading: false,
         });
         this.unselect();
+    }
+
+    markSelectedLane() {
+        const laneId = this.state.selectedLanes[this.state.currentLane];
+        var laneObj = this.state.lanes[laneId];
+        var period = constructPeriodFromLane(laneObj);
+        period.height = 0;
+        return setupScheduledMarkings([period]);
     }
 
     select(lanes) {
@@ -103,35 +114,39 @@ export default class CalendarScreen extends Component {
     }
 
     unselect() {
-        this.setState({
+        this.setState({ selectedDay: '' }, () => this.setState({
             selectedLanes: [],
             currentLane: 0,
             scrollAnim: new Animated.Value(0),
-        });
-        this.setState({ selectedDay: '' });
+            selectedDay: '',
+        }));
+    }
+
+    onPressDay(date) {
+        if (this.state.selectedDay != date) {
+            this.setState({ selectedDay: date }, () => this.getLanes(date));
+        } else {
+            this.unselect();
+        }
     }
 
     getLanes(date) {
-        var selectedLanes = getValidLanes(this.periods, date);
-        if (!_.isEqual(_.sortBy(selectedLanes), _.sortBy(this.state.selectedLanes))) {
+        const selectedLanes = getValidLanes(this.periods, date);
+        if (!_.isEqual(selectedLanes, this.state.selectedLanes)) {
             this.select(selectedLanes);
         }
     }
 
     onBackLane() {
-        if (this.state.currentLane > 0) {
-            this.setState({
-                currentLane: this.state.currentLane - 1
-            });
-        }
+        this.setState({
+            currentLane: (this.state.currentLane - 1) % this.state.selectedLanes.length
+        });
     }
 
     onNextLane() {
-        if (this.state.currentLane < this.state.selectedLanes.length - 1) {
-            this.setState({
-                currentLane: this.state.currentLane + 1
-            });
-        }
+        this.setState({
+            currentLane: (this.state.currentLane + 1) % this.state.selectedLanes.length
+        });
     }
 
     onEditLane(laneObj) {
@@ -200,12 +215,54 @@ export default class CalendarScreen extends Component {
         );
     }
 
+    renderLaneContent(transform) {
+        if (this.state.selectedLanes.length > 0) {
+            const laneId = this.state.selectedLanes[this.state.currentLane];
+            return (
+                <LaneContent
+                    lane={ this.state.lanes[laneId] }
+                    onBackLane={ () => this.onBackLane() }
+                    onNextLane={ () => this.onNextLane() }
+                    onEditLane={ lane => this.onEditLane(lane) }
+                    onShareLane={ lane => this.onShareLane(lane) }
+                    onDeleteLane={ lane => this.onDeleteLane(lane) }
+                    calendarHeight={ Layout.calendarHeight }
+                    headerTransform={ transform }
+                    onScroll={Animated.event(
+                        [{ nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }],
+                        { useNativeDriver: true },
+                    )}
+                />
+            );
+        }
+
+        return null;
+    }
+
+    renderLaneCalendar(transform) {
+        var markings = { ...this.state.markings };
+        var height = Layout.window.height;
+
+        if (this.state.selectedLanes.length > 0) {
+            markings = this.markSelectedLane();
+            height = Layout.calendarHeight;
+        }
+
+        return (
+            <LaneCalendar
+                markings={ markings }
+                onDayPress={ date => this.onPressDay(date) }
+                style={{ ...styles.calendar, transform: transform }}
+                selectedDay={ this.state.selectedDay }
+                height={ height }
+            />
+        );
+    }
+
     render() {
         if (this.state.loading) {
             return this.renderLoading();
         }
-
-        const laneIndex = this.state.selectedLanes[this.state.currentLane];
 
         const calendarTranslate = this.state.scrollAnim.interpolate({
             inputRange: [0, Layout.calendarHeight],
@@ -219,32 +276,10 @@ export default class CalendarScreen extends Component {
 
                 {this.renderShareModal()}
 
-                {this.state.selectedLanes.length > 0 &&
-                    <LaneContent
-                        lane={ this.state.lanes[laneIndex] }
-                        onBackLane={ () => this.onBackLane() }
-                        onNextLane={ () => this.onNextLane() }
-                        onEditLane={ lane => this.onEditLane(lane) }
-                        onShareLane={ lane => this.onShareLane(lane) }
-                        onDeleteLane={ lane => this.onDeleteLane(lane) }
-                        calendarHeight={ Layout.calendarHeight }
-                        headerTransform={ transform }
-                        onScroll={Animated.event(
-                            [{ nativeEvent: { contentOffset: { y: this.state.scrollAnim } } }],
-                            { useNativeDriver: true },
-                        )}
-                    />
-                }
-                <LaneCalendar
-                    markings={{ ...this.state.markings }}
-                    onDayPress={ date => 
-                        this.setState({
-                            selectedDay: date
-                        }, () => this.getLanes(date))}
-                    style={{ ...styles.calendar, transform: transform }}
-                    selectedDay={ this.state.selectedDay }
-                    height={ Layout.calendarHeight }
-                />
+                {this.renderLaneContent(transform)}
+
+                {this.renderLaneCalendar(transform)}
+
                 <FAB
                     style={styles.fab}
                     icon="add"
@@ -290,6 +325,5 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-        height: Layout.calendarHeight
     }
 })

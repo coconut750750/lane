@@ -70,24 +70,30 @@ export function propagatePeriod(period) {
     return propagated;
 }
 
+function validatePeriod(period) {
+    return period.start <= period.end;
+}
+
 export function setupScheduledMarkings(scheduled) {
     var markings = {};
 
-    scheduled.forEach( period => {
-        var startDate = period.startDate;
-        var curr = startDate;
-        var endDate = period.endDate;
-        var endNext = dateToString(getTomorrow(period.end));
+    scheduled.filter(validatePeriod).forEach( period => {
+        if (validatePeriod(period)) {
+            var startDate = period.startDate;
+            var curr = startDate;
+            var endDate = period.endDate;
+            var endNext = dateToString(getTomorrow(period.end));
 
-        while (curr != endNext) {
-            if (!(curr in markings)) {
-                markings[curr] = {periods:[]}
+            while (curr != endNext) {
+                if (!(curr in markings)) {
+                    markings[curr] = {periods:[]}
+                }
+                while (markings[curr].periods.length < period.height) {
+                    markings[curr].periods.push({color: 'transparent'})
+                }
+                markings[curr].periods.push({startingDay: curr === startDate, endingDay: curr === endDate, color: period.color});
+                curr = dateToString(getTomorrow(new Date(curr).getTime()));
             }
-            while (markings[curr].periods.length < period.height) {
-                markings[curr].periods.push({color: 'transparent'})
-            }
-            markings[curr].periods.push({startingDay: curr === startDate, endingDay: curr === endDate, color: period.color});
-            curr = dateToString(getTomorrow(new Date(curr).getTime()));
         }
     });
 
@@ -95,9 +101,9 @@ export function setupScheduledMarkings(scheduled) {
 }
 
 export function getValidLanes(periods, date) {
-    const fixedYear = 2000;
     var selectedLanes = [];
-    _.forEach(periods, period => {
+
+    _.forEach(_.sortBy(periods, 'height'), period => {
         
         const start = new Date(period.startDate).getTime();
         const end = new Date(period.endDate).getTime();

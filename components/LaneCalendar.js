@@ -13,7 +13,7 @@ export default class LaneCalendar extends Component {
 
     render() {
         return (
-            <Animated.View style={this.props.style}>
+            <Animated.View style={{ ...this.props.style, height: this.props.height }}>
                 <CalendarList
                     monthFormat={'MMMM yyyy'}
                     onDayPress={ day => this.props.onDayPress(day.dateString) }
