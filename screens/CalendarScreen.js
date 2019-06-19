@@ -100,6 +100,9 @@ export default class CalendarScreen extends Component {
     markSelectedLane() {
         const laneId = this.state.selectedLanes[this.state.currentLane];
         var laneObj = this.state.lanes[laneId];
+        if (laneObj === undefined) {
+            return {};
+        }
         var period = constructPeriodFromLane(laneObj);
         period.height = 0;
         return setupScheduledMarkings([period]);
@@ -118,7 +121,6 @@ export default class CalendarScreen extends Component {
             selectedLanes: [],
             currentLane: 0,
             scrollAnim: new Animated.Value(0),
-            selectedDay: '',
         }));
     }
 

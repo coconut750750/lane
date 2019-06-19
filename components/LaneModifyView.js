@@ -25,6 +25,8 @@ import MasonryList from 'lane/components/masonry/List';
 import Colors from 'lane/constants/Colors';
 import Layout from 'lane/constants/Layout';
 
+import Photo from 'lane/models/Photo';
+
 import { getStartEnd } from 'lane/utils/PeriodTools';
 import { getDaysApart } from 'lane/utils/TimeTools';
 
@@ -67,9 +69,20 @@ export default class LaneModifyView extends Component {
         }
     }
 
+    addPhotosNoDuplicates(photos) {
+        var currentMD5s = _.map(this.state.photos, 'md5');
+        var noDups = photos.filter( photo => {
+            return !currentMD5s.includes(photo.md5);
+        });
+        if (noDups.length < photos.length) {
+            this.alert('Duplicate photos were removed');
+        }
+        return this.state.photos.concat(noDups);
+    }
+
     imageBrowserCallback = (selectedPhotoPromise) => {
         selectedPhotoPromise.then((photos) => {
-            const allPhotos = this.state.photos.concat(photos);
+            const allPhotos = this.addPhotosNoDuplicates(photos);
             this.setState({
                 imageBrowserOpen: false,
                 photos: allPhotos,
@@ -293,13 +306,7 @@ LaneModifyView.propTypes = {
     handleDone: PropTypes.func.isRequired,
     laneObj: PropTypes.shape({
         title: PropTypes.string.isRequired,
-        photos: PropTypes.arrayOf(PropTypes.shape({
-            uri: PropTypes.string.isRequired,
-            height: PropTypes.number.isRequired,
-            width: PropTypes.number.isRequired,
-            md5: PropTypes.string,
-            timestamp: PropTypes.number.isRequired,
-        })).isRequired,
+        photos: PropTypes.arrayOf(PropTypes.instanceOf(Photo)).isRequired,
         color: PropTypes.string.isRequired,
     }),
 };
