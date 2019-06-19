@@ -32,7 +32,7 @@ export default class MasonryList extends Component {
         if (photoSizeData.length === 2) {
             return [1, 1];
         }
-        let minHeight = Layout.window.height * 0.2
+        let minHeight = Layout.window.height * 0.166
         let maxCount = 3;
 
         var total = photoSizeData.length;

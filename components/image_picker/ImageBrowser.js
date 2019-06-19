@@ -77,14 +77,14 @@ export default class ImageBrowser extends React.Component {
         return { length, offset: length * index, index }
     }
 
-    prepareCallback() {
+    photoPromise = async () => {
         let { selected, photos } = this.state;
         let selectedPhotos = _.map(Object.keys(selected), i => photos[i]);
 
         let files = selectedPhotos
             .map(photo => FileSystem.getInfoAsync(photo.image.uri, { md5: true, size: true }));
         
-        let photoPromise = Promise
+        return await Promise
             .all(files)
             .then(imageData => {
                 return imageData.map( (data, i) => {
@@ -96,7 +96,6 @@ export default class ImageBrowser extends React.Component {
                         selectedPhotos[i].timestamp);
                 });
             });
-        this.props.callback(photoPromise);
     }
 
     renderHeader() {
@@ -115,7 +114,7 @@ export default class ImageBrowser extends React.Component {
                     size={24}
                     style={{ flex: 0.1 }}
                     color={ Colors.primary }
-                    onPress={() => this.prepareCallback()}/>
+                    onPress={ () => this.props.callback(this.photoPromise) }/>
             </View>
         );
     }

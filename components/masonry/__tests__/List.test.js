@@ -27,7 +27,7 @@ describe('List', () => {
         const { component, instance } = setup([]);
 
         const rowCounts = instance.generateRowCounts(photos);
-        expect(rowCounts.length).toBe(1);
+        expect(rowCounts.length).toBe(2);
     });
 
     it('generates row counts for 3 images of same aspect ratio', () => {
@@ -39,7 +39,7 @@ describe('List', () => {
         const { component, instance } = setup([]);
 
         const rowCounts = instance.generateRowCounts(photos);
-        expect(rowCounts.length).toBe(1);
+        expect(rowCounts.length).toBe(2);
     });
 
     it('generates three row counts', () => {
@@ -51,7 +51,7 @@ describe('List', () => {
         const { component, instance } = setup([]);
 
         let rowCounts = instance.generateRowCounts(photos);
-        expect(rowCounts.length).toBe(2);
+        expect(rowCounts.length).toBe(3);
     });
 
     it('simple get item layout', () => {

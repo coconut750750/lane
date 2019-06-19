@@ -28,10 +28,9 @@ export default class CalendarScreen extends Component {
     constructor(props) {
         super(props);
 
-        this.lanes = {}; // used to add retreived lanes that resolve asynchronously
+        this.lanes = {};
         this.periods = [];
         this.state = {
-            lanes: {},
             markings: {},
             selectedLanes: [],
             currentLane: 0,
@@ -90,7 +89,6 @@ export default class CalendarScreen extends Component {
         const markings = this.processPeriods(propagatedPeriods);
 
         this.setState({
-            lanes: this.lanes,
             markings: markings,
             loading: false,
         });
@@ -99,7 +97,7 @@ export default class CalendarScreen extends Component {
 
     markSelectedLane() {
         const laneId = this.state.selectedLanes[this.state.currentLane];
-        var laneObj = this.state.lanes[laneId];
+        var laneObj = this.lanes[laneId];
         if (laneObj === undefined) {
             return {};
         }
@@ -222,7 +220,7 @@ export default class CalendarScreen extends Component {
             const laneId = this.state.selectedLanes[this.state.currentLane];
             return (
                 <LaneContent
-                    lane={ this.state.lanes[laneId] }
+                    lane={ this.lanes[laneId] }
                     onBackLane={ () => this.onBackLane() }
                     onNextLane={ () => this.onNextLane() }
                     onEditLane={ lane => this.onEditLane(lane) }

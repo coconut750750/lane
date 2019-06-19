@@ -81,11 +81,12 @@ export default class LaneModifyView extends Component {
     }
 
     imageBrowserCallback = (selectedPhotoPromise) => {
-        this.setState({ imageBrowserOpen: false }, () => {
-            selectedPhotoPromise.then((photos) => {
-                this.setState({ photos: this.addPhotosNoDuplicates(photos) });
-            }).catch((e) => console.log(e));
-        })
+        selectedPhotoPromise().then( photos => {
+            this.setState({ 
+                imageBrowserOpen: false,
+                photos: this.addPhotosNoDuplicates(photos)
+            });
+        }).catch((e) => console.log(e));
     }
 
     removePhoto(uri) {
