@@ -48,6 +48,7 @@ export default class LaneContent extends Component {
         return (
             <View style={{ ...styles.page }}>
                 <MasonryList
+                    id={ lane.id }
                     photos={ photos }
                     width={ Layout.window.width }
                     itemPadding={2}

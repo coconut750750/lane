@@ -219,7 +219,6 @@ export default class CalendarScreen extends Component {
     renderLaneContent(transform) {
         if (this.selectedLanes.length > 0) {
             const laneId = this.selectedLanes[this.state.currentLane];
-            console.log(this.lanes[laneId]);
             return (
                 <LaneContent
                     lane={ this.lanes[laneId] }
@@ -237,7 +236,6 @@ export default class CalendarScreen extends Component {
                 />
             );
         }
-
 
         return null;
     }

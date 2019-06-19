@@ -16,6 +16,8 @@ export default class MasonryList extends Component {
         this.state = {
             data: [] // {data: {height, width, uri}, height}
         };
+
+        this.cache = {}; // {laneid: data}
     }
 
     componentDidMount() {
@@ -23,7 +25,7 @@ export default class MasonryList extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.photos != prevProps.photos) {
+        if (this.props.id != prevProps.id) {
             this.generateRows(this.props.photos);
         }
     }
@@ -61,18 +63,21 @@ export default class MasonryList extends Component {
     }
 
     generateRows(photos) {
-        var rowCounts = this.generateRowCounts(photos);
+        if (!(this.props.id in this.cache)) {
+            var rowCounts = this.generateRowCounts(photos);
 
-        var rows = [];
-        var uriIndex = 0;
-        _.forEach(rowCounts, c => {
-            rows.push(photos.slice(uriIndex, uriIndex + c));
-            uriIndex += c;
-        });
+            var rows = [];
+            var uriIndex = 0;
+            _.forEach(rowCounts, c => {
+                rows.push(photos.slice(uriIndex, uriIndex + c));
+                uriIndex += c;
+            });
 
-        rowData = rows.map(row => calculateRowDimensions(_.cloneDeep(row), this.props.width));
+            this.cache[this.props.id] = rows.map(row => calculateRowDimensions(_.cloneDeep(row), this.props.width));
+        }
+
         this.setState({
-            data: rowData,
+            data: this.cache[this.props.id],
         });
     }
 
