@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { FileSystem } from 'expo';
 import { IconButton, Text } from 'react-native-paper';
+var _ = require('lodash');
 
 import Colors from 'lane/constants/Colors';
 import Layout from 'lane/constants/Layout';
@@ -16,7 +17,7 @@ import Photo from 'lane/models/Photo';
 
 import ImageTile from './ImageTile';
 
-let numColumns = 2;
+const numColumns = 2;
 
 export default class ImageBrowser extends React.Component {
     constructor(props) {
@@ -78,23 +79,21 @@ export default class ImageBrowser extends React.Component {
 
     prepareCallback() {
         let { selected, photos } = this.state;
-        let selectedPhotos = photos.filter((item, index) => {
-            return selected[index];
-        });
+        let selectedPhotos = _.map(Object.keys(selected), i => photos[i]);
+
         let files = selectedPhotos
             .map(photo => FileSystem.getInfoAsync(photo.image.uri, { md5: true, size: true }));
         
         let photoPromise = Promise
             .all(files)
-            .then(imageData=> {
-                return imageData.map((data, i) => {
-                    const photo = new Photo(
+            .then(imageData => {
+                return imageData.map( (data, i) => {
+                    return new Photo(
                         data.uri,
                         selectedPhotos[i].image.height,
                         selectedPhotos[i].image.width,
                         data.md5,
                         selectedPhotos[i].timestamp);
-                    return photo;
                 });
             });
         this.props.callback(photoPromise);
