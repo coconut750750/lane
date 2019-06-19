@@ -32,7 +32,8 @@ export default class MasonryList extends Component {
         if (photoSizeData.length === 2) {
             return [1, 1];
         }
-        let aspectRange = 0.25;
+        let minHeight = Layout.window.height * 0.2
+        let maxCount = 3;
 
         var total = photoSizeData.length;
         var curr = 0;
@@ -40,22 +41,20 @@ export default class MasonryList extends Component {
 
         while (curr < total) {
             let { height, width } = photoSizeData[curr];
-            var aspect =  width / height;
-            var delta;
-            var max = aspect >= 0.75 && aspect < 1.34 ? 3 : 2
+            var count;
+            var totalScaledWidth = minHeight / height * width;
 
-            for (delta = 1; delta < max && curr + delta < total; delta++) {
-                let { height, width } = photoSizeData[curr + delta];
-                var nextAspect = width / height;
+            for (count = 1; count < maxCount && curr + count < total; count++) {
+                let { height, width } = photoSizeData[curr + count];
+                totalScaledWidth += minHeight / height * width;
 
-                var difference = Math.abs(aspect - nextAspect);
-                if (difference > aspectRange) {
+                if (totalScaledWidth > Layout.window.width) {
                     break;
                 }
             }
 
-            counts.push(delta);
-            curr += delta;
+            counts.push(count);
+            curr += count;
         }
 
         return counts;

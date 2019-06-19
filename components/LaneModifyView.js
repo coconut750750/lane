@@ -93,7 +93,7 @@ export default class LaneModifyView extends Component {
         const filteredPhotos = photos.filter((item, index) => {
             return item.uri != uri;
         });
-        // filter out duplicate photos and alert
+
         this.setState({
             photos: filteredPhotos,
         });
