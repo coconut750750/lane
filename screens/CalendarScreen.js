@@ -125,7 +125,10 @@ export default class CalendarScreen extends Component {
 
     onPressDay(date) {
         if (this.state.selectedDay != date) {
-            this.setState({ selectedDay: date }, () => this.getLanes(date));
+            this.setState({ selectedDay: date }, async () => {
+                await new Promise(resolve => setTimeout(resolve, 0));
+                this.getLanes(date)
+            });
         } else {
             this.unselect();
         }
