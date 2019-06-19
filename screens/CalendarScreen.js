@@ -30,9 +30,9 @@ export default class CalendarScreen extends Component {
 
         this.lanes = {};
         this.periods = [];
+        this.selectedLanes = [];
         this.state = {
             markings: {},
-            selectedLanes: [],
             currentLane: 0,
             loading: true,
             shareModalOpen: false,
@@ -96,7 +96,7 @@ export default class CalendarScreen extends Component {
     }
 
     markSelectedLane() {
-        const laneId = this.state.selectedLanes[this.state.currentLane];
+        const laneId = this.selectedLanes[this.state.currentLane];
         var laneObj = this.lanes[laneId];
         if (laneObj === undefined) {
             return {};
@@ -107,19 +107,20 @@ export default class CalendarScreen extends Component {
     }
 
     select(lanes) {
+        this.selectedLanes = lanes;
         this.setState({
-            selectedLanes: lanes,
             currentLane: 0,
             scrollAnim: new Animated.Value(0),
         });
     }
 
     unselect() {
-        this.setState({ selectedDay: '' }, () => this.setState({
-            selectedLanes: [],
+        this.selectedLanes = []
+        this.setState({ 
+            selectedDay: '',
             currentLane: 0,
             scrollAnim: new Animated.Value(0),
-        }));
+        });
     }
 
     onPressDay(date) {
@@ -132,20 +133,20 @@ export default class CalendarScreen extends Component {
 
     getLanes(date) {
         const selectedLanes = getValidLanes(this.periods, date);
-        if (!_.isEqual(selectedLanes, this.state.selectedLanes)) {
+        if (!_.isEqual(selectedLanes, this.selectedLanes)) {
             this.select(selectedLanes);
         }
     }
 
     onBackLane() {
         this.setState({
-            currentLane: (this.state.currentLane - 1) % this.state.selectedLanes.length
+            currentLane: (this.state.currentLane - 1) % this.selectedLanes.length
         });
     }
 
     onNextLane() {
         this.setState({
-            currentLane: (this.state.currentLane + 1) % this.state.selectedLanes.length
+            currentLane: (this.state.currentLane + 1) % this.selectedLanes.length
         });
     }
 
@@ -216,8 +217,9 @@ export default class CalendarScreen extends Component {
     }
 
     renderLaneContent(transform) {
-        if (this.state.selectedLanes.length > 0) {
-            const laneId = this.state.selectedLanes[this.state.currentLane];
+        if (this.selectedLanes.length > 0) {
+            const laneId = this.selectedLanes[this.state.currentLane];
+            console.log(this.lanes[laneId]);
             return (
                 <LaneContent
                     lane={ this.lanes[laneId] }
@@ -236,6 +238,7 @@ export default class CalendarScreen extends Component {
             );
         }
 
+
         return null;
     }
 
@@ -243,7 +246,7 @@ export default class CalendarScreen extends Component {
         var markings = { ...this.state.markings };
         var height = Layout.window.height;
 
-        if (this.state.selectedLanes.length > 0) {
+        if (this.selectedLanes.length > 0) {
             markings = this.markSelectedLane();
             height = Layout.calendarHeight;
         }

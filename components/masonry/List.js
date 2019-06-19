@@ -28,24 +28,24 @@ export default class MasonryList extends Component {
         }
     }
 
-    generateRowCounts(photoSizeData) {
-        if (photoSizeData.length === 2) {
+    generateRowCounts(photos) {
+        if (photos.length === 2) {
             return [1, 1];
         }
         let minHeight = Layout.window.height * 0.166
         let maxCount = 3;
 
-        var total = photoSizeData.length;
+        var total = photos.length;
         var curr = 0;
         var counts = [];
 
         while (curr < total) {
-            let { height, width } = photoSizeData[curr];
+            const { currHeight, currWidth } = photos[curr];
             var count;
-            var totalScaledWidth = minHeight / height * width;
+            var totalScaledWidth = minHeight / currHeight * currWidth;
 
             for (count = 1; count < maxCount && curr + count < total; count++) {
-                let { height, width } = photoSizeData[curr + count];
+                const { height, width } = photos[curr + count];
                 totalScaledWidth += minHeight / height * width;
 
                 if (totalScaledWidth > Layout.window.width) {
@@ -70,7 +70,7 @@ export default class MasonryList extends Component {
             uriIndex += c;
         });
 
-        rowData = rows.map(row => calculateRowDimensions(row, this.props.width));
+        rowData = rows.map(row => calculateRowDimensions(_.cloneDeep(row), this.props.width));
         this.setState({
             data: rowData,
         });
