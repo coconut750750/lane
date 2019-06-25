@@ -18,7 +18,7 @@ export default class LaneProgressBar extends Component {
                     {this.props.message}
                 </Text>
                 <ProgressBar
-                    style={{ width: Layout.window.width }}
+                    style={{ width: Layout.window.width - 16 }}
                     indeterminate={true}
                     progress={this.props.progress}
                     color={Colors.primary}/>
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
 });
 

@@ -202,7 +202,6 @@ export default class LaneModifyView extends Component {
         const photos = this.state.photos;
         const sorted = _.orderBy(photos, ['timestamp'], ['asc']);
         const hash = _.map(sorted, 'md5').join('');
-        console.log(hash)
 
         return (
             <MasonryList
