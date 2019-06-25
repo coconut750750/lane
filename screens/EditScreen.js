@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Snackbar } from 'react-native-paper';
 import PropTypes from 'prop-types';
 var _ = require('lodash');
@@ -7,8 +7,10 @@ var _ = require('lodash');
 import { updateLane, removePhoto, uploadImageAsync } from 'lane/backend/Database';
 
 import LaneModifyView from 'lane/components/LaneModifyView';
+import LaneProgressBar from 'lane/components/LaneProgressBar';
 
 import Colors from 'lane/constants/Colors';
+import Strings from 'lane/constants/Strings';
 
 import { getStartEnd } from 'lane/utils/PeriodTools';
 
@@ -49,7 +51,11 @@ export default class EditScreen extends Component {
     }
 
     handleDone = async (title, photos, color) => {
-        this.setState({uploading: true});
+        this.setState({
+            uploading: true,
+            progress: 0,
+            message: Strings.uploading.start,
+        });
 
         const { start, end } = getStartEnd(photos)
 
@@ -70,20 +76,34 @@ export default class EditScreen extends Component {
             }
         });
 
-        await Promise.all(toRemove.map( photoId => removePhoto(photoId, this.state.originalLane.id) ));
-        await Promise.all(toAdd.map( photo => uploadImageAsync(photo, this.state.originalLane.id) ));
+        this.eachProgress = 1.0 / (toRemove.length + toAdd.length);
+
+        this.setState({ message: Strings.uploading.deletePhotos })
+        await Promise.all(toRemove.map( async photoId => {
+            await removePhoto(photoId, this.state.originalLane.id);
+            this.setState( (state, props) => {
+                return { progress: state.progress + this.eachProgress };
+            });
+        }));
+
+        this.setState({ message: Strings.uploading.uploadNewPhotos })
+        await Promise.all(toAdd.map( async photo => {
+            await uploadImageAsync(photo, this.state.originalLane.id);
+            this.setState( (state, props) => {
+                return { progress: state.progress + this.eachProgress };
+            });
+        }));
         
-        this.setState({ uploading: false });
+        this.setState({
+            uploading: false,
+            progress: 0,
+        });
         this.props.navigation.goBack();
     }
 
     renderLoading() {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator 
-                    size="large"
-                    color={Colors.primary} />
-            </View>
+            <LaneProgressBar message={this.state.message} progress={this.state.progress} />
         );
     }
 

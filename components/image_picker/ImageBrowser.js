@@ -107,7 +107,7 @@ export default class ImageBrowser extends React.Component {
                     icon="arrow-back"
                     size={24}
                     style={{ flex: 0.1 }}
-                    onPress={() => this.props.callback(Promise.resolve([]))}/>
+                    onPress={ () => this.props.callback(undefined) }/>
                 <Text style={{ flex: 0.8, textAlign: 'center' }}>{headerText}</Text>
                 <IconButton
                     icon="done"

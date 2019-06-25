@@ -25,7 +25,7 @@ export default class MasonryList extends Component {
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.props.id != prevProps.id) {
+        if (this.props.id != prevProps.id ) {
             this.generateRows(this.props.photos);
         }
     }

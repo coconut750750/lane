@@ -146,7 +146,7 @@ export async function onLaneUpdate(processLane, unprocessLane) {
 
 export async function uploadImageAsync(photo, laneId) {
     var { uri, width, height } = await ImageManipulator.manipulateAsync(photo.uri, [], { compress: 0.75 });
-    photo.width = width; photo.height = height
+    photo.width = width; photo.height = height;
 
     const blob = await new Promise((resolve, reject) => {
         const xhr = new XMLHttpRequest();
@@ -161,7 +161,6 @@ export async function uploadImageAsync(photo, laneId) {
         xhr.open('GET', uri, true);
         xhr.send(null);
     });
-    console.log(blob);
 
     await addPhoto(blob, photo, laneId);
 }

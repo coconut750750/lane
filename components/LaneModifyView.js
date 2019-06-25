@@ -43,6 +43,8 @@ export default class LaneModifyView extends Component {
             // snackbar
             snackVisible: false,
             snackMessage: '',
+
+            id: 0,
         };
         this.color = props.laneObj.color;
     }
@@ -81,12 +83,12 @@ export default class LaneModifyView extends Component {
     }
 
     imageBrowserCallback = (selectedPhotoPromise) => {
-        selectedPhotoPromise().then( photos => {
-            this.setState({ 
-                imageBrowserOpen: false,
-                photos: this.addPhotosNoDuplicates(photos)
-            });
-        }).catch((e) => console.log(e));
+        if (selectedPhotoPromise != undefined) {
+            selectedPhotoPromise().then( photos => {
+                this.setState({ photos: this.addPhotosNoDuplicates(photos) });
+            }).catch((e) => console.log(e));
+        }
+        this.setState({ imageBrowserOpen: false });
     }
 
     removePhoto(uri) {
@@ -95,9 +97,7 @@ export default class LaneModifyView extends Component {
             return item.uri != uri;
         });
 
-        this.setState({
-            photos: filteredPhotos,
-        });
+        this.setState({ photos: filteredPhotos });
     }
 
     validateLane() {
@@ -201,9 +201,12 @@ export default class LaneModifyView extends Component {
     renderMasonryList() {
         const photos = this.state.photos;
         const sorted = _.orderBy(photos, ['timestamp'], ['asc']);
+        const hash = _.map(sorted, 'md5').join('');
+        console.log(hash)
 
         return (
             <MasonryList
+                id={ hash }
                 photos={ sorted }
                 width={ Layout.window.width }
                 itemPadding={8}

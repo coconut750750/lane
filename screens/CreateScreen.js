@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import { Snackbar } from 'react-native-paper';
 
 import { pushLane, uploadImageAsync, addLaneToUser } from 'lane/backend/Database';
 import { getUserID } from 'lane/backend/Auth';
 
 import LaneModifyView from 'lane/components/LaneModifyView';
+import LaneProgressBar from 'lane/components/LaneProgressBar';
 
 import Colors from 'lane/constants/Colors';
+import Strings from 'lane/constants/Strings';
 
 import { getStartEnd } from 'lane/utils/PeriodTools';
 
@@ -17,6 +19,7 @@ export default class CreateScreen extends Component {
 
         this.state = {
             uploading: false,
+            progress: 0,
 
             // snackbar
             snackVisible: false,
@@ -32,7 +35,11 @@ export default class CreateScreen extends Component {
     }
 
     handleDone = async (title, photos, color) => {
-        this.setState({uploading: true});
+        this.setState({
+            uploading: true,
+            progress: 0,
+            message: Strings.uploading.start,
+        });
         
         var userId = getUserID();
         const { start, end } = getStartEnd(photos);
@@ -41,23 +48,32 @@ export default class CreateScreen extends Component {
             title: title,
             startDate: start,
             endDate: end,
-            color: color});
+            color: color
+        });
 
-        await Promise.all(photos.map(photo => uploadImageAsync(photo, laneId)));
+        this.eachProgress = 1.0 / photos.length;
+
+        this.setState({ message: Strings.uploading.uploadPhotos });
+        await Promise.all(photos.map(async photo => {
+            await uploadImageAsync(photo, laneId);
+            this.setState( (state, props) => {
+                return { progress: state.progress + this.eachProgress };
+            });
+        }));
         
+        this.setState({ message: Strings.uploading.finish })
         await addLaneToUser(userId, laneId);
 
-        this.setState({ uploading: false });
+        this.setState({ 
+            uploading: false,
+            progress: 0,
+        });
         this.props.navigation.goBack();
     }
 
     renderLoading() {
         return (
-            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-                <ActivityIndicator 
-                    size="large"
-                    color={Colors.primary} />
-            </View>
+            <LaneProgressBar message={this.state.message} progress={this.state.progress} />
         );
     }
 
