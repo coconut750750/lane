@@ -44,10 +44,17 @@ export default class LaneHeader extends Component {
                             <Menu.Item
                                 onPress={ () => { this.props.onShare(); this.closeMenu(); } }
                                 title="Share" />
-                            <Menu.Item
-                                disabled={this.props.owner != getUserID()}
-                                onPress={ () => { this.props.onDelete(); this.closeMenu(); } }
-                                title="Delete" />
+                            {
+                                this.props.owner == getUserID()
+                                ?
+                                <Menu.Item
+                                    onPress={ () => { this.props.onDelete(); this.closeMenu(); } }
+                                    title="Delete" />
+                                :
+                                <Menu.Item
+                                    onPress={ () => { this.props.onUnsubscribe(); this.closeMenu(); } }
+                                    title="Unsubscribe" />
+                            }
                         </Surface>
                     </View>
                 </TouchableWithoutFeedback>

@@ -11,8 +11,8 @@ import {
 import { FAB, IconButton, Snackbar } from 'react-native-paper';
 var _ = require('lodash');
 
-import { signOut, getIdFromEmail } from 'lane/backend/Auth';
-import { onLaneUpdate, shareLane, deleteLane } from 'lane/backend/Database';
+import { getUserID, signOut, getIdFromEmail } from 'lane/backend/Auth';
+import { onLaneUpdate, shareLane, deleteLane, unsubscribeLane } from 'lane/backend/Database';
 
 import SharingView from 'lane/components/SharingView';
 import LaneCalendar from 'lane/components/LaneCalendar';
@@ -158,9 +158,9 @@ export default class CalendarScreen extends Component {
     }
 
     onShareLane(laneObj) {
+        this.sharingId = laneObj.id;
         this.setState({
             shareModalOpen: true,
-            sharingId: laneObj.id
         });
     }
 
@@ -173,12 +173,10 @@ export default class CalendarScreen extends Component {
             if (id === undefined) {
                 this.alert('Email doesn\'t exist!');
             } else {
-                shareLane(this.state.sharingId, id);
+                shareLane(this.sharingId, id);
             }
-            this.setState({
-                loading: false,
-                sharingId: undefined
-            });
+            this.sharingId = undefined;
+            this.setState({ loading: false });
         });
     }
 
@@ -192,6 +190,11 @@ export default class CalendarScreen extends Component {
                 loading: false,
             });
         });
+    }
+
+    onUnsubscribeLane(laneObj) {
+        this.unselect();
+        unsubscribeLane(getUserID(), laneObj.id);
     }
 
     renderLoading() {
@@ -230,6 +233,7 @@ export default class CalendarScreen extends Component {
                     onEditLane={ lane => this.onEditLane(lane) }
                     onShareLane={ lane => this.onShareLane(lane) }
                     onDeleteLane={ lane => this.onDeleteLane(lane) }
+                    onUnsubscribeLane={ lane => this.onUnsubscribeLane(lane) }
                     calendarHeight={ Layout.calendarHeight }
                     headerTransform={ transform }
                     onScroll={Animated.event(

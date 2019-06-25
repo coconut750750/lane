@@ -169,7 +169,7 @@ export async function uploadImageAsync(photo, laneId) {
 export async function shareLane(laneId, otherUserId) {
     await Promise.all([
         addLaneToUser(otherUserId, laneId),
-        addUserToLane(otherUserId, laneId)
+        addUserToLane(otherUserId, laneId),
     ]);
 }
 
@@ -181,9 +181,14 @@ export function deleteLane(laneId, onComplete) {
             removeAllSharedUsers(laneObj),
             removeLaneFromUser(laneObj.owner, laneId),
             removeAllLanePhotos(laneObj),
-            removeLane(laneId)
+            removeLane(laneId),
         ]).then(_ => {
             onComplete();
         });
     });
+}
+
+export async function unsubscribeLane(userId, laneId) {
+    await removeUserFromLane(userId, laneId);
+    await removeLaneFromUser(userId, laneId);
 }

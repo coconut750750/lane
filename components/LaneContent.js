@@ -33,6 +33,7 @@ export default class LaneContent extends Component {
                 onEdit={ () => this.props.onEditLane(lane) }
                 onShare={ () => this.props.onShareLane(lane) }
                 onDelete={ () => this.props.onDeleteLane(lane) }
+                onUnsubscribe={ () => this.props.onUnsubscribeLane(lane) }
                 style={{
                     transform: this.props.headerTransform,
                     position: 'absolute',
