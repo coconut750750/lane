@@ -20,7 +20,7 @@ export default class StartScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text>Start</Text>
+                <Text>Lane</Text>
             </View>
         );
     }

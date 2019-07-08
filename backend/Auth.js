@@ -79,10 +79,10 @@ export async function signInWithGoogleAsync() {
             onSignIn(result);
             return result.accessToken;
         } else {
-            return {canceled: true};
+            return undefined;
         }
     } catch (e) {
-        return {error: true};
+        return undefined;
     }
 }
 
