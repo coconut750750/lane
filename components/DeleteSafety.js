@@ -1,45 +1,35 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, TouchableWithoutFeedback } from 'react-native';
-import { Surface, TextInput, Button } from 'react-native-paper';
+import { Surface, Text, Button, Headline } from 'react-native-paper';
+import PropTypes from 'prop-types';
 
 import Colors from 'lane/constants/Colors';
 
-export default class SharingView extends Component {
+export default class DeleteSafety extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            email: ''
-        }
     }
 
     render() {
         return (
             <TouchableWithoutFeedback 
                 onPress={ () => this.props.onClose() }>
-                <View style={ styles.container }>
+                <View style={styles.container}>
                     <Surface style={ styles.surface }>
-                        <View style={{flexDirection: 'row'}}>
-                            <TextInput
-                                label='Add email'
-                                value={ this.state.email }
-                                style={ styles.textInput }
-                                onChangeText={ email => this.setState({ email: email }) }
-                            />
-                        </View>
+                        <Headline style={ styles.text }>Are you sure?</Headline>
+                        <Text style={ styles.text }>All shared users will also be removed from this Lane.</Text>
                         <View style={{ flexDirection: 'row' }}>
-                            <View style={{flex: 0.6}}>
-                            </View>
                             <Button
                                 mode="text"
-                                style={{flex: 0.2}}
+                                style={{flex: 0.5}}
                                 onPress={() => this.props.onClose()}>
                                 Cancel
                             </Button>
                             <Button
                                 mode="text"
-                                style={{flex: 0.2}}
-                                onPress={() => this.props.onSend(this.state.email)}>
-                                Send
+                                style={{flex: 0.5}}
+                                onPress={ () => this.props.onDelete() }>
+                                Delete
                             </Button>
                         </View>
                     </Surface>
@@ -63,7 +53,14 @@ const styles = StyleSheet.create({
         margin: 12,
         borderRadius: 8,
     },
-    textInput: {
-        flex: 1
-    }
-})
+    text: {
+        textAlign: 'center',
+    },
+});
+
+DeleteSafety.propTypes = {
+};
+
+DeleteSafety.defaultProps = {
+};
+

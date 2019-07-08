@@ -31,7 +31,7 @@ export default class LaneContent extends Component {
                 onBackLane={ () => this.props.onBackLane() }
                 onNextLane={ () => this.props.onNextLane() }
                 onEdit={ () => this.props.onEditLane(lane) }
-                onShare={ () => this.props.onShareLane(lane) }
+                onShare={ email => this.props.onShareLane(lane, email) }
                 onDelete={ () => this.props.onDeleteLane(lane) }
                 onUnsubscribe={ () => this.props.onUnsubscribeLane(lane) }
                 style={{

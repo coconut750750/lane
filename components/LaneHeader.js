@@ -4,13 +4,18 @@ import { Headline, Menu, IconButton, Surface } from 'react-native-paper';
 
 import { getUserID } from 'lane/backend/Auth';
 
+import SharingView from 'lane/components/SharingView';
+import DeleteSafety from 'lane/components/DeleteSafety';
+
 import Colors from 'lane/constants/Colors';
 
 export default class LaneHeader extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            menuVisible: false
+            menuVisible: false,
+            shareModalOpen: false,
+            deleteSafetyOpen: false,
         };
     }
 
@@ -20,6 +25,36 @@ export default class LaneHeader extends Component {
 
     closeMenu() {
         this.setState({ menuVisible: false });
+    }
+
+    renderShareModal() {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                onRequestClose={ () => {} }
+                visible={ this.state.shareModalOpen }>
+                <SharingView
+                    onClose={ () => this.setState({ shareModalOpen: false }) }
+                    onSend={ email => this.props.onShare(email) }
+                />
+            </Modal>
+        );
+    }
+
+    renderDeleteSafety() {
+        return (
+            <Modal
+                animationType="slide"
+                transparent={true}
+                onRequestClose={ () => {} }
+                visible={ this.state.deleteSafetyOpen }>
+                <DeleteSafety
+                    onClose={ () => this.setState({ deleteSafetyOpen: false }) }
+                    onDelete={ () => this.props.onDelete() }
+                />
+            </Modal>
+        );
     }
 
     renderMenu() {
@@ -42,13 +77,13 @@ export default class LaneHeader extends Component {
                                 onPress={ () => { this.props.onEdit(); this.closeMenu(); } }
                                 title="Edit" />
                             <Menu.Item
-                                onPress={ () => { this.props.onShare(); this.closeMenu(); } }
+                                onPress={ () => { this.setState({ shareModalOpen: true }); this.closeMenu(); } }
                                 title="Share" />
                             {
                                 this.props.owner == getUserID()
                                 ?
                                 <Menu.Item
-                                    onPress={ () => { this.props.onDelete(); this.closeMenu(); } }
+                                    onPress={ () => { this.setState({ deleteSafetyOpen: true }); this.closeMenu(); } }
                                     title="Delete" />
                                 :
                                 <Menu.Item
@@ -66,6 +101,9 @@ export default class LaneHeader extends Component {
         return (
             <Animated.View style={{ ...styles.header, ...this.props.style }}>
                 {this.renderMenu()}
+
+                {this.renderShareModal()}
+                {this.renderDeleteSafety()}
 
                 <View style={{ flex: 0.7 }}>
                     <Headline

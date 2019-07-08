@@ -14,7 +14,6 @@ var _ = require('lodash');
 import { getUserID, signOut, getIdFromEmail } from 'lane/backend/Auth';
 import { onLaneUpdate, shareLane, deleteLane, unsubscribeLane } from 'lane/backend/Database';
 
-import SharingView from 'lane/components/SharingView';
 import LaneCalendar from 'lane/components/LaneCalendar';
 import LaneContent from 'lane/components/LaneContent';
 
@@ -35,7 +34,6 @@ export default class CalendarScreen extends Component {
             markings: {},
             currentLane: 0,
             loading: true,
-            shareModalOpen: false,
 
             // animations
             scrollAnim: new Animated.Value(0),
@@ -157,25 +155,16 @@ export default class CalendarScreen extends Component {
         this.props.navigation.navigate('Edit', { laneObj: laneObj });
     }
 
-    onShareLane(laneObj) {
-        this.sharingId = laneObj.id;
-        this.setState({
-            shareModalOpen: true,
-        });
-    }
-
-    onSendShare(email) {
+    onShareLane(laneObj, email) {
         this.setState({
             loading: true,
-            shareModalOpen: false
         });
         getIdFromEmail(email, id => {
             if (id === undefined) {
                 this.alert('Email doesn\'t exist!');
             } else {
-                shareLane(this.sharingId, id);
+                shareLane(laneObj.id, id);
             }
-            this.sharingId = undefined;
             this.setState({ loading: false });
         });
     }
@@ -207,21 +196,6 @@ export default class CalendarScreen extends Component {
         );
     }
 
-    renderShareModal() {
-        return (
-            <Modal
-                animationType="slide"
-                transparent={true}
-                onRequestClose={ () => {} }
-                visible={ this.state.shareModalOpen }>
-                <SharingView
-                    onCancel={ () => this.setState({shareModalOpen: false}) }
-                    onSend={ email => this.onSendShare(email) }
-                />
-            </Modal>
-        );
-    }
-
     renderLaneContent(transform) {
         if (this.selectedLanes.length > 0) {
             const laneId = this.selectedLanes[this.state.currentLane];
@@ -231,7 +205,7 @@ export default class CalendarScreen extends Component {
                     onBackLane={ () => this.onBackLane() }
                     onNextLane={ () => this.onNextLane() }
                     onEditLane={ lane => this.onEditLane(lane) }
-                    onShareLane={ lane => this.onShareLane(lane) }
+                    onShareLane={ (lane, email) => this.onShareLane(lane, email) }
                     onDeleteLane={ lane => this.onDeleteLane(lane) }
                     onUnsubscribeLane={ lane => this.onUnsubscribeLane(lane) }
                     calendarHeight={ Layout.calendarHeight }
@@ -281,9 +255,6 @@ export default class CalendarScreen extends Component {
 
         return (
             <View style={styles.container}>
-
-                {this.renderShareModal()}
-
                 {this.renderLaneContent(transform)}
 
                 {this.renderLaneCalendar(transform)}
