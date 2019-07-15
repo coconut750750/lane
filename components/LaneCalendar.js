@@ -16,6 +16,7 @@ export default class LaneCalendar extends Component {
             <Animated.View style={{ ...this.props.style, height: this.props.height }}>
                 <CalendarList
                     monthFormat={'MMMM yyyy'}
+                    onVisibleMonthsChange={ month => this.props.onMonthChange(month) }
                     onDayPress={ day => this.props.onDayPress(day.dateString) }
                     pastScrollRange={60}
                     futureScrollRange={1}
@@ -37,7 +38,7 @@ export default class LaneCalendar extends Component {
                         dotColor: Colors.primaryAlt,
                         selectedDotColor: '#ffffff',
                         arrowColor: Colors.primaryAlt,
-                        monthTextColor: Colors.primary,
+                        monthTextColor: '#00000000',
                         indicatorColor: Colors.secondary,
                         textDayFontFamily: 'roboto',
                         textMonthFontFamily: 'roboto-medium',

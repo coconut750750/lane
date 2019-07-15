@@ -1,5 +1,11 @@
 export const msecondsPerDay = 86400000;
 
+export const months = [
+    'January', 'February', 'March', 'April', 'May',
+    'June', 'July', 'August', 'September',
+    'October', 'November', 'December'
+];
+
 export function timestampToDateString(timestamp) {
     const date = new Date(timestamp * 1000);
     return date.toISOString().split('T')[0]

@@ -1,19 +1,19 @@
 import React, { Component } from 'react';
 import {
     View,
-    Text,
     StyleSheet,
     ActivityIndicator,
     Modal,
     Animated,
     TouchableWithoutFeedback,
 } from 'react-native';
-import { FAB, IconButton, Snackbar } from 'react-native-paper';
+import { FAB, Text, IconButton, Snackbar } from 'react-native-paper';
 var _ = require('lodash');
 
 import { getUserID, signOut, getIdFromEmail } from 'lane/backend/Auth';
 import { onLaneUpdate, shareLane, deleteLane, unsubscribeLane } from 'lane/backend/Database';
 
+import CalendarHeader from 'lane/components/CalendarHeader';
 import LaneCalendar from 'lane/components/LaneCalendar';
 import LaneContent from 'lane/components/LaneContent';
 
@@ -22,6 +22,7 @@ import Layout from 'lane/constants/Layout'
 
 import schedulePeriods from 'lane/utils/PeriodScheduling';
 import { constructPeriodFromLane, propagatePeriod, setupScheduledMarkings, getValidLanes } from 'lane/utils/PeriodTools';
+import { months } from 'lane/utils/TimeTools';
 
 export default class CalendarScreen extends Component {
     constructor(props) {
@@ -139,6 +140,15 @@ export default class CalendarScreen extends Component {
         }
     }
 
+    onUpdateMonth(month) {
+        monthStr = `${months[month.month - 1]} ${month.year}`
+        if (this.state.month != monthStr) {
+            this.setState({
+                month: monthStr,
+            });
+        }
+    }
+
     onBackLane() {
         this.setState({
             currentLane: (this.state.currentLane - 1) % this.selectedLanes.length
@@ -231,13 +241,19 @@ export default class CalendarScreen extends Component {
         }
 
         return (
-            <LaneCalendar
-                markings={ markings }
-                onDayPress={ date => this.onPressDay(date) }
-                style={{ ...styles.calendar, transform: transform }}
-                selectedDay={ this.state.selectedDay }
-                height={ height }
-            />
+            <Animated.View style={{ ...styles.calendar, transform: transform }}>
+                <LaneCalendar
+                    markings={ markings }
+                    onDayPress={ date => this.onPressDay(date) }
+                    onMonthChange={ month => this.onUpdateMonth(month[0]) }
+                    selectedDay={ this.state.selectedDay }
+                    height={ height }
+                />
+                <CalendarHeader
+                    month={this.state.month}
+                    openDrawer={ () => this.props.navigation.openDrawer() }
+                    signOut={ () => signOut() }/>
+            </Animated.View>
         );
     }
 
@@ -253,28 +269,19 @@ export default class CalendarScreen extends Component {
         });
         const transform = [{ translateY: calendarTranslate }];
 
+        // content rendered first because it needs to be rendered below (z-dimension) the calendar
         return (
             <View style={styles.container}>
                 {this.renderLaneContent(transform)}
 
                 {this.renderLaneCalendar(transform)}
 
+                
+
                 <FAB
                     style={styles.fab}
                     icon="add"
                     onPress={ () => this.props.navigation.navigate('Create') }
-                />
-                <FAB
-                    style={{ position: 'absolute', margin: 16, left: 0, bottom: 0, }}
-                    icon="keyboard-return"
-                    onPress={ () => signOut() }
-                />
-                <IconButton
-                    style={{ position: 'absolute', margin: 16, left: 0, top: 0, }}
-                    size={24}
-                    icon="menu"
-                    color='#000000'
-                    onPress={ () => this.props.navigation.openDrawer() }
                 />
                 <Snackbar
                     visible={this.state.snackVisible}
@@ -304,5 +311,5 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         right: 0,
-    }
+    },
 })

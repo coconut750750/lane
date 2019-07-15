@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, Image, StyleSheet } from 'react-native'
 
 import { checkIfLoggedIn } from 'lane/backend/Auth';
 
@@ -20,7 +20,9 @@ export default class StartScreen extends Component {
     render() {
         return (
             <View style={styles.container}>
-                <Text>Lane</Text>
+                <Image 
+                    source={require('lane/assets/images/logo.png')}
+                    style={{resizeMode: 'center'}}/>
             </View>
         );
     }

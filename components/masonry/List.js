@@ -31,6 +31,11 @@ export default class MasonryList extends Component {
     }
 
     generateRowCounts(photos) {
+        res = [];
+        for (var i = 0; i < photos.length; i += 1) {
+            res.push(1)
+        }
+        return res;
         if (photos.length === 2) {
             return [1, 1];
         }
