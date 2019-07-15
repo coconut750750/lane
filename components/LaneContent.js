@@ -24,10 +24,8 @@ export default class LaneContent extends Component {
 
     renderLaneHeader(lane) {
         return (
-            <LaneHeader 
-                title={ lane.title }
-                color={ lane.color }
-                owner={ lane.owner }
+            <LaneHeader
+                lane={ lane }
                 onBackLane={ () => this.props.onBackLane() }
                 onNextLane={ () => this.props.onNextLane() }
                 onEdit={ () => this.props.onEditLane(lane) }
@@ -36,7 +34,6 @@ export default class LaneContent extends Component {
                 onUnsubscribe={ () => this.props.onUnsubscribeLane(lane) }
                 style={{
                     transform: this.props.headerTransform,
-                    position: 'absolute',
                     top: this.props.calendarHeight
                 }}
             />
@@ -48,16 +45,16 @@ export default class LaneContent extends Component {
 
         return (
             <View style={{ ...styles.page }}>
+                { this.renderLaneHeader(lane) }
                 <MasonryList
                     id={ lane.id }
                     photos={ photos }
                     width={ Layout.window.width }
                     itemPadding={2}
                     onScroll={ this.props.onScroll }
-                    style={{ flex: 1, marginTop: 40 }}
+                    style={{ flex: 1 }}
                     containerStyle={{ paddingTop: this.props.calendarHeight }}
                 />
-                {this.renderLaneHeader(lane)}
             </View>
         );
     }

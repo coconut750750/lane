@@ -22,7 +22,7 @@ import Layout from 'lane/constants/Layout'
 
 import schedulePeriods from 'lane/utils/PeriodScheduling';
 import { constructPeriodFromLane, propagatePeriod, setupScheduledMarkings, getValidLanes } from 'lane/utils/PeriodTools';
-import { months } from 'lane/utils/TimeTools';
+import { months, getCurrentMonth } from 'lane/utils/TimeTools';
 
 export default class CalendarScreen extends Component {
     constructor(props) {
@@ -31,10 +31,12 @@ export default class CalendarScreen extends Component {
         this.lanes = {};
         this.periods = [];
         this.selectedLanes = [];
+
         this.state = {
             markings: {},
             currentLane: 0,
             loading: true,
+            month: getCurrentMonth(),
 
             // animations
             scrollAnim: new Animated.Value(0),
@@ -142,7 +144,7 @@ export default class CalendarScreen extends Component {
 
     onUpdateMonth(month) {
         monthStr = `${months[month.month - 1]} ${month.year}`
-        if (this.state.month != monthStr) {
+        if (monthStr != this.state.month) {
             this.setState({
                 month: monthStr,
             });
@@ -275,8 +277,6 @@ export default class CalendarScreen extends Component {
                 {this.renderLaneContent(transform)}
 
                 {this.renderLaneCalendar(transform)}
-
-                
 
                 <FAB
                     style={styles.fab}

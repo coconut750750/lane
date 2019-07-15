@@ -6,6 +6,13 @@ export const months = [
     'October', 'November', 'December'
 ];
 
+export function getCurrentMonth() {
+    var d = new Date();
+    var month = months[d.getMonth()];
+    var year = d.getFullYear();
+    return `${month} ${year}`;
+}
+
 export function timestampToDateString(timestamp) {
     const date = new Date(timestamp * 1000);
     return date.toISOString().split('T')[0]

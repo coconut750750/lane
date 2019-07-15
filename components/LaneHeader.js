@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Animated, Modal, TouchableWithoutFeedback } from 'react-native';
-import { Headline, Menu, IconButton, Surface } from 'react-native-paper';
+import { Text, Menu, IconButton, Surface } from 'react-native-paper';
 
 import { getUserID } from 'lane/backend/Auth';
 
@@ -17,6 +17,16 @@ export default class LaneHeader extends Component {
             shareModalOpen: false,
             deleteSafetyOpen: false,
         };
+    }
+
+    getYearRange() {
+        startYear = this.props.lane.startDate.substring(0, 4);
+        endYear = this.props.lane.endDate.substring(0, 4);
+        if (startYear == endYear) {
+            return startYear;
+        } else {
+            return `${startYear}-${endYear}`;
+        }
     }
 
     openMenu() {
@@ -80,7 +90,7 @@ export default class LaneHeader extends Component {
                                 onPress={ () => { this.setState({ shareModalOpen: true }); this.closeMenu(); } }
                                 title="Share" />
                             {
-                                this.props.owner == getUserID()
+                                this.props.lane.owner == getUserID()
                                 ?
                                 <Menu.Item
                                     onPress={ () => { this.setState({ deleteSafetyOpen: true }); this.closeMenu(); } }
@@ -99,36 +109,42 @@ export default class LaneHeader extends Component {
 
     render() {
         return (
-            <Animated.View style={{ ...styles.header, ...this.props.style }}>
+            <Animated.View style={{ ...styles.container, ...this.props.style }}>
                 {this.renderMenu()}
 
                 {this.renderShareModal()}
                 {this.renderDeleteSafety()}
 
-                <View style={{ flex: 0.7 }}>
-                    <Headline
-                        style={{ ...styles.title, color: this.props.color, flex: 1, marginLeft: 16 }}>
-                        { this.props.title }
-                    </Headline>
+                <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flex: 0.7, justifyContent: "space-between" }}>
+                        <Text
+                            style={{ ...styles.text, ...styles.title, color: this.props.lane.color }}>
+                            { this.props.lane.title }
+                        </Text>
+                        <Text
+                            style={{ ...styles.text, ...styles.dateRange }}>
+                            { this.getYearRange() }
+                        </Text>
+                    </View>
+                    <IconButton
+                        style={{ flex: 0.1 }}
+                        size={24}
+                        icon="navigate-before"
+                        color={ Colors.darkGray }
+                        onPress={ () => this.props.onBackLane() }/>
+                    <IconButton
+                        style={{ flex: 0.1 }}
+                        size={24}
+                        icon="navigate-next"
+                        color={ Colors.darkGray }
+                        onPress={ () => this.props.onNextLane() }/>
+                    <IconButton
+                        style={{ flex: 0.1 }}
+                        size={24}
+                        icon="more-vert"
+                        color={ Colors.darkGray }
+                        onPress={ () => this.openMenu() }/>
                 </View>
-                <IconButton
-                    style={{ flex: 0.1 }}
-                    size={24}
-                    icon="navigate-before"
-                    color={ Colors.darkGray }
-                    onPress={ () => this.props.onBackLane() }/>
-                <IconButton
-                    style={{ flex: 0.1 }}
-                    size={24}
-                    icon="navigate-next"
-                    color={ Colors.darkGray }
-                    onPress={ () => this.props.onNextLane() }/>
-                <IconButton
-                    style={{ flex: 0.1 }}
-                    size={24}
-                    icon="more-vert"
-                    color={ Colors.darkGray }
-                    onPress={ () => this.openMenu() }/>
             </Animated.View>
         );
     }
@@ -136,14 +152,19 @@ export default class LaneHeader extends Component {
 
 
 const styles = StyleSheet.create({
-    header: {
+    container: {
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection: 'row'
-    }, 
-    title: {
+    },
+    text: {
         fontFamily: 'roboto-medium',
-        marginLeft: 8
+        marginLeft: 12,
+    },
+    title: {
+        fontSize: 24,
+    },
+    dateRange: {
+        color: "#000000",
     },
     surface: {
         padding: 8,
