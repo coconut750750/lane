@@ -253,7 +253,7 @@ export default class CalendarScreen extends Component {
                 />
                 <CalendarHeader
                     month={this.state.month}
-                    openDrawer={ () => this.props.navigation.openDrawer() }
+                    // openDrawer={ () => this.props.navigation.openDrawer() }
                     signOut={ () => signOut() }/>
             </Animated.View>
         );

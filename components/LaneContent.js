@@ -34,7 +34,8 @@ export default class LaneContent extends Component {
                 onUnsubscribe={ () => this.props.onUnsubscribeLane(lane) }
                 style={{
                     transform: this.props.headerTransform,
-                    top: this.props.calendarHeight
+                    top: this.props.calendarHeight,
+                    zIndex: 100,
                 }}
             />
         );

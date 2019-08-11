@@ -243,8 +243,7 @@ export default class LaneModifyView extends Component {
                         <View style={ styles.addPhotoView }>
                             <IconButton
                                 icon="add-a-photo"
-                                size={24}
-                                style={{ flex: 1 }}/>
+                                size={24}/>
                             <Text>Add a Photo</Text>
                         </View>
                     </TouchableNativeFeedback>
@@ -265,7 +264,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
     },
     titleInput: {
         margin: 16,
@@ -276,7 +275,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: Colors.lightGray,
         margin: 24,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexDirection: 'row',
     },
     addPhotoView: {
         flex: 1,
